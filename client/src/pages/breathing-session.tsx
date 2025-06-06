@@ -117,20 +117,22 @@ export default function BreathingSession() {
       <div className="w-full max-w-md mx-auto text-center">
         {/* Protocol Info */}
         <motion.div
-          className="mb-8"
+          className="mb-6 relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h3 className={`text-lg font-semibold ${colorClasses.text} mb-2`}>
-            {selectedProtocol.name} Protocol
-          </h3>
-          <p className="text-gray-400 text-sm">Follow the glowing guide</p>
+          <div className="glass-card rounded-xl p-4 backdrop-blur-md border border-white/10">
+            <h3 className={`text-xl font-bold ${colorClasses.text} mb-1 text-center`}>
+              {selectedProtocol.name} Protocol
+            </h3>
+            <p className="text-gray-300 text-sm text-center">Follow the glowing guide</p>
+          </div>
         </motion.div>
         
         {/* Breathing Animation */}
         <motion.div
-          className="mb-12"
+          className="mb-20"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
@@ -145,7 +147,7 @@ export default function BreathingSession() {
         
         {/* Progress Indicator */}
         <motion.div
-          className="mb-8"
+          className="mb-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
@@ -180,7 +182,7 @@ export default function BreathingSession() {
         
         {/* Phase Info */}
         <motion.div
-          className="mb-8 p-4 glass-card rounded-xl"
+          className="mb-6 p-4 glass-card rounded-xl border border-white/10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.8 }}
