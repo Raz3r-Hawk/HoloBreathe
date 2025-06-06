@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 11% 4%; /* #0A0A0F - space-black */
+  --foreground: 0 0% 98%;
+  --muted: 210 11% 11%; /* #1A1A1F - space-gray */
+  --muted-foreground: 0 0% 64.9%;
+  --popover: 210 11% 4%;
+  --popover-foreground: 0 0% 98%;
+  --card: 210 11% 11%;
+  --card-foreground: 0 0% 98%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --primary: 180 100% 50%; /* #00FFFF - neon-cyan */
+  --primary-foreground: 0 0% 0%;
+  --secondary: 210 11% 11%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 210 11% 11%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 180 100% 50%;
+  --radius: 0.5rem;
+  
+  /* Custom neon colors */
+  --neon-cyan: 180 100% 50%; /* #00FFFF */
+  --neon-pink: 328 100% 54%; /* #FF1493 */
+  --neon-purple: 271 76% 53%; /* #8A2BE2 */
+  --space-black: 210 11% 4%; /* #0A0A0F */
+  --space-gray: 210 11% 11%; /* #1A1A1F */
+}
+
+.dark {
+  --background: 210 11% 4%;
+  --foreground: 0 0% 98%;
+  --muted: 210 11% 11%;
+  --muted-foreground: 0 0% 64.9%;
+  --popover: 210 11% 4%;
+  --popover-foreground: 0 0% 98%;
+  --card: 210 11% 11%;
+  --card-foreground: 0 0% 98%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --primary: 180 100% 50%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 210 11% 11%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 210 11% 11%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 180 100% 50%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    background: hsl(var(--space-black));
+    color: hsl(0 0% 98%);
+  }
+}
+
+@layer utilities {
+  .neon-glow {
+    box-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 40px currentColor;
+  }
+  
+  .neon-glow-cyan {
+    box-shadow: 
+      0 0 10px hsl(var(--neon-cyan)),
+      0 0 20px hsl(var(--neon-cyan)),
+      0 0 40px hsl(var(--neon-cyan));
+  }
+  
+  .neon-glow-pink {
+    box-shadow: 
+      0 0 10px hsl(var(--neon-pink)),
+      0 0 20px hsl(var(--neon-pink)),
+      0 0 40px hsl(var(--neon-pink));
+  }
+  
+  .neon-glow-purple {
+    box-shadow: 
+      0 0 10px hsl(var(--neon-purple)),
+      0 0 20px hsl(var(--neon-purple)),
+      0 0 40px hsl(var(--neon-purple));
+  }
+  
+  .holographic-border {
+    background: linear-gradient(45deg, 
+      hsl(var(--neon-cyan)), 
+      hsl(var(--neon-pink)), 
+      hsl(var(--neon-purple)), 
+      hsl(var(--neon-cyan))
+    );
+    background-size: 400% 400%;
+    animation: gradient-shift 3s ease infinite;
+    padding: 2px;
+    border-radius: 16px;
+  }
+  
+  .glass-card {
+    background: rgba(26, 26, 31, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(45deg, 
+      hsl(var(--neon-cyan)), 
+      hsl(var(--neon-pink)), 
+      hsl(var(--neon-purple))
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes glow-pulse {
+  0% { 
+    box-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.3);
+  }
+  100% { 
+    box-shadow: 0 0 30px hsl(var(--neon-cyan) / 0.8), 
+                0 0 40px hsl(var(--neon-pink) / 0.4);
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg); 
+  }
+  50% { 
+    transform: translateY(-20px) rotateX(15deg) rotateY(15deg); 
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.7; 
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 1; 
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
