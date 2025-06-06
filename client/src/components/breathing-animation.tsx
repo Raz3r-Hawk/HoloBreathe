@@ -55,7 +55,7 @@ export function BreathingAnimation({
     <div className={`relative ${className}`}>
       {/* Main breathing circle */}
       <motion.div
-        className="w-64 h-64 mx-auto rounded-full flex items-center justify-center relative"
+        className="w-48 h-48 mx-auto rounded-full flex items-center justify-center relative"
         style={{
           background: `radial-gradient(circle, 
             rgba(0,255,255,${glowIntensity * 0.2}) 0%, 
@@ -74,7 +74,7 @@ export function BreathingAnimation({
       >
         {/* Inner circle */}
         <motion.div
-          className="w-32 h-32 rounded-full border-2 border-cyan-400/30 flex items-center justify-center"
+          className="w-24 h-24 rounded-full border-2 border-cyan-400/30 flex items-center justify-center"
           animate={{
             borderColor: [
               'rgba(0,255,255,0.3)',
@@ -91,7 +91,7 @@ export function BreathingAnimation({
         >
           {/* Breathing icon */}
           <motion.div
-            className="text-3xl text-cyan-400 opacity-70"
+            className="text-2xl text-cyan-400 opacity-70"
             animate={{
               opacity: [0.7, 1, 0.7],
             }}
@@ -101,7 +101,7 @@ export function BreathingAnimation({
               ease: "easeInOut",
             }}
           >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V17C3 18.1 3.9 19 5 19H7V21C7 22.1 7.9 23 9 23H15C16.1 23 17 22.1 17 21V19H19C20.1 19 21 18.1 21 17V9ZM19 17H15V21H9V17H5V3H14.17L19 7.83V17Z"/>
             </svg>
           </motion.div>
@@ -158,11 +158,11 @@ export function BreathingAnimation({
       {isActive && (
         <>
           <motion.div
-            className="absolute top-8 left-8 w-2 h-2 bg-cyan-400 rounded-full"
+            className="absolute top-6 left-6 w-1.5 h-1.5 bg-cyan-400 rounded-full"
             animate={{
-              y: [0, -20, 0],
+              y: [0, -15, 0],
               opacity: [0.6, 1, 0.6],
-              scale: [1, 1.5, 1],
+              scale: [1, 1.3, 1],
             }}
             transition={{
               duration: 3,
@@ -171,11 +171,11 @@ export function BreathingAnimation({
             }}
           />
           <motion.div
-            className="absolute top-16 right-12 w-1.5 h-1.5 bg-pink-400 rounded-full"
+            className="absolute top-12 right-8 w-1 h-1 bg-pink-400 rounded-full"
             animate={{
-              y: [0, -15, 0],
+              y: [0, -12, 0],
               opacity: [0.4, 0.8, 0.4],
-              scale: [1, 1.3, 1],
+              scale: [1, 1.2, 1],
             }}
             transition={{
               duration: 4,
@@ -185,11 +185,11 @@ export function BreathingAnimation({
             }}
           />
           <motion.div
-            className="absolute bottom-12 left-16 w-1 h-1 bg-purple-400 rounded-full"
+            className="absolute bottom-8 left-12 w-0.5 h-0.5 bg-purple-400 rounded-full"
             animate={{
-              y: [0, -10, 0],
+              y: [0, -8, 0],
               opacity: [0.5, 1, 0.5],
-              scale: [1, 1.2, 1],
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 5,
