@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { useState, useEffect } from 'react';
 import { BreathingAnimation } from '@/components/breathing-animation';
 import { useBreathingSession } from '@/hooks/use-breathing-session';
+import { useAmbientAudio } from '@/hooks/use-ambient-audio';
 import { BreathingProtocol, getColorClasses } from '@/lib/breathing-patterns';
 
 export default function BreathingSession() {
@@ -21,6 +22,8 @@ export default function BreathingSession() {
     endSession,
     isSessionComplete,
   } = useBreathingSession(selectedProtocol);
+
+  const { play: playAudio, stop: stopAudio, isPlaying: audioIsPlaying, isLoaded: audioIsLoaded } = useAmbientAudio();
 
   useEffect(() => {
     // Retrieve selected protocol from sessionStorage
@@ -42,6 +45,17 @@ export default function BreathingSession() {
   }, [selectedProtocol, sessionState.isActive, startSession]);
 
   useEffect(() => {
+    // Start ambient audio when session becomes active
+    if (sessionState.isActive && !sessionState.isPaused && audioIsLoaded && !audioIsPlaying) {
+      playAudio();
+    }
+    // Stop ambient audio when session ends or is paused
+    else if ((!sessionState.isActive || sessionState.isPaused) && audioIsPlaying) {
+      stopAudio();
+    }
+  }, [sessionState.isActive, sessionState.isPaused, audioIsLoaded, audioIsPlaying, playAudio, stopAudio]);
+
+  useEffect(() => {
     // Handle session completion
     if (isSessionComplete && !showCompletionMessage) {
       setShowCompletionMessage(true);
@@ -52,6 +66,7 @@ export default function BreathingSession() {
   }, [isSessionComplete, showCompletionMessage, setLocation]);
 
   const handleEndSession = () => {
+    stopAudio();
     endSession();
     setLocation('/');
   };

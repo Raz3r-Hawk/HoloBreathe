@@ -151,7 +151,7 @@ export default function Welcome() {
           whileTap={{ scale: 0.95 }}
         >
           <div className="bg-gray-900/80 backdrop-blur-sm px-8 py-4 rounded-2xl text-xl font-semibold group-hover:bg-gray-800/90 transition-all duration-300 flex items-center justify-center space-x-2">
-            <span className="text-cyan-400">Start Free</span>
+            <span className="text-cyan-400">Start</span>
             <motion.svg
               className="w-5 h-5 text-pink-400"
               fill="none"
