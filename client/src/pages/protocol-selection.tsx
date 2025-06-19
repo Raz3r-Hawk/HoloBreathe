@@ -110,14 +110,14 @@ export default function ProtocolSelection() {
         {/* Trial Mode Banner */}
         {isTrialMode && !hasUsedTrial && (
           <motion.div
-            className="mb-6 p-4 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-500/20 dark:to-orange-500/20 border border-yellow-300 dark:border-yellow-500/30 rounded-xl theme-transition"
+            className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-500/20 dark:to-orange-500/20 border border-amber-300 dark:border-amber-500/30 rounded-xl theme-transition"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <div className="text-center">
-              <p className="text-yellow-800 dark:text-yellow-300 font-semibold mb-1">Free Trial</p>
-              <p className="text-xs text-yellow-700 dark:text-yellow-200/80">Choose one protocol to try for free</p>
+              <p className="text-amber-900 dark:text-amber-200 font-semibold mb-1">Free Trial</p>
+              <p className="text-xs text-amber-800 dark:text-amber-300">Choose one protocol to try for free</p>
             </div>
           </motion.div>
         )}

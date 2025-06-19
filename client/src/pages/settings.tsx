@@ -32,7 +32,8 @@ import {
   Star,
   HelpCircle,
   MessageSquare,
-  Flag
+  Flag,
+  ArrowLeft
 } from 'lucide-react';
 
 const profileSchema = z.object({
@@ -63,10 +64,23 @@ export default function Settings() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-foreground text-center">
-          <p className="mb-4">Please log in to access settings</p>
-          <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+      <div className="min-h-screen theme-bg theme-transition p-4">
+        <div className="max-w-md mx-auto">
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/')}
+            className="mb-6 theme-transition"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Welcome
+          </Button>
+          
+          <div className="flex flex-col items-center justify-center min-h-[70vh]">
+            <div className="text-center">
+              <p className="text-foreground mb-4">Please log in to access settings</p>
+              <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -380,58 +394,58 @@ export default function Settings() {
 
             {/* Feedback Tab */}
             <TabsContent value="feedback">
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="theme-card theme-transition">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center">
-                    <MessageSquare className="w-5 h-5 mr-2 text-cyan-400" />
+                  <CardTitle className="text-card-foreground flex items-center">
+                    <MessageSquare className="w-5 h-5 mr-2 text-primary" />
                     Send Feedback
                   </CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardDescription className="text-muted-foreground">
                     Help us improve the app with your feedback and suggestions
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={feedbackForm.handleSubmit(onFeedbackSubmit)} className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-200">Rating</Label>
+                      <Label className="text-card-foreground font-medium">Rating</Label>
                       <Select onValueChange={(value) => feedbackForm.setValue('rating', value)}>
-                        <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
+                        <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
                           <SelectValue placeholder="Rate your experience" />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-800 border-gray-600">
-                          <SelectItem value="5" className="text-white">⭐⭐⭐⭐⭐ Excellent</SelectItem>
-                          <SelectItem value="4" className="text-white">⭐⭐⭐⭐ Good</SelectItem>
-                          <SelectItem value="3" className="text-white">⭐⭐⭐ Average</SelectItem>
-                          <SelectItem value="2" className="text-white">⭐⭐ Poor</SelectItem>
-                          <SelectItem value="1" className="text-white">⭐ Terrible</SelectItem>
+                        <SelectContent className="theme-card border-border">
+                          <SelectItem value="5" className="text-card-foreground">⭐⭐⭐⭐⭐ Excellent</SelectItem>
+                          <SelectItem value="4" className="text-card-foreground">⭐⭐⭐⭐ Good</SelectItem>
+                          <SelectItem value="3" className="text-card-foreground">⭐⭐⭐ Average</SelectItem>
+                          <SelectItem value="2" className="text-card-foreground">⭐⭐ Poor</SelectItem>
+                          <SelectItem value="1" className="text-card-foreground">⭐ Terrible</SelectItem>
                         </SelectContent>
                       </Select>
                       {feedbackForm.formState.errors.rating && (
-                        <p className="text-red-400 text-sm">{feedbackForm.formState.errors.rating.message}</p>
+                        <p className="text-destructive text-sm">{feedbackForm.formState.errors.rating.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-gray-200">Category</Label>
+                      <Label className="text-card-foreground font-medium">Category</Label>
                       <Select onValueChange={(value) => feedbackForm.setValue('category', value)}>
-                        <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
+                        <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
                           <SelectValue placeholder="Select feedback category" />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-800 border-gray-600">
-                          <SelectItem value="general" className="text-white">General Feedback</SelectItem>
-                          <SelectItem value="bug" className="text-white">Bug Report</SelectItem>
-                          <SelectItem value="feature" className="text-white">Feature Request</SelectItem>
-                          <SelectItem value="ui" className="text-white">User Interface</SelectItem>
-                          <SelectItem value="performance" className="text-white">Performance</SelectItem>
+                        <SelectContent className="theme-card border-border">
+                          <SelectItem value="general" className="text-card-foreground">General Feedback</SelectItem>
+                          <SelectItem value="bug" className="text-card-foreground">Bug Report</SelectItem>
+                          <SelectItem value="feature" className="text-card-foreground">Feature Request</SelectItem>
+                          <SelectItem value="ui" className="text-card-foreground">User Interface</SelectItem>
+                          <SelectItem value="performance" className="text-card-foreground">Performance</SelectItem>
                         </SelectContent>
                       </Select>
                       {feedbackForm.formState.errors.category && (
-                        <p className="text-red-400 text-sm">{feedbackForm.formState.errors.category.message}</p>
+                        <p className="text-destructive text-sm">{feedbackForm.formState.errors.category.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message" className="text-gray-200">
+                      <Label htmlFor="message" className="text-card-foreground font-medium">
                         Your Feedback
                       </Label>
                       <textarea
@@ -439,10 +453,10 @@ export default function Settings() {
                         {...feedbackForm.register('message')}
                         rows={5}
                         placeholder="Tell us about your experience, suggestions, or any issues you've encountered..."
-                        className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        className="w-full px-3 py-2 theme-transition bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                       {feedbackForm.formState.errors.message && (
-                        <p className="text-red-400 text-sm">{feedbackForm.formState.errors.message.message}</p>
+                        <p className="text-destructive text-sm">{feedbackForm.formState.errors.message.message}</p>
                       )}
                     </div>
 

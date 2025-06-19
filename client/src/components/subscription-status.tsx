@@ -18,14 +18,14 @@ export function SubscriptionStatus() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="bg-yellow-500/10 border-yellow-500/20">
+        <Card className="bg-amber-500/10 dark:bg-amber-500/10 border-amber-500/30 dark:border-amber-500/20 theme-transition">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                <span className="text-sm text-yellow-300">Free Trial</span>
+                <div className="w-2 h-2 bg-amber-500 dark:bg-amber-400 rounded-full"></div>
+                <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">Free Trial</span>
               </div>
-              <Badge variant="outline" className="text-xs border-yellow-500/30 text-yellow-300">
+              <Badge variant="outline" className="text-xs border-amber-500/40 dark:border-amber-500/30 text-amber-700 dark:text-amber-300">
                 Limited Access
               </Badge>
             </div>

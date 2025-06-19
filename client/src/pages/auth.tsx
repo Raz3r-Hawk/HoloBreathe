@@ -118,10 +118,10 @@ export default function Auth() {
         >
           <Card className="theme-card theme-transition">
             <CardHeader>
-              <CardTitle className="text-xl text-white text-center">
+              <CardTitle className="text-xl text-card-foreground text-center">
                 {isLogin ? 'Sign In' : 'Create Account'}
               </CardTitle>
-              <CardDescription className="text-gray-300 text-center">
+              <CardDescription className="text-muted-foreground text-center">
                 {isLogin 
                   ? 'Enter your email to access your account' 
                   : 'Fill in your details to get started'
@@ -133,7 +133,7 @@ export default function Auth() {
               {isLogin ? (
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-200">
+                    <Label htmlFor="email" className="text-sm font-medium text-card-foreground">
                       Email Address
                     </Label>
                     <Input
@@ -141,15 +141,15 @@ export default function Auth() {
                       type="email"
                       placeholder="your@email.com"
                       {...loginForm.register('email')}
-                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                      className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                     />
                     {loginForm.formState.errors.email && (
-                      <p className="text-red-400 text-sm">{loginForm.formState.errors.email.message}</p>
+                      <p className="text-destructive text-sm">{loginForm.formState.errors.email.message}</p>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-medium text-gray-200">
+                    <Label htmlFor="password" className="text-sm font-medium text-card-foreground">
                       Password
                     </Label>
                     <Input
@@ -157,10 +157,10 @@ export default function Auth() {
                       type="password"
                       placeholder="Enter your password"
                       {...loginForm.register('password')}
-                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                      className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                     />
                     {loginForm.formState.errors.password && (
-                      <p className="text-red-400 text-sm">{loginForm.formState.errors.password.message}</p>
+                      <p className="text-destructive text-sm">{loginForm.formState.errors.password.message}</p>
                     )}
                   </div>
 
@@ -176,38 +176,38 @@ export default function Auth() {
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-200">
+                      <Label htmlFor="firstName" className="text-sm font-medium text-card-foreground">
                         First Name
                       </Label>
                       <Input
                         id="firstName"
                         placeholder="John"
                         {...registerForm.register('firstName')}
-                        className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                        className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                       />
                       {registerForm.formState.errors.firstName && (
-                        <p className="text-red-400 text-sm">{registerForm.formState.errors.firstName.message}</p>
+                        <p className="text-destructive text-sm">{registerForm.formState.errors.firstName.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-200">
+                      <Label htmlFor="lastName" className="text-sm font-medium text-card-foreground">
                         Last Name
                       </Label>
                       <Input
                         id="lastName"
                         placeholder="Doe"
                         {...registerForm.register('lastName')}
-                        className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                        className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                       />
                       {registerForm.formState.errors.lastName && (
-                        <p className="text-red-400 text-sm">{registerForm.formState.errors.lastName.message}</p>
+                        <p className="text-destructive text-sm">{registerForm.formState.errors.lastName.message}</p>
                       )}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-200">
+                    <Label htmlFor="email" className="text-sm font-medium text-card-foreground">
                       Email Address
                     </Label>
                     <Input
@@ -215,16 +215,16 @@ export default function Auth() {
                       type="email"
                       placeholder="your@email.com"
                       {...registerForm.register('email')}
-                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                      className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                     />
                     {registerForm.formState.errors.email && (
-                      <p className="text-red-400 text-sm">{registerForm.formState.errors.email.message}</p>
+                      <p className="text-destructive text-sm">{registerForm.formState.errors.email.message}</p>
                     )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-sm font-medium text-gray-200">
+                      <Label htmlFor="password" className="text-sm font-medium text-card-foreground">
                         Password
                       </Label>
                       <Input
@@ -232,15 +232,15 @@ export default function Auth() {
                         type="password"
                         placeholder="Create password"
                         {...registerForm.register('password')}
-                        className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                        className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                       />
                       {registerForm.formState.errors.password && (
-                        <p className="text-red-400 text-sm">{registerForm.formState.errors.password.message}</p>
+                        <p className="text-destructive text-sm">{registerForm.formState.errors.password.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-200">
+                      <Label htmlFor="confirmPassword" className="text-sm font-medium text-card-foreground">
                         Confirm Password
                       </Label>
                       <Input
@@ -248,39 +248,39 @@ export default function Auth() {
                         type="password"
                         placeholder="Confirm password"
                         {...registerForm.register('confirmPassword')}
-                        className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                        className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                       />
                       {registerForm.formState.errors.confirmPassword && (
-                        <p className="text-red-400 text-sm">{registerForm.formState.errors.confirmPassword.message}</p>
+                        <p className="text-destructive text-sm">{registerForm.formState.errors.confirmPassword.message}</p>
                       )}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth" className="text-sm font-medium text-gray-200">
+                    <Label htmlFor="dateOfBirth" className="text-sm font-medium text-card-foreground">
                       Date of Birth (Optional)
                     </Label>
                     <Input
                       id="dateOfBirth"
                       type="date"
                       {...registerForm.register('dateOfBirth')}
-                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                      className="theme-transition bg-background border-border text-foreground placeholder-muted-foreground focus:border-primary"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="gender" className="text-sm font-medium text-gray-200">
+                    <Label htmlFor="gender" className="text-sm font-medium text-card-foreground">
                       Gender (Optional)
                     </Label>
                     <Select onValueChange={(value) => registerForm.setValue('gender', value)}>
-                      <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
+                      <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        <SelectItem value="male" className="text-white hover:bg-gray-700">Male</SelectItem>
-                        <SelectItem value="female" className="text-white hover:bg-gray-700">Female</SelectItem>
-                        <SelectItem value="other" className="text-white hover:bg-gray-700">Other</SelectItem>
-                        <SelectItem value="prefer_not_to_say" className="text-white hover:bg-gray-700">Prefer not to say</SelectItem>
+                      <SelectContent className="theme-card border-border">
+                        <SelectItem value="male" className="text-card-foreground">Male</SelectItem>
+                        <SelectItem value="female" className="text-card-foreground">Female</SelectItem>
+                        <SelectItem value="other" className="text-card-foreground">Other</SelectItem>
+                        <SelectItem value="prefer_not_to_say" className="text-card-foreground">Prefer not to say</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
