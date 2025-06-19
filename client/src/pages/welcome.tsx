@@ -21,8 +21,11 @@ export default function Welcome() {
   // Auto-redirect effect for authenticated users
   useEffect(() => {
     if (isAuthenticated && !isRedirecting) {
-      setIsRedirecting(true);
-      setCountdown(5);
+      const timeout = setTimeout(() => {
+        setIsRedirecting(true);
+        setCountdown(5);
+      }, 0); // Defer to next tick
+      return () => clearTimeout(timeout);
     }
   }, [isAuthenticated, isRedirecting]);
 

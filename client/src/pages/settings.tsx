@@ -212,28 +212,45 @@ export default function Settings() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid grid-cols-5 w-full theme-tabs theme-transition">
-              <TabsTrigger value="profile" className="theme-tab theme-transition">
-                <User className="w-4 h-4 mr-2" />
-                Profile
-              </TabsTrigger>
-              <TabsTrigger value="preferences" className="theme-tab theme-transition">
-                <SettingsIcon className="w-4 h-4 mr-2" />
-                Preferences
-              </TabsTrigger>
-              <TabsTrigger value="feedback" className="theme-tab theme-transition">
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Feedback
-              </TabsTrigger>
-              <TabsTrigger value="account" className="theme-tab theme-transition">
-                <Shield className="w-4 h-4 mr-2" />
-                Account
-              </TabsTrigger>
-              <TabsTrigger value="help" className="theme-tab theme-transition">
-                <HelpCircle className="w-4 h-4 mr-2" />
-                Help
-              </TabsTrigger>
-            </TabsList>
+            <div className="bg-muted/30 p-1 rounded-lg mb-6">
+              <TabsList className="grid grid-cols-5 w-full bg-transparent gap-1">
+                <TabsTrigger 
+                  value="profile" 
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-md data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground transition-all"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="text-xs font-medium">Profile</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="preferences" 
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-md data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground transition-all"
+                >
+                  <SettingsIcon className="w-4 h-4" />
+                  <span className="text-xs font-medium">Preferences</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="feedback" 
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-md data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground transition-all"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span className="text-xs font-medium">Feedback</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="account" 
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-md data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground transition-all"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span className="text-xs font-medium">Account</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="help" 
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-md data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground transition-all"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  <span className="text-xs font-medium">Help</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
