@@ -7,9 +7,9 @@ A comprehensive breathing application with advanced user management, authenticat
 
 ### Web Version
 - **Frontend**: React + TypeScript + Vite with shadcn/ui components
-- **Backend**: Express.js with PostgreSQL database integration
+- **Backend**: Express.js with Supabase PostgreSQL database integration
 - **Authentication**: Secure password-based auth with bcrypt hashing
-- **Database**: PostgreSQL with Drizzle ORM for data persistence
+- **Database**: Supabase PostgreSQL with Drizzle ORM for data persistence
 - **UI**: Tailwind CSS with holographic/neon theme
 - **Features**: Complete user management, session tracking, analytics, settings
 
@@ -42,7 +42,26 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Privacy Compliance**: Comprehensive privacy policy and about pages
 - **App Store Ready**: Google and Apple compliance requirements met
 
+### Mobile Version (React Native)
+- **Platform**: React Native with TypeScript for cross-platform mobile deployment
+- **Navigation**: React Navigation stack for iOS and Android
+- **Database**: Shared backend with Supabase PostgreSQL integration
+- **Deployment**: Android APK and iOS IPA generation ready
+- **Features**: Complete mobile app with same functionality as web version
+
 ## Recent Changes
+- **2025-06-19**: Complete React Native mobile deployment setup and Supabase migration
+  - Created complete Android project structure (build.gradle, MainActivity.java, AndroidManifest.xml)
+  - Set up iOS project with Xcode configuration (Info.plist, AppDelegate, LaunchScreen)
+  - Installed React Native dependencies (@react-navigation/native, react-native-screens, etc.)
+  - **Migrated database from Replit to Supabase PostgreSQL**:
+    * Updated server/db.ts to use postgres-js instead of @neondatabase/serverless
+    * Created comprehensive SUPABASE_MIGRATION_GUIDE.md with step-by-step instructions
+    * Maintained all existing database schema and functionality
+    * Improved performance with Supabase's connection pooling and dedicated PostgreSQL
+  - Created REACT_NATIVE_DEPLOYMENT_GUIDE.md for APK/IPA generation
+  - Added mobile build scripts for Android (assembleRelease) and iOS (run-ios)
+  - **Ready for mobile app store deployment**: Complete Android and iOS project setup
 - **2025-06-19**: Complete comprehensive user management implementation
   - Implemented secure user authentication with bcrypt password hashing
   - Added complete user registration with personal information collection
