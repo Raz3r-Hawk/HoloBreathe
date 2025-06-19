@@ -20,12 +20,15 @@ export default function Welcome() {
 
   // Auto-redirect effect for authenticated users
   useEffect(() => {
-    if (isAuthenticated) {
-      if (!isRedirecting) {
-        setIsRedirecting(true);
-        setCountdown(5); // Reset countdown to 5 seconds
-      }
-      
+    if (isAuthenticated && !isRedirecting) {
+      setIsRedirecting(true);
+      setCountdown(5);
+    }
+  }, [isAuthenticated, isRedirecting]);
+
+  // Separate effect for countdown timer
+  useEffect(() => {
+    if (isAuthenticated && isRedirecting) {
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -38,12 +41,8 @@ export default function Welcome() {
       }, 1000);
 
       return () => clearInterval(timer);
-    } else {
-      // Reset states if user is not authenticated
-      setIsRedirecting(false);
-      setCountdown(5);
     }
-  }, [isAuthenticated, setLocation]);
+  }, [isAuthenticated, isRedirecting, setLocation]);
 
   if (isLoading) {
     return (
