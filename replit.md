@@ -1,31 +1,45 @@
-# Breathing App with Razorpay Paywall
+# Breathing App - React Native Conversion
 
 ## Project Overview
-A modern mobile breathing app with holographic design featuring guided breathing protocols and a Razorpay-based subscription paywall. Users can try one free protocol before needing to subscribe for full access.
+A modern mobile breathing application converted from React web app to React Native for iOS and Android deployment. Features guided breathing protocols with holographic design and Razorpay-based subscription paywall. Users can try one free protocol before needing to subscribe for full access.
 
-## Architecture
+## Dual Architecture (Web + Mobile)
+
+### Web Version (Original)
 - **Frontend**: React + TypeScript + Vite
 - **Backend**: Express.js with session-based authentication
 - **Payment**: Razorpay integration for subscription management
 - **UI**: Tailwind CSS + shadcn/ui components with holographic/neon theme
 - **Storage**: In-memory storage for demo purposes
 
+### Mobile Version (React Native)
+- **Framework**: React Native 0.73.6 with TypeScript
+- **Navigation**: React Navigation stack navigator
+- **UI**: Native components with LinearGradient for holographic effects
+- **Storage**: AsyncStorage for local data persistence
+- **Animation**: React Native Reanimated for breathing animations
+- **Deployment**: Ready for APK/IPA generation
+
 ## Payment System
 - **Provider**: Razorpay (Indian payment gateway)
 - **Model**: Monthly subscription at ₹999/month
 - **Trial**: One free protocol trial per user
 - **Features**: 
-  - Session-based subscription tracking
+  - Session-based subscription tracking (web)
+  - AsyncStorage subscription tracking (mobile)
   - Payment verification with signature validation
   - Automatic subscription activation
 
 ## Recent Changes
-- **2024-06-19**: Implemented Razorpay paywall system
-  - Added subscription status tracking in user schema
-  - Created subscription page with Razorpay checkout
-  - Implemented trial mode allowing one free protocol
-  - Added paywall logic to protocol selection
-  - Updated Welcome page with trial and subscription options
+- **2025-06-19**: Complete React Native conversion
+  - Created 5 React Native screens with native navigation
+  - Converted all breathing protocols and session logic
+  - Implemented AsyncStorage for mobile data persistence
+  - Added animated breathing circle with React Native Reanimated
+  - Set up complete project structure for APK/IPA builds
+  - Created comprehensive deployment guide with build instructions
+  - Maintained holographic design with LinearGradient components
+  - Ready for Razorpay mobile SDK integration
 
 ## API Endpoints
 - `GET /api/subscription-status` - Check user subscription status
