@@ -162,7 +162,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
+    <div className="min-h-screen theme-bg theme-transition py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -173,7 +173,7 @@ export default function Settings() {
           <Button
             variant="outline"
             onClick={() => setLocation('/protocol-selection')}
-            className="mb-4"
+            className="mb-4 theme-transition"
           >
             ← Back to Breathing
           </Button>
@@ -191,20 +191,20 @@ export default function Settings() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid grid-cols-4 w-full bg-muted border-border">
-              <TabsTrigger value="profile" className="text-muted-foreground data-[state=active]:text-foreground">
+            <TabsList className="grid grid-cols-4 w-full theme-tabs theme-transition">
+              <TabsTrigger value="profile" className="theme-tab theme-transition">
                 <User className="w-4 h-4 mr-2" />
                 Profile
               </TabsTrigger>
-              <TabsTrigger value="preferences" className="text-muted-foreground data-[state=active]:text-foreground">
+              <TabsTrigger value="preferences" className="theme-tab theme-transition">
                 <SettingsIcon className="w-4 h-4 mr-2" />
                 Preferences
               </TabsTrigger>
-              <TabsTrigger value="feedback" className="text-muted-foreground data-[state=active]:text-foreground">
+              <TabsTrigger value="feedback" className="theme-tab theme-transition">
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Feedback
               </TabsTrigger>
-              <TabsTrigger value="account" className="text-muted-foreground data-[state=active]:text-foreground">
+              <TabsTrigger value="account" className="theme-tab theme-transition">
                 <Shield className="w-4 h-4 mr-2" />
                 Account
               </TabsTrigger>
@@ -212,7 +212,7 @@ export default function Settings() {
 
             {/* Profile Tab */}
             <TabsContent value="profile">
-              <Card className="bg-card border-border">
+              <Card className="theme-card theme-transition">
                 <CardHeader>
                   <CardTitle className="text-card-foreground flex items-center">
                     <User className="w-5 h-5 mr-2 text-primary" />

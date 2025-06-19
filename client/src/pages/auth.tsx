@@ -80,13 +80,13 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8 bg-gradient-to-br from-black via-gray-900 to-blue-900">
+    <div className="min-h-screen theme-bg theme-transition flex flex-col items-center justify-center px-6 py-8">
       {/* Back Button */}
       <div className="w-full max-w-md mx-auto mb-4">
         <Button
           variant="ghost"
           onClick={() => setLocation('/')}
-          className="text-gray-300 hover:text-white hover:bg-white/10 p-2"
+          className="theme-transition"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back to Welcome
@@ -106,7 +106,7 @@ export default function Auth() {
           <h1 className="text-3xl font-bold gradient-text mb-2">
             BREATHE
           </h1>
-          <p className="text-gray-300">
+          <p className="text-muted-foreground">
             {isLogin ? 'Welcome back to your breathing journey' : 'Start your holographic breathing experience'}
           </p>
         </motion.div>
@@ -116,7 +116,7 @@ export default function Auth() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <Card className="glass-card border-white/10 backdrop-blur-md">
+          <Card className="theme-card theme-transition">
             <CardHeader>
               <CardTitle className="text-xl text-white text-center">
                 {isLogin ? 'Sign In' : 'Create Account'}

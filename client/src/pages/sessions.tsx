@@ -80,7 +80,7 @@ export default function Sessions() {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="min-h-screen theme-bg theme-transition p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -91,7 +91,7 @@ export default function Sessions() {
           <Button
             variant="outline"
             onClick={() => setLocation('/protocol-selection')}
-            className="mb-4"
+            className="mb-4 theme-transition"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Breathing

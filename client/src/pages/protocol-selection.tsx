@@ -70,24 +70,24 @@ export default function ProtocolSelection() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12 bg-background text-foreground">
-      <div className="w-full max-w-md mx-auto">
+    <div className="min-h-screen theme-bg theme-transition px-6 py-8">
+      <div className="max-w-4xl mx-auto">
         {/* Navigation Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-8">
           <Button
             variant="outline"
             onClick={() => setLocation('/')}
-            className="border-border text-muted-foreground hover:bg-muted"
+            className="theme-transition"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
           
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               variant="outline"
               onClick={() => setLocation('/sessions')}
-              className="border-border text-muted-foreground hover:bg-muted"
+              className="theme-transition"
             >
               <Activity className="w-4 h-4 mr-2" />
               Sessions
@@ -96,7 +96,7 @@ export default function ProtocolSelection() {
             <Button
               variant="outline"
               onClick={() => setLocation('/settings')}
-              className="border-border text-muted-foreground hover:bg-muted"
+              className="theme-transition"
             >
               <Settings className="w-4 h-4 mr-2" />
               Settings
