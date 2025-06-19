@@ -60,8 +60,14 @@ export default function Settings() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (!isAuthenticated) {
-    setLocation('/auth');
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <p className="mb-4">Please log in to access settings</p>
+          <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+        </div>
+      </div>
+    );
   }
 
   const profileForm = useForm<ProfileForm>({

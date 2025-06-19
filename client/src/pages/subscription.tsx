@@ -28,9 +28,7 @@ export default function Subscription() {
         title: "Welcome to Premium!",
         description: "You now have full access to all breathing protocols.",
       });
-      setTimeout(() => {
-        setLocation('/protocol-selection');
-      }, 1000);
+      // Don't navigate during render - let user click to continue
     },
     onError: (error: Error) => {
       toast({
@@ -50,8 +48,14 @@ export default function Subscription() {
   }
 
   if (!isAuthenticated) {
-    setLocation('/auth');
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <p className="mb-4">Please log in to access subscriptions</p>
+          <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+        </div>
+      </div>
+    );
   }
 
   const handleSubscribe = () => {
@@ -175,23 +179,40 @@ export default function Subscription() {
             </CardContent>
 
             <CardFooter className="pt-6">
-              <Button
-                onClick={handleSubscribe}
-                disabled={subscribeMutation.isPending}
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
-              >
-                {subscribeMutation.isPending ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
-                    <span>Activating...</span>
+              {subscribeMutation.isSuccess ? (
+                <div className="w-full space-y-4">
+                  <div className="text-center text-green-400 font-semibold">
+                    Premium activated successfully!
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Sparkles className="w-5 h-5" />
-                    <span>Get Premium Access</span>
-                  </div>
-                )}
-              </Button>
+                  <Button
+                    onClick={() => setLocation('/protocol-selection')}
+                    className="w-full bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  >
+                    <div className="flex items-center justify-center space-x-2">
+                      <Check className="w-5 h-5" />
+                      <span>Continue to Breathing Protocols</span>
+                    </div>
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleSubscribe}
+                  disabled={subscribeMutation.isPending}
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
+                >
+                  {subscribeMutation.isPending ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+                      <span>Activating...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      <Sparkles className="w-5 h-5" />
+                      <span>Get Premium Access</span>
+                    </div>
+                  )}
+                </Button>
+              )}
             </CardFooter>
           </Card>
         </motion.div>

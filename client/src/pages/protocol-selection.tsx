@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import { ProtocolCard } from '@/components/protocol-card';
 import { SubscriptionStatus } from '@/components/subscription-status';
 import { breathingProtocols, BreathingProtocol } from '@/lib/breathing-patterns';
 import { useSubscription } from '@/hooks/use-subscription';
+import { Settings, ArrowLeft } from 'lucide-react';
 
 export default function ProtocolSelection() {
   const [, setLocation] = useLocation();
@@ -70,6 +72,27 @@ export default function ProtocolSelection() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12">
       <div className="w-full max-w-md mx-auto">
+        {/* Navigation Header */}
+        <div className="flex justify-between items-center mb-6">
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/')}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/settings')}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+        </div>
+
         {/* Subscription Status */}
         <SubscriptionStatus />
 

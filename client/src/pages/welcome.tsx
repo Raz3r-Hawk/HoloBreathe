@@ -17,8 +17,14 @@ export default function Welcome() {
   }
 
   if (isAuthenticated) {
-    setLocation('/protocol-selection');
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <p className="mb-4">Redirecting to breathing protocols...</p>
+          <Button onClick={() => setLocation('/protocol-selection')}>Continue</Button>
+        </div>
+      </div>
+    );
   }
 
   const handleGetStarted = () => {
