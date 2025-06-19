@@ -113,11 +113,11 @@ export default function BreathingSession() {
   const phaseDuration = getCurrentPhasePattern();
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8">
-      <div className="w-full max-w-md mx-auto">
-        {/* Protocol Info - moved to top */}
+    <div className="min-h-screen flex flex-col px-6 py-6">
+      <div className="w-full max-w-md mx-auto flex flex-col min-h-screen">
+        {/* Protocol Info - top section */}
         <motion.div
-          className="mb-8 relative"
+          className="mb-12 relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -130,9 +130,9 @@ export default function BreathingSession() {
           </div>
         </motion.div>
         
-        {/* Breathing Animation - centered */}
+        {/* Breathing Animation - center section with more space */}
         <motion.div
-          className="flex-1 flex items-center justify-center mb-8"
+          className="flex-1 flex items-center justify-center my-16"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
@@ -145,13 +145,14 @@ export default function BreathingSession() {
           />
         </motion.div>
         
-        {/* Bottom UI Section */}
-        <div className="mt-auto space-y-4">
+        {/* Bottom UI Section with better spacing */}
+        <div className="space-y-6 mb-8">
           {/* Progress Indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
+            className="mb-2"
           >
             <div className="w-full bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
               <motion.div
@@ -183,7 +184,7 @@ export default function BreathingSession() {
           
           {/* Phase Info */}
           <motion.div
-            className="p-4 glass-card rounded-xl border border-white/10"
+            className="p-4 glass-card rounded-xl border border-white/10 mb-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.8 }}
@@ -200,7 +201,7 @@ export default function BreathingSession() {
           
           {/* Control Buttons */}
           <motion.div
-            className="flex justify-center space-x-4"
+            className="flex justify-center space-x-4 mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.8 }}
