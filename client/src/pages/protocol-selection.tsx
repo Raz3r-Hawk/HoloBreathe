@@ -11,9 +11,9 @@ import { Settings, ArrowLeft, Activity } from 'lucide-react';
 export default function ProtocolSelection() {
   const [, setLocation] = useLocation();
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
-  const { hasSubscription, isLoading } = useSubscription();
   const [isTrialMode, setIsTrialMode] = useState(false);
   const [hasUsedTrial, setHasUsedTrial] = useState(false);
+  const { hasSubscription, isLoading } = useSubscription();
 
   useEffect(() => {
     // Check if user is in trial mode
@@ -55,8 +55,8 @@ export default function ProtocolSelection() {
     }, 300);
   };
 
-  // Show loading while checking subscription
-  if (isLoading) {
+  // Show loading while checking subscription (but not in trial mode)
+  if (isLoading && !isTrialMode) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -104,8 +104,8 @@ export default function ProtocolSelection() {
           </div>
         </div>
 
-        {/* Subscription Status */}
-        <SubscriptionStatus />
+        {/* Subscription Status - Only show for authenticated users not in trial mode */}
+        {(!isTrialMode || hasUsedTrial) && <SubscriptionStatus />}
 
         {/* Trial Mode Banner */}
         {isTrialMode && !hasUsedTrial && (

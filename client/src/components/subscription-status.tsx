@@ -1,10 +1,17 @@
 import { motion } from 'framer-motion';
 import { useSubscription } from '@/hooks/use-subscription';
+import { useAuth } from '@/hooks/useAuth';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
 export function SubscriptionStatus() {
+  const { isAuthenticated } = useAuth();
   const { hasSubscription, subscriptionEndDate, isLoading, error } = useSubscription();
+
+  // Don't render if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   // Always show Premium Member status for authenticated users
   return (
