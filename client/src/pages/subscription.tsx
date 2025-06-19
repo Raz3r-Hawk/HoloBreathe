@@ -49,11 +49,94 @@ export default function Subscription() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <p className="mb-4">Please log in to access subscriptions</p>
-          <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+      <div className="min-h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
+        {/* Background gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/50 via-black/70 to-gray-900/50" />
+        
+        {/* Floating particles effect */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full opacity-60"
+            animate={{
+              y: [0, -30, 0],
+              opacity: [0.6, 1, 0.6],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute top-1/3 right-1/3 w-1 h-1 bg-pink-400 rounded-full opacity-40"
+            animate={{
+              y: [0, -25, 0],
+              opacity: [0.4, 0.8, 0.4],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2,
+            }}
+          />
         </div>
+        
+        {/* Back Button */}
+        <div className="absolute top-6 left-6 z-20">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation('/')}
+            className="text-gray-300 hover:text-white hover:bg-white/10 p-2"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Welcome
+          </Button>
+        </div>
+        
+        <motion.div
+          className="relative z-10 text-center max-w-md mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="mb-8">
+            <motion.div 
+              className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <span className="text-3xl">🔒</span>
+            </motion.div>
+            
+            <h2 className="text-3xl font-bold text-white mb-3">Authentication Required</h2>
+            <p className="text-gray-300 text-lg mb-8">Please sign in to access premium features and subscriptions</p>
+          </div>
+          
+          <div className="space-y-4">
+            <Button 
+              onClick={() => setLocation('/auth')}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-4 rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <span>Sign In / Create Account</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </Button>
+            
+            <Button 
+              variant="outline"
+              onClick={() => setLocation('/')}
+              className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 py-3"
+            >
+              Continue as Guest
+            </Button>
+          </div>
+        </motion.div>
       </div>
     );
   }

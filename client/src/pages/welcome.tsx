@@ -11,10 +11,11 @@ export default function Welcome() {
   const [countdown, setCountdown] = useState(5);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  // Clear any trial mode flags on welcome page load
+  // Clear any trial mode flags and reset navigation state on welcome page load
   useEffect(() => {
     localStorage.removeItem('trialMode');
     localStorage.removeItem('hasUsedTrial');
+    sessionStorage.clear(); // Clear any session redirects
   }, []);
 
   // Auto-redirect effect for authenticated users
