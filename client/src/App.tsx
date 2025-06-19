@@ -11,6 +11,7 @@ import ActivationSequence from "@/pages/activation-sequence";
 import BreathingSession from "@/pages/breathing-session";
 import Subscription from "@/pages/subscription";
 import SubscriptionDemo from "@/pages/subscription-demo";
+import DataStorageInfo from "@/pages/data-storage-info";
 import UpgradePrompt from "@/pages/upgrade-prompt";
 import NotFound from "@/pages/not-found";
 
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/breathing-session" component={BreathingSession} />
       <Route path="/subscription" component={Subscription} />
       <Route path="/subscription-demo" component={SubscriptionDemo} />
+      <Route path="/data-storage" component={DataStorageInfo} />
       <Route path="/upgrade" component={UpgradePrompt} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
