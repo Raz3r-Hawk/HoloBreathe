@@ -45,20 +45,20 @@ export function SubscriptionStatus() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="bg-green-500/10 border-green-500/20">
+      <Card className="bg-green-500/10 dark:bg-green-500/10 border-green-500/30 dark:border-green-500/20 theme-transition">
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-sm text-green-300">Premium Active</span>
+              <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full"></div>
+              <span className="text-sm text-green-700 dark:text-green-300 font-medium">Premium Member</span>
             </div>
-            <Badge variant="outline" className="text-xs border-green-500/30 text-green-300">
-              {daysLeft ? `${daysLeft} days left` : 'Active'}
+            <Badge variant="outline" className="text-xs border-green-500/40 dark:border-green-500/30 text-green-700 dark:text-green-300">
+              Premium
             </Badge>
           </div>
           {endDate && (
-            <p className="text-xs text-gray-400 mt-1">
-              Renews on {endDate.toLocaleDateString()}
+            <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+              Active until {endDate.toLocaleDateString()}
             </p>
           )}
         </CardContent>

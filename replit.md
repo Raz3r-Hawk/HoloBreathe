@@ -72,6 +72,7 @@ A comprehensive breathing application with advanced user management, authenticat
     * Replaced all hardcoded dark colors with proper CSS variables that adapt to theme
   - **Navigation Enhancement** - Added back buttons to Settings page and Sessions page for improved user experience
   - **Complete Theme Compatibility** - App now has perfect light/dark theme switching with proper visibility across all components
+  - **Fixed subscription status visibility** - Premium Member text now displays correctly in light mode with proper contrast
 
 ## API Endpoints
 - `POST /api/register` - User registration with comprehensive profile
