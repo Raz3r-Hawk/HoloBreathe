@@ -475,17 +475,17 @@ export default function Settings() {
             {/* Account Tab */}
             <TabsContent value="account">
               <div className="space-y-6">
-                <Card className="bg-gray-900/80 border-gray-700">
+                <Card className="theme-card theme-transition">
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center">
-                      <HelpCircle className="w-5 h-5 mr-2 text-cyan-400" />
+                    <CardTitle className="text-card-foreground flex items-center">
+                      <HelpCircle className="w-5 h-5 mr-2 text-primary" />
                       Help & Support
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button
                       variant="outline"
-                      className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
                       onClick={() => setLocation('/privacy-policy')}
                     >
                       <Shield className="w-4 h-4 mr-2" />
@@ -493,7 +493,7 @@ export default function Settings() {
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
                       onClick={() => setLocation('/about')}
                     >
                       <Flag className="w-4 h-4 mr-2" />
@@ -501,7 +501,7 @@ export default function Settings() {
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
                       onClick={() => window.open('mailto:support@breathingapp.com', '_blank')}
                     >
                       <Mail className="w-4 h-4 mr-2" />
@@ -510,30 +510,30 @@ export default function Settings() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gray-900/80 border-gray-700">
+                <Card className="theme-card theme-transition">
                   <CardHeader>
-                    <CardTitle className="text-white">Account Actions</CardTitle>
+                    <CardTitle className="text-card-foreground">Account Actions</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button
                       onClick={handleLogout}
                       disabled={logoutMutation.isPending}
                       variant="outline"
-                      className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       {logoutMutation.isPending ? 'Signing out...' : 'Sign Out'}
                     </Button>
 
-                    <Separator className="bg-gray-700" />
+                    <Separator className="bg-border" />
 
                     <div className="space-y-4">
-                      <h4 className="text-red-400 font-medium">Danger Zone</h4>
+                      <h4 className="text-destructive font-medium">Danger Zone</h4>
                       
                       {showDeleteConfirm ? (
-                        <Alert className="border-red-500/50 bg-red-900/20">
-                          <Trash2 className="w-4 h-4 text-red-400" />
-                          <AlertDescription className="text-red-300">
+                        <Alert className="border-destructive/50 bg-destructive/10 theme-transition">
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                          <AlertDescription className="text-foreground">
                             Are you sure? This will permanently delete your account and all data. This action cannot be undone.
                             <div className="flex space-x-2 mt-3">
                               <Button
@@ -548,6 +548,7 @@ export default function Settings() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => setShowDeleteConfirm(false)}
+                                className="theme-transition"
                               >
                                 Cancel
                               </Button>

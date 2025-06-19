@@ -57,7 +57,7 @@ A comprehensive breathing application with advanced user management, authenticat
   - Removed demo restrictions for cleaner user experience
   - **Fixed session end redirect** - Now redirects to protocol selection instead of welcome page
   - **Created Sessions & Analytics page** - Complete analytics dashboard with time period filters
-  - **Comprehensive Light Theme Redesign** - Complete visual overhaul for all pages:
+  - **Comprehensive Light Theme Implementation** - Complete visual overhaul across all pages:
     * Redesigned Sessions & Analytics page with improved visual hierarchy and clean interface
     * Fixed Protocol Selection page styling with glass-card design and proper theme classes
     * Updated ProtocolCard component with theme-aware styling and smooth transitions
@@ -65,9 +65,13 @@ A comprehensive breathing application with advanced user management, authenticat
     * Redesigned Breathing Session page with theme-compatible progress bars and controls
     * Updated Welcome page with proper theme-aware button styling
     * Redesigned upgrade prompt pages with complete light theme support
+    * **Fixed Auth page input backgrounds** - All form inputs now have proper light theme visibility
+    * **Enhanced trial section visibility** - Updated trial banners with amber color scheme for better contrast
+    * **Completed Settings page theme fixes** - Help & Support and Account Actions sections now fully theme-compatible
     * All pages now use semantic color classes (theme-bg, theme-card, text-foreground, text-muted-foreground)
     * Replaced all hardcoded dark colors with proper CSS variables that adapt to theme
-  - **Navigation Enhancement** - Sessions page includes back button for improved user experience
+  - **Navigation Enhancement** - Added back buttons to Settings page and Sessions page for improved user experience
+  - **Complete Theme Compatibility** - App now has perfect light/dark theme switching with proper visibility across all components
 
 ## API Endpoints
 - `POST /api/register` - User registration with comprehensive profile
