@@ -5,11 +5,15 @@ import { BreathingAnimation } from '@/components/breathing-animation';
 import { useBreathingSession } from '@/hooks/use-breathing-session';
 import { useAmbientAudio } from '@/hooks/use-ambient-audio';
 import { BreathingProtocol, getColorClasses } from '@/lib/breathing-patterns';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 
 export default function BreathingSession() {
   const [, setLocation] = useLocation();
   const [selectedProtocol, setSelectedProtocol] = useState<BreathingProtocol | null>(null);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
+  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     sessionState,
@@ -24,6 +28,18 @@ export default function BreathingSession() {
   } = useBreathingSession(selectedProtocol);
 
   const { play: playAudio, stop: stopAudio, isPlaying: audioIsPlaying, isLoaded: audioIsLoaded } = useAmbientAudio();
+
+  // Session recording mutation
+  const recordSessionMutation = useMutation({
+    mutationFn: async (sessionData: any) => {
+      return apiRequest('POST', '/api/sessions', sessionData);
+    },
+    onSuccess: () => {
+      // Invalidate sessions and analytics queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['/api/sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/analytics'] });
+    },
+  });
 
   useEffect(() => {
     // Retrieve selected protocol from sessionStorage
@@ -40,6 +56,7 @@ export default function BreathingSession() {
   useEffect(() => {
     // Auto-start session when protocol is loaded
     if (selectedProtocol && !sessionState.isActive) {
+      setSessionStartTime(new Date());
       startSession();
     }
   }, [selectedProtocol, sessionState.isActive, startSession]);
@@ -57,17 +74,45 @@ export default function BreathingSession() {
 
   useEffect(() => {
     // Handle session completion
-    if (isSessionComplete && !showCompletionMessage) {
+    if (isSessionComplete && !showCompletionMessage && selectedProtocol && sessionStartTime) {
       setShowCompletionMessage(true);
+      
+      // Record the completed session
+      const sessionEndTime = new Date();
+      const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
+      
+      recordSessionMutation.mutate({
+        protocolId: selectedProtocol.id,
+        protocolName: selectedProtocol.name,
+        duration: durationMinutes,
+        cycles: sessionState.cycles,
+        completed: true
+      });
+      
       setTimeout(() => {
         // Always redirect to protocol selection after session completion
         setLocation('/protocol-selection');
       }, 3000);
     }
-  }, [isSessionComplete, showCompletionMessage, setLocation]);
+  }, [isSessionComplete, showCompletionMessage, selectedProtocol, sessionStartTime, sessionState.cycles, recordSessionMutation, setLocation]);
 
   const handleEndSession = () => {
     stopAudio();
+    
+    // Record incomplete session if it was started
+    if (selectedProtocol && sessionStartTime && sessionState.sessionTimeElapsed > 30) {
+      const sessionEndTime = new Date();
+      const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
+      
+      recordSessionMutation.mutate({
+        protocolId: selectedProtocol.id,
+        protocolName: selectedProtocol.name,
+        duration: durationMinutes,
+        cycles: sessionState.cycles,
+        completed: false
+      });
+    }
+    
     endSession();
     setLocation('/protocol-selection');
   };
@@ -78,7 +123,7 @@ export default function BreathingSession() {
 
   if (showCompletionMessage) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center px-6">
+      <div className="min-h-screen theme-bg theme-transition flex flex-col justify-center items-center px-6">
         <motion.div
           className="text-center"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -86,12 +131,12 @@ export default function BreathingSession() {
           transition={{ duration: 0.8 }}
         >
           <motion.div
-            className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-r from-cyan-400 via-pink-400 to-purple-400 flex items-center justify-center"
+            className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-r from-primary via-blue-400 to-purple-400 flex items-center justify-center"
             animate={{
               boxShadow: [
-                '0 0 20px rgba(0,255,255,0.5)',
-                '0 0 40px rgba(255,20,147,0.8)',
-                '0 0 20px rgba(138,43,226,0.5)',
+                '0 0 20px rgba(0,102,204,0.5)',
+                '0 0 40px rgba(59,130,246,0.8)',
+                '0 0 20px rgba(147,51,234,0.5)',
               ],
             }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -102,8 +147,8 @@ export default function BreathingSession() {
           </motion.div>
           
           <h2 className="text-3xl font-bold mb-4 gradient-text">Session Complete!</h2>
-          <p className="text-gray-300 mb-2">Great job on completing your breathing session.</p>
-          <p className="text-sm text-gray-400">Returning to home screen...</p>
+          <p className="text-muted-foreground mb-2">Great job on completing your breathing session.</p>
+          <p className="text-sm text-muted-foreground">Returning to home screen...</p>
         </motion.div>
       </div>
     );

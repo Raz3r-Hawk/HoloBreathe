@@ -226,59 +226,59 @@ export default function Settings() {
                   <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-gray-200">
+                        <Label htmlFor="firstName" className="text-card-foreground font-medium">
                           First Name
                         </Label>
                         <Input
                           id="firstName"
                           {...profileForm.register('firstName')}
-                          className="bg-gray-800/50 border-gray-600 text-white"
+                          className="theme-transition bg-background border-border text-foreground focus:border-primary"
                         />
                         {profileForm.formState.errors.firstName && (
-                          <p className="text-red-400 text-sm">{profileForm.formState.errors.firstName.message}</p>
+                          <p className="text-destructive text-sm">{profileForm.formState.errors.firstName.message}</p>
                         )}
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-gray-200">
+                        <Label htmlFor="lastName" className="text-card-foreground font-medium">
                           Last Name
                         </Label>
                         <Input
                           id="lastName"
                           {...profileForm.register('lastName')}
-                          className="bg-gray-800/50 border-gray-600 text-white"
+                          className="theme-transition bg-background border-border text-foreground focus:border-primary"
                         />
                         {profileForm.formState.errors.lastName && (
-                          <p className="text-red-400 text-sm">{profileForm.formState.errors.lastName.message}</p>
+                          <p className="text-destructive text-sm">{profileForm.formState.errors.lastName.message}</p>
                         )}
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="dateOfBirth" className="text-gray-200">
+                      <Label htmlFor="dateOfBirth" className="text-card-foreground font-medium">
                         Date of Birth
                       </Label>
                       <Input
                         id="dateOfBirth"
                         type="date"
                         {...profileForm.register('dateOfBirth')}
-                        className="bg-gray-800/50 border-gray-600 text-white"
+                        className="theme-transition bg-background border-border text-foreground focus:border-primary"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="gender" className="text-gray-200">
+                      <Label htmlFor="gender" className="text-card-foreground font-medium">
                         Gender
                       </Label>
                       <Select onValueChange={(value) => profileForm.setValue('gender', value)} defaultValue={user?.gender || ''}>
-                        <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
+                        <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-800 border-gray-600">
-                          <SelectItem value="male" className="text-white">Male</SelectItem>
-                          <SelectItem value="female" className="text-white">Female</SelectItem>
-                          <SelectItem value="other" className="text-white">Other</SelectItem>
-                          <SelectItem value="prefer_not_to_say" className="text-white">Prefer not to say</SelectItem>
+                        <SelectContent className="theme-card border-border">
+                          <SelectItem value="male" className="text-card-foreground">Male</SelectItem>
+                          <SelectItem value="female" className="text-card-foreground">Female</SelectItem>
+                          <SelectItem value="other" className="text-card-foreground">Other</SelectItem>
+                          <SelectItem value="prefer_not_to_say" className="text-card-foreground">Prefer not to say</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -300,13 +300,13 @@ export default function Settings() {
             {/* Preferences Tab */}
             <TabsContent value="preferences">
               <div className="space-y-6">
-                <Card className="bg-gray-900/80 border-gray-700">
+                <Card className="theme-card theme-transition">
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center">
-                      <Monitor className="w-5 h-5 mr-2 text-cyan-400" />
+                    <CardTitle className="text-card-foreground flex items-center">
+                      <Monitor className="w-5 h-5 mr-2 text-primary" />
                       Theme Preference
                     </CardTitle>
-                    <CardDescription className="text-gray-400">
+                    <CardDescription className="text-muted-foreground">
                       Choose your preferred app theme
                     </CardDescription>
                   </CardHeader>
@@ -325,10 +325,10 @@ export default function Settings() {
                             key={themeOption.id}
                             variant={isActive ? "default" : "outline"}
                             onClick={() => handleThemeChange(themeOption.id as any)}
-                            className={`flex flex-col items-center p-4 h-auto ${
+                            className={`flex flex-col items-center p-4 h-auto theme-transition ${
                               isActive 
-                                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white" 
-                                : "border-gray-600 text-gray-300 hover:bg-gray-800"
+                                ? "bg-primary text-primary-foreground" 
+                                : "border-border text-muted-foreground hover:bg-muted"
                             }`}
                           >
                             <Icon className="w-6 h-6 mb-2" />
@@ -340,10 +340,10 @@ export default function Settings() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gray-900/80 border-gray-700">
+                <Card className="theme-card theme-transition">
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center">
-                      <Heart className="w-5 h-5 mr-2 text-cyan-400" />
+                    <CardTitle className="text-card-foreground flex items-center">
+                      <Heart className="w-5 h-5 mr-2 text-primary" />
                       Subscription Status
                     </CardTitle>
                   </CardHeader>

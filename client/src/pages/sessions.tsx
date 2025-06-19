@@ -110,12 +110,12 @@ export default function Sessions() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="analytics" className="space-y-6">
-            <TabsList className="grid grid-cols-2 w-full max-w-md bg-muted border-border">
-              <TabsTrigger value="analytics" className="text-muted-foreground data-[state=active]:text-foreground">
+            <TabsList className="grid grid-cols-2 w-full max-w-md theme-tabs theme-transition">
+              <TabsTrigger value="analytics" className="theme-tab theme-transition">
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="history" className="text-muted-foreground data-[state=active]:text-foreground">
+              <TabsTrigger value="history" className="theme-tab theme-transition">
                 <Clock className="w-4 h-4 mr-2" />
                 History
               </TabsTrigger>
@@ -125,7 +125,7 @@ export default function Sessions() {
             <TabsContent value="analytics">
               <div className="space-y-6">
                 {/* Period Selection */}
-                <Card className="bg-card border-border">
+                <Card className="theme-card theme-transition">
                   <CardHeader>
                     <CardTitle className="text-card-foreground flex items-center">
                       <Calendar className="w-5 h-5 mr-2 text-primary" />
@@ -136,7 +136,7 @@ export default function Sessions() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                       {periodOptions.map((option) => (
                         <Button
                           key={option.value}

@@ -47,15 +47,15 @@ export default function Welcome() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-blue-900">
-        <div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen theme-bg theme-transition flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
       </div>
     );
   }
 
   if (isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center px-6">
+      <div className="min-h-screen theme-bg theme-transition flex items-center justify-center px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,19 +63,19 @@ export default function Welcome() {
         >
           <div className="mb-8">
             <motion.div 
-              className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6"
+              className="w-20 h-20 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6"
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
               <span className="text-3xl">🧘‍♂️</span>
             </motion.div>
-            <h2 className="text-3xl font-bold text-white mb-3">Welcome Back!</h2>
-            <p className="text-gray-300 text-lg mb-6">Ready to continue your breathing journey?</p>
+            <h2 className="text-3xl font-bold text-foreground mb-3">Welcome Back!</h2>
+            <p className="text-muted-foreground text-lg mb-6">Ready to continue your breathing journey?</p>
             
-            <div className="bg-gray-800/50 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-sm mb-2">Automatically redirecting in:</p>
+            <div className="theme-card rounded-xl p-4 mb-6">
+              <p className="text-muted-foreground text-sm mb-2">Automatically redirecting in:</p>
               <motion.div 
-                className="text-2xl font-bold text-cyan-400"
+                className="text-2xl font-bold text-primary"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5 }}
                 key={countdown}
