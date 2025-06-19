@@ -46,8 +46,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 dark:from-gray-900 dark:via-black dark:to-gray-900 light:from-gray-100 light:via-white light:to-gray-200">
-            <div className="w-full max-w-md mx-auto min-h-screen bg-black/20 dark:bg-black/20 light:bg-white/90 backdrop-blur-sm">
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 dark:from-gray-900 dark:via-black dark:to-gray-900 light:from-blue-50 light:via-white light:to-blue-100">
+            <div className="w-full max-w-md mx-auto min-h-screen bg-black/20 dark:bg-black/20 light:bg-white/95 light:shadow-lg backdrop-blur-sm">
               <Toaster />
               <Router />
             </div>

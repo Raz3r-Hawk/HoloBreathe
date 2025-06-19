@@ -32,7 +32,7 @@
   --space-gray: 210 11% 11%; /* #1A1A1F */
 }
 
-:root.light {
+.light {
   --background: 0 0% 100%; /* #FFFFFF - white */
   --foreground: 0 0% 3.9%; /* #0A0A0A - dark text */
   --muted: 0 0% 96.1%; /* #F5F5F5 - light gray */

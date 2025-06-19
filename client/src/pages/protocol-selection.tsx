@@ -70,14 +70,14 @@ export default function ProtocolSelection() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12">
+    <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12 bg-background text-foreground">
       <div className="w-full max-w-md mx-auto">
         {/* Navigation Header */}
         <div className="flex justify-between items-center mb-6">
           <Button
             variant="outline"
             onClick={() => setLocation('/')}
-            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+            className="border-border text-muted-foreground hover:bg-muted"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
@@ -86,7 +86,7 @@ export default function ProtocolSelection() {
           <Button
             variant="outline"
             onClick={() => setLocation('/settings')}
-            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+            className="border-border text-muted-foreground hover:bg-muted"
           >
             <Settings className="w-4 h-4 mr-2" />
             Settings
@@ -118,11 +118,11 @@ export default function ProtocolSelection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-3xl font-bold mb-2">
+          <h2 className="text-3xl font-bold mb-2 text-foreground">
             Choose Your{' '}
             <span className="gradient-text">Protocol</span>
           </h2>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {isTrialMode && !hasUsedTrial 
               ? "Select one breathing pattern to try" 
               : "Select your breathing pattern"

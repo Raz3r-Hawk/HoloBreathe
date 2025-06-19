@@ -63,8 +63,8 @@ export default function Settings() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 dark:from-black dark:via-gray-900 dark:to-blue-900 light:from-gray-100 light:via-white light:to-blue-100 flex items-center justify-center">
-        <div className="text-white dark:text-white light:text-gray-900 text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground text-center">
           <p className="mb-4">Please log in to access settings</p>
           <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
         </div>
@@ -162,7 +162,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -173,16 +173,16 @@ export default function Settings() {
           <Button
             variant="outline"
             onClick={() => setLocation('/protocol-selection')}
-            className="mb-4 border-gray-600 text-gray-300 hover:bg-gray-800"
+            className="mb-4"
           >
             ← Back to Breathing
           </Button>
           
           <div className="flex items-center space-x-3 mb-2">
-            <SettingsIcon className="w-8 h-8 text-cyan-400" />
-            <h1 className="text-3xl font-bold text-white">Settings</h1>
+            <SettingsIcon className="w-8 h-8 text-primary" />
+            <h1 className="text-3xl font-bold text-foreground">Settings</h1>
           </div>
-          <p className="text-gray-300">Manage your account and app preferences</p>
+          <p className="text-muted-foreground">Manage your account and app preferences</p>
         </motion.div>
 
         <motion.div
@@ -191,20 +191,20 @@ export default function Settings() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid grid-cols-4 w-full bg-gray-800/50 border-gray-700">
-              <TabsTrigger value="profile" className="text-gray-300 data-[state=active]:text-white">
+            <TabsList className="grid grid-cols-4 w-full bg-muted border-border">
+              <TabsTrigger value="profile" className="text-muted-foreground data-[state=active]:text-foreground">
                 <User className="w-4 h-4 mr-2" />
                 Profile
               </TabsTrigger>
-              <TabsTrigger value="preferences" className="text-gray-300 data-[state=active]:text-white">
+              <TabsTrigger value="preferences" className="text-muted-foreground data-[state=active]:text-foreground">
                 <SettingsIcon className="w-4 h-4 mr-2" />
                 Preferences
               </TabsTrigger>
-              <TabsTrigger value="feedback" className="text-gray-300 data-[state=active]:text-white">
+              <TabsTrigger value="feedback" className="text-muted-foreground data-[state=active]:text-foreground">
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Feedback
               </TabsTrigger>
-              <TabsTrigger value="account" className="text-gray-300 data-[state=active]:text-white">
+              <TabsTrigger value="account" className="text-muted-foreground data-[state=active]:text-foreground">
                 <Shield className="w-4 h-4 mr-2" />
                 Account
               </TabsTrigger>
@@ -212,13 +212,13 @@ export default function Settings() {
 
             {/* Profile Tab */}
             <TabsContent value="profile">
-              <Card className="bg-gray-900/80 border-gray-700">
+              <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center">
-                    <User className="w-5 h-5 mr-2 text-cyan-400" />
+                  <CardTitle className="text-card-foreground flex items-center">
+                    <User className="w-5 h-5 mr-2 text-primary" />
                     Profile Information
                   </CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardDescription className="text-muted-foreground">
                     Update your personal information and profile details
                   </CardDescription>
                 </CardHeader>
