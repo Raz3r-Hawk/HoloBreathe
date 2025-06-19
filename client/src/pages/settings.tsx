@@ -62,30 +62,7 @@ export default function Settings() {
   const deleteAccountMutation = useDeleteAccount();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen theme-bg theme-transition p-4">
-        <div className="max-w-md mx-auto">
-          <Button
-            variant="outline"
-            onClick={() => setLocation('/')}
-            className="mb-6 theme-transition"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Welcome
-          </Button>
-          
-          <div className="flex flex-col items-center justify-center min-h-[70vh]">
-            <div className="text-center">
-              <p className="text-foreground mb-4">Please log in to access settings</p>
-              <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  // All hook calls must be at the top level
   const profileForm = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -125,14 +102,6 @@ export default function Settings() {
     },
   });
 
-  const handleThemeChange = (newTheme: 'light' | 'dark' | 'auto') => {
-    setTheme(newTheme);
-    toast({
-      title: "Theme updated",
-      description: `Theme set to ${newTheme} mode.`,
-    });
-  };
-
   const submitFeedbackMutation = useMutation({
     mutationFn: async (data: FeedbackForm) => {
       return await apiRequest("POST", "/api/feedback", data);
@@ -153,6 +122,15 @@ export default function Settings() {
     },
   });
 
+  // Event handlers
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'auto') => {
+    setTheme(newTheme);
+    toast({
+      title: "Theme updated",
+      description: `Theme set to ${newTheme} mode.`,
+    });
+  };
+
   const onProfileSubmit = (data: ProfileForm) => {
     updateProfileMutation.mutate(data);
   };
@@ -160,8 +138,6 @@ export default function Settings() {
   const onFeedbackSubmit = (data: FeedbackForm) => {
     submitFeedbackMutation.mutate(data);
   };
-
-
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -174,6 +150,31 @@ export default function Settings() {
       setShowDeleteConfirm(true);
     }
   };
+
+  // Early return for unauthenticated users AFTER all hooks
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen theme-bg theme-transition p-4">
+        <div className="max-w-md mx-auto">
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/')}
+            className="mb-6 theme-transition"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Welcome
+          </Button>
+          
+          <div className="flex flex-col items-center justify-center min-h-[70vh]">
+            <div className="text-center">
+              <p className="text-foreground mb-4">Please log in to access settings</p>
+              <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen theme-bg theme-transition py-8 px-4">
@@ -225,247 +226,201 @@ export default function Settings() {
             </TabsList>
 
             {/* Profile Tab */}
-            <TabsContent value="profile">
+            <TabsContent value="profile" className="space-y-6">
               <Card className="theme-card theme-transition">
                 <CardHeader>
-                  <CardTitle className="text-card-foreground flex items-center">
-                    <User className="w-5 h-5 mr-2 text-primary" />
-                    Profile Information
+                  <CardTitle className="text-foreground flex items-center">
+                    <User className="w-5 h-5 mr-2" />
+                    Personal Information
                   </CardTitle>
                   <CardDescription className="text-muted-foreground">
-                    Update your personal information and profile details
+                    Update your personal details and profile information
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-card-foreground font-medium">
-                          First Name
-                        </Label>
+                        <Label htmlFor="firstName" className="text-foreground">First Name</Label>
                         <Input
                           id="firstName"
                           {...profileForm.register('firstName')}
-                          className="theme-transition bg-background border-border text-foreground focus:border-primary"
+                          className="theme-input theme-transition"
+                          placeholder="Enter your first name"
                         />
                         {profileForm.formState.errors.firstName && (
-                          <p className="text-destructive text-sm">{profileForm.formState.errors.firstName.message}</p>
+                          <p className="text-sm text-red-500">{profileForm.formState.errors.firstName.message}</p>
                         )}
                       </div>
-
                       <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-card-foreground font-medium">
-                          Last Name
-                        </Label>
+                        <Label htmlFor="lastName" className="text-foreground">Last Name</Label>
                         <Input
                           id="lastName"
                           {...profileForm.register('lastName')}
-                          className="theme-transition bg-background border-border text-foreground focus:border-primary"
+                          className="theme-input theme-transition"
+                          placeholder="Enter your last name"
                         />
                         {profileForm.formState.errors.lastName && (
-                          <p className="text-destructive text-sm">{profileForm.formState.errors.lastName.message}</p>
+                          <p className="text-sm text-red-500">{profileForm.formState.errors.lastName.message}</p>
                         )}
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="dateOfBirth" className="text-card-foreground font-medium">
-                        Date of Birth
-                      </Label>
-                      <Input
-                        id="dateOfBirth"
-                        type="date"
-                        {...profileForm.register('dateOfBirth')}
-                        className="theme-transition bg-background border-border text-foreground focus:border-primary"
-                      />
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="gender" className="text-foreground">Gender</Label>
+                        <Select onValueChange={(value) => profileForm.setValue('gender', value)} defaultValue={profileForm.getValues('gender')}>
+                          <SelectTrigger className="theme-input theme-transition">
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                          <SelectContent className="theme-card theme-transition">
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="dateOfBirth" className="text-foreground">Date of Birth</Label>
+                        <Input
+                          id="dateOfBirth"
+                          type="date"
+                          {...profileForm.register('dateOfBirth')}
+                          className="theme-input theme-transition"
+                        />
+                      </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="gender" className="text-card-foreground font-medium">
-                        Gender
-                      </Label>
-                      <Select onValueChange={(value) => profileForm.setValue('gender', value)} defaultValue={user?.gender || ''}>
-                        <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                        <SelectContent className="theme-card border-border">
-                          <SelectItem value="male" className="text-card-foreground">Male</SelectItem>
-                          <SelectItem value="female" className="text-card-foreground">Female</SelectItem>
-                          <SelectItem value="other" className="text-card-foreground">Other</SelectItem>
-                          <SelectItem value="prefer_not_to_say" className="text-card-foreground">Prefer not to say</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="pt-4">
-                      <Button
-                        type="submit"
-                        disabled={updateProfileMutation.isPending}
-                        className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
-                      >
-                        {updateProfileMutation.isPending ? 'Saving...' : 'Save Profile'}
-                      </Button>
-                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full theme-transition"
+                      disabled={updateProfileMutation.isPending}
+                    >
+                      {updateProfileMutation.isPending ? 'Updating...' : 'Update Profile'}
+                    </Button>
                   </form>
                 </CardContent>
               </Card>
             </TabsContent>
 
             {/* Preferences Tab */}
-            <TabsContent value="preferences">
-              <div className="space-y-6">
-                <Card className="theme-card theme-transition">
-                  <CardHeader>
-                    <CardTitle className="text-card-foreground flex items-center">
-                      <Monitor className="w-5 h-5 mr-2 text-primary" />
-                      Theme Preference
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      Choose your preferred app theme
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-3 gap-4">
-                      {[
-                        { id: 'light', label: 'Light', icon: Sun },
-                        { id: 'dark', label: 'Dark', icon: Moon },
-                        { id: 'auto', label: 'Auto', icon: Monitor },
-                      ].map((themeOption) => {
-                        const Icon = themeOption.icon;
-                        const isActive = theme === themeOption.id;
-                        
-                        return (
-                          <Button
-                            key={themeOption.id}
-                            variant={isActive ? "default" : "outline"}
-                            onClick={() => handleThemeChange(themeOption.id as any)}
-                            className={`flex flex-col items-center p-4 h-auto theme-transition ${
-                              isActive 
-                                ? "bg-primary text-primary-foreground" 
-                                : "border-border text-muted-foreground hover:bg-muted"
-                            }`}
-                          >
-                            <Icon className="w-6 h-6 mb-2" />
-                            <span>{themeOption.label}</span>
-                          </Button>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="theme-card theme-transition">
-                  <CardHeader>
-                    <CardTitle className="text-card-foreground flex items-center">
-                      <Heart className="w-5 h-5 mr-2 text-primary" />
-                      Subscription Status
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-white font-medium">
-                          {user?.hasSubscription ? 'Premium Member' : 'Free Account'}
-                        </p>
-                        <p className="text-gray-400 text-sm">
-                          {user?.hasSubscription 
-                            ? `Active until ${user.subscriptionEndDate ? new Date(user.subscriptionEndDate).toLocaleDateString() : 'Unknown'}`
-                            : 'Upgrade to access all breathing protocols'
-                          }
-                        </p>
-                      </div>
-                      <Badge variant={user?.hasSubscription ? "default" : "secondary"}>
-                        {user?.hasSubscription ? 'Premium' : 'Free'}
-                      </Badge>
-                    </div>
-                    {!user?.hasSubscription && (
+            <TabsContent value="preferences" className="space-y-6">
+              <Card className="theme-card theme-transition">
+                <CardHeader>
+                  <CardTitle className="text-foreground flex items-center">
+                    <SettingsIcon className="w-5 h-5 mr-2" />
+                    App Preferences
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    Customize your app experience
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-3">
+                    <Label className="text-foreground font-medium">Theme Preference</Label>
+                    <div className="grid grid-cols-3 gap-3">
                       <Button
-                        onClick={() => setLocation('/subscription')}
-                        className="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                        variant={theme === 'light' ? 'default' : 'outline'}
+                        onClick={() => handleThemeChange('light')}
+                        className="flex items-center justify-center p-3 theme-transition"
                       >
-                        <Star className="w-4 h-4 mr-2" />
-                        Upgrade to Premium
+                        <Sun className="w-4 h-4 mr-2" />
+                        Light
                       </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+                      <Button
+                        variant={theme === 'dark' ? 'default' : 'outline'}
+                        onClick={() => handleThemeChange('dark')}
+                        className="flex items-center justify-center p-3 theme-transition"
+                      >
+                        <Moon className="w-4 h-4 mr-2" />
+                        Dark
+                      </Button>
+                      <Button
+                        variant={theme === 'auto' ? 'default' : 'outline'}
+                        onClick={() => handleThemeChange('auto')}
+                        className="flex items-center justify-center p-3 theme-transition"
+                      >
+                        <Monitor className="w-4 h-4 mr-2" />
+                        Auto
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* Feedback Tab */}
-            <TabsContent value="feedback">
+            <TabsContent value="feedback" className="space-y-6">
               <Card className="theme-card theme-transition">
                 <CardHeader>
-                  <CardTitle className="text-card-foreground flex items-center">
-                    <MessageSquare className="w-5 h-5 mr-2 text-primary" />
+                  <CardTitle className="text-foreground flex items-center">
+                    <MessageSquare className="w-5 h-5 mr-2" />
                     Send Feedback
                   </CardTitle>
                   <CardDescription className="text-muted-foreground">
-                    Help us improve the app with your feedback and suggestions
+                    Help us improve the app with your feedback
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={feedbackForm.handleSubmit(onFeedbackSubmit)} className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-card-foreground font-medium">Rating</Label>
+                      <Label className="text-foreground">Rating</Label>
                       <Select onValueChange={(value) => feedbackForm.setValue('rating', value)}>
-                        <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
+                        <SelectTrigger className="theme-input theme-transition">
                           <SelectValue placeholder="Rate your experience" />
                         </SelectTrigger>
-                        <SelectContent className="theme-card border-border">
-                          <SelectItem value="5" className="text-card-foreground">⭐⭐⭐⭐⭐ Excellent</SelectItem>
-                          <SelectItem value="4" className="text-card-foreground">⭐⭐⭐⭐ Good</SelectItem>
-                          <SelectItem value="3" className="text-card-foreground">⭐⭐⭐ Average</SelectItem>
-                          <SelectItem value="2" className="text-card-foreground">⭐⭐ Poor</SelectItem>
-                          <SelectItem value="1" className="text-card-foreground">⭐ Terrible</SelectItem>
+                        <SelectContent className="theme-card theme-transition">
+                          <SelectItem value="5">⭐⭐⭐⭐⭐ Excellent</SelectItem>
+                          <SelectItem value="4">⭐⭐⭐⭐ Very Good</SelectItem>
+                          <SelectItem value="3">⭐⭐⭐ Good</SelectItem>
+                          <SelectItem value="2">⭐⭐ Fair</SelectItem>
+                          <SelectItem value="1">⭐ Poor</SelectItem>
                         </SelectContent>
                       </Select>
                       {feedbackForm.formState.errors.rating && (
-                        <p className="text-destructive text-sm">{feedbackForm.formState.errors.rating.message}</p>
+                        <p className="text-sm text-red-500">{feedbackForm.formState.errors.rating.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-card-foreground font-medium">Category</Label>
+                      <Label className="text-foreground">Category</Label>
                       <Select onValueChange={(value) => feedbackForm.setValue('category', value)}>
-                        <SelectTrigger className="theme-transition bg-background border-border text-foreground focus:border-primary">
+                        <SelectTrigger className="theme-input theme-transition">
                           <SelectValue placeholder="Select feedback category" />
                         </SelectTrigger>
-                        <SelectContent className="theme-card border-border">
-                          <SelectItem value="general" className="text-card-foreground">General Feedback</SelectItem>
-                          <SelectItem value="bug" className="text-card-foreground">Bug Report</SelectItem>
-                          <SelectItem value="feature" className="text-card-foreground">Feature Request</SelectItem>
-                          <SelectItem value="ui" className="text-card-foreground">User Interface</SelectItem>
-                          <SelectItem value="performance" className="text-card-foreground">Performance</SelectItem>
+                        <SelectContent className="theme-card theme-transition">
+                          <SelectItem value="feature">Feature Request</SelectItem>
+                          <SelectItem value="bug">Bug Report</SelectItem>
+                          <SelectItem value="general">General Feedback</SelectItem>
+                          <SelectItem value="ui">User Interface</SelectItem>
+                          <SelectItem value="performance">Performance</SelectItem>
                         </SelectContent>
                       </Select>
                       {feedbackForm.formState.errors.category && (
-                        <p className="text-destructive text-sm">{feedbackForm.formState.errors.category.message}</p>
+                        <p className="text-sm text-red-500">{feedbackForm.formState.errors.category.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message" className="text-card-foreground font-medium">
-                        Your Feedback
-                      </Label>
+                      <Label htmlFor="message" className="text-foreground">Your Feedback</Label>
                       <textarea
                         id="message"
                         {...feedbackForm.register('message')}
-                        rows={5}
-                        placeholder="Tell us about your experience, suggestions, or any issues you've encountered..."
-                        className="w-full px-3 py-2 theme-transition bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 theme-input theme-transition"
+                        placeholder="Tell us about your experience..."
                       />
                       {feedbackForm.formState.errors.message && (
-                        <p className="text-destructive text-sm">{feedbackForm.formState.errors.message.message}</p>
+                        <p className="text-sm text-red-500">{feedbackForm.formState.errors.message.message}</p>
                       )}
                     </div>
 
-                    <Button
-                      type="submit"
+                    <Button 
+                      type="submit" 
+                      className="w-full theme-transition"
                       disabled={submitFeedbackMutation.isPending}
-                      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
                     >
-                      {submitFeedbackMutation.isPending ? 'Sending...' : 'Send Feedback'}
+                      {submitFeedbackMutation.isPending ? 'Submitting...' : 'Submit Feedback'}
                     </Button>
                   </form>
                 </CardContent>
@@ -473,102 +428,55 @@ export default function Settings() {
             </TabsContent>
 
             {/* Account Tab */}
-            <TabsContent value="account">
-              <div className="space-y-6">
-                <Card className="theme-card theme-transition">
-                  <CardHeader>
-                    <CardTitle className="text-card-foreground flex items-center">
-                      <HelpCircle className="w-5 h-5 mr-2 text-primary" />
-                      Help & Support
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
-                      onClick={() => setLocation('/privacy-policy')}
-                    >
-                      <Shield className="w-4 h-4 mr-2" />
-                      Privacy Policy
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
-                      onClick={() => setLocation('/about')}
-                    >
-                      <Flag className="w-4 h-4 mr-2" />
-                      About Us
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
-                      onClick={() => window.open('mailto:support@breathingapp.com', '_blank')}
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Contact Support
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="theme-card theme-transition">
-                  <CardHeader>
-                    <CardTitle className="text-card-foreground">Account Actions</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+            <TabsContent value="account" className="space-y-6">
+              <Card className="theme-card theme-transition">
+                <CardHeader>
+                  <CardTitle className="text-foreground flex items-center">
+                    <Shield className="w-5 h-5 mr-2" />
+                    Account Actions
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    Manage your account settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <Button
                       onClick={handleLogout}
-                      disabled={logoutMutation.isPending}
                       variant="outline"
-                      className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
+                      className="flex items-center justify-center theme-transition"
+                      disabled={logoutMutation.isPending}
                     >
                       <LogOut className="w-4 h-4 mr-2" />
-                      {logoutMutation.isPending ? 'Signing out...' : 'Sign Out'}
+                      {logoutMutation.isPending ? 'Logging out...' : 'Log Out'}
                     </Button>
-
-                    <Separator className="bg-border" />
-
-                    <div className="space-y-4">
-                      <h4 className="text-destructive font-medium">Danger Zone</h4>
-                      
-                      {showDeleteConfirm ? (
-                        <Alert className="border-destructive/50 bg-destructive/10 theme-transition">
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                          <AlertDescription className="text-foreground">
-                            Are you sure? This will permanently delete your account and all data. This action cannot be undone.
-                            <div className="flex space-x-2 mt-3">
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={handleDeleteAccount}
-                                disabled={deleteAccountMutation.isPending}
-                              >
-                                {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, Delete My Account'}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setShowDeleteConfirm(false)}
-                                className="theme-transition"
-                              >
-                                Cancel
-                              </Button>
-                            </div>
-                          </AlertDescription>
-                        </Alert>
-                      ) : (
-                        <Button
-                          onClick={handleDeleteAccount}
-                          variant="destructive"
-                          className="w-full justify-start"
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete Account
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    
+                    <Button
+                      onClick={handleDeleteAccount}
+                      variant={showDeleteConfirm ? "destructive" : "outline"}
+                      className="flex items-center justify-center theme-transition"
+                      disabled={deleteAccountMutation.isPending}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      {deleteAccountMutation.isPending 
+                        ? 'Deleting...' 
+                        : showDeleteConfirm 
+                          ? 'Confirm Delete' 
+                          : 'Delete Account'
+                      }
+                    </Button>
+                  </div>
+                  
+                  {showDeleteConfirm && (
+                    <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
+                      <AlertDescription className="text-red-800 dark:text-red-200">
+                        This action cannot be undone. All your data will be permanently deleted.
+                        Click "Confirm Delete" to proceed or refresh the page to cancel.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </motion.div>
