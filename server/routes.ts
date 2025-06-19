@@ -236,24 +236,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/analytics", requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
-      const { period = 'week' } = req.query;
+      const { period = 'weekly' } = req.query;
       const endDate = new Date();
       const startDate = new Date();
       
       switch (period) {
-        case 'week':
+        case 'weekly':
           startDate.setDate(endDate.getDate() - 7);
           break;
-        case 'month':
+        case 'monthly':
           startDate.setMonth(endDate.getMonth() - 1);
           break;
-        case 'quarter':
+        case 'quarterly':
           startDate.setMonth(endDate.getMonth() - 3);
           break;
-        case 'half-year':
+        case 'semi-annual':
           startDate.setMonth(endDate.getMonth() - 6);
           break;
-        case 'year':
+        case 'annual':
           startDate.setFullYear(endDate.getFullYear() - 1);
           break;
         default:

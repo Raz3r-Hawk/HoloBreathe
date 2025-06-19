@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@shared/schema";
@@ -129,6 +130,7 @@ export function useUpdateProfile() {
 export function useDeleteAccount() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   return useMutation({
     mutationFn: async () => {
@@ -140,6 +142,7 @@ export function useDeleteAccount() {
         title: "Account deleted",
         description: "Your account has been permanently deleted.",
       });
+      setLocation("/");
     },
     onError: (error: Error) => {
       toast({
