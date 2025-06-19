@@ -127,14 +127,6 @@ export default function Subscription() {
                 </svg>
               </div>
             </Button>
-            
-            <Button 
-              variant="outline"
-              onClick={() => setLocation('/')}
-              className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 py-3"
-            >
-              Continue as Guest
-            </Button>
           </div>
         </motion.div>
       </div>
