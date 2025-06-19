@@ -1,15 +1,47 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProtocolCard } from '@/components/protocol-card';
 import { breathingProtocols, BreathingProtocol } from '@/lib/breathing-patterns';
+import { useSubscription } from '@/hooks/use-subscription';
 
 export default function ProtocolSelection() {
   const [, setLocation] = useLocation();
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
+  const { hasSubscription, isLoading } = useSubscription();
+  const [isTrialMode, setIsTrialMode] = useState(false);
+  const [hasUsedTrial, setHasUsedTrial] = useState(false);
+
+  useEffect(() => {
+    // Check if user is in trial mode
+    const trialMode = localStorage.getItem('trialMode') === 'true';
+    const usedTrial = localStorage.getItem('hasUsedTrial') === 'true';
+    setIsTrialMode(trialMode);
+    setHasUsedTrial(usedTrial);
+  }, []);
+
+  // Redirect logic for subscription/trial
+  useEffect(() => {
+    if (!isLoading) {
+      // If user has subscription, they can access everything
+      if (hasSubscription) return;
+      
+      // If in trial mode and hasn't used trial, allow access to one protocol
+      if (isTrialMode && !hasUsedTrial) return;
+      
+      // Otherwise, redirect to subscription
+      setLocation('/subscription');
+    }
+  }, [hasSubscription, isLoading, isTrialMode, hasUsedTrial, setLocation]);
 
   const handleProtocolSelect = (protocol: BreathingProtocol) => {
     setSelectedProtocolId(protocol.id);
+    
+    // If in trial mode and hasn't used trial, mark trial as used
+    if (isTrialMode && !hasUsedTrial) {
+      localStorage.setItem('hasUsedTrial', 'true');
+      localStorage.removeItem('trialMode'); // Clear trial mode
+    }
     
     // Store selected protocol in sessionStorage for use in other screens
     sessionStorage.setItem('selectedProtocol', JSON.stringify(protocol));
@@ -20,9 +52,38 @@ export default function ProtocolSelection() {
     }, 300);
   };
 
+  // Show loading while checking subscription
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  // Don't render if no subscription and not in trial mode (will redirect)
+  if (!hasSubscription && (!isTrialMode || hasUsedTrial)) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12">
       <div className="w-full max-w-md mx-auto">
+        {/* Trial Mode Banner */}
+        {isTrialMode && !hasUsedTrial && (
+          <motion.div
+            className="mb-6 p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center">
+              <p className="text-yellow-300 font-semibold mb-1">Free Trial</p>
+              <p className="text-xs text-yellow-200/80">Choose one protocol to try for free</p>
+            </div>
+          </motion.div>
+        )}
+
         {/* Title */}
         <motion.div
           className="text-center mb-12"
@@ -34,7 +95,12 @@ export default function ProtocolSelection() {
             Choose Your{' '}
             <span className="gradient-text">Protocol</span>
           </h2>
-          <p className="text-gray-400">Select your breathing pattern</p>
+          <p className="text-gray-400">
+            {isTrialMode && !hasUsedTrial 
+              ? "Select one breathing pattern to try" 
+              : "Select your breathing pattern"
+            }
+          </p>
         </motion.div>
         
         {/* Protocol Cards */}

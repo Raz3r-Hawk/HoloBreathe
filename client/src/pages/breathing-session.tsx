@@ -60,7 +60,13 @@ export default function BreathingSession() {
     if (isSessionComplete && !showCompletionMessage) {
       setShowCompletionMessage(true);
       setTimeout(() => {
-        setLocation('/');
+        // Check if user was in trial mode and redirect accordingly
+        const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
+        if (hasUsedTrial) {
+          setLocation('/upgrade');
+        } else {
+          setLocation('/');
+        }
       }, 3000);
     }
   }, [isSessionComplete, showCompletionMessage, setLocation]);

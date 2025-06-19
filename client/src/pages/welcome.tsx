@@ -140,35 +140,63 @@ export default function Welcome() {
           <span className="text-cyan-400 font-semibold">5 minutes</span>
         </motion.p>
         
-        {/* Start Button */}
-        <motion.button
-          className="holographic-border group relative overflow-hidden"
-          onClick={() => setLocation('/protocol-selection')}
+        {/* Action Buttons */}
+        <motion.div
+          className="space-y-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
         >
-          <div className="bg-gray-900/80 backdrop-blur-sm px-8 py-4 rounded-2xl text-xl font-semibold group-hover:bg-gray-800/90 transition-all duration-300 flex items-center justify-center space-x-2">
-            <span className="text-cyan-400">Start</span>
-            <motion.svg
-              className="w-5 h-5 text-pink-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </motion.svg>
-          </div>
-        </motion.button>
+          {/* Free Trial Button */}
+          <motion.button
+            className="holographic-border group relative overflow-hidden w-full"
+            onClick={() => {
+              // Set trial mode in localStorage
+              localStorage.setItem('trialMode', 'true');
+              setLocation('/protocol-selection');
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="bg-gray-900/80 backdrop-blur-sm px-8 py-4 rounded-2xl text-lg font-semibold group-hover:bg-gray-800/90 transition-all duration-300">
+              <div className="flex items-center justify-center space-x-2 mb-1">
+                <span className="text-cyan-400">Try Free Protocol</span>
+                <motion.svg
+                  className="w-5 h-5 text-pink-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </motion.svg>
+              </div>
+              <p className="text-xs text-gray-400">No payment required</p>
+            </div>
+          </motion.button>
+
+          {/* Subscription Button */}
+          <motion.button
+            className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105"
+            onClick={() => setLocation('/subscription')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="flex items-center justify-center space-x-2 mb-1">
+              <span>Get Full Access</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <p className="text-xs opacity-90">Unlock all breathing protocols</p>
+          </motion.button>
+        </motion.div>
       </motion.div>
     </div>
   );

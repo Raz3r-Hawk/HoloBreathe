@@ -6,6 +6,11 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  email: text("email"),
+  hasSubscription: boolean("has_subscription").default(false),
+  razorpayCustomerId: text("razorpay_customer_id"),
+  razorpaySubscriptionId: text("razorpay_subscription_id"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
 });
 
 export const breathingSessions = pgTable("breathing_sessions", {
@@ -20,6 +25,7 @@ export const breathingSessions = pgTable("breathing_sessions", {
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  email: true,
 });
 
 export const insertBreathingSessionSchema = createInsertSchema(breathingSessions).pick({

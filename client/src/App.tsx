@@ -9,6 +9,8 @@ import Welcome from "@/pages/welcome";
 import ProtocolSelection from "@/pages/protocol-selection";
 import ActivationSequence from "@/pages/activation-sequence";
 import BreathingSession from "@/pages/breathing-session";
+import Subscription from "@/pages/subscription";
+import UpgradePrompt from "@/pages/upgrade-prompt";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/protocol-selection" component={ProtocolSelection} />
       <Route path="/activation-sequence" component={ActivationSequence} />
       <Route path="/breathing-session" component={BreathingSession} />
+      <Route path="/subscription" component={Subscription} />
+      <Route path="/upgrade" component={UpgradePrompt} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
