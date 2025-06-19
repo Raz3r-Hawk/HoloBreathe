@@ -81,6 +81,10 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Updated contact information** - Changed all contact emails from various addresses to contact@geeksgrow.com across Privacy Policy, About Us, and Settings pages
   - **Fixed Settings navigation design** - Redesigned tab layout with vertical icons, proper spacing, and improved visual hierarchy
   - **Resolved React warnings** - Fixed setState during render issues in Welcome component with proper effect timing
+  - **Fixed "Try free protocol" infinite loader** - Corrected React Hook order violations and authentication logic for trial mode
+  - **Stopped infinite subscription API calls** - Added authentication guards to prevent 401 error loops from unauthenticated users
+  - **Enhanced Sessions page navigation** - Added back button to return to Welcome screen when not logged in, alongside existing login option
+  - **Separated subscription display logic** - Fixed issue where both Premium Member and Free Trial badges were showing simultaneously
 
 ## API Endpoints
 - `POST /api/register` - User registration with comprehensive profile

@@ -58,8 +58,20 @@ export default function Sessions() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-foreground text-center">
-          <p className="mb-4">Please log in to view your sessions</p>
-          <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
+          <p className="mb-6">Please log in to view your sessions</p>
+          <div className="space-y-3">
+            <Button onClick={() => setLocation('/auth')} className="w-full">
+              Go to Login
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setLocation('/')} 
+              className="w-full"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Welcome
+            </Button>
+          </div>
         </div>
       </div>
     );
