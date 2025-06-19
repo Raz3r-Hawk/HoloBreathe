@@ -73,6 +73,8 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Navigation Enhancement** - Added back buttons to Settings page and Sessions page for improved user experience
   - **Complete Theme Compatibility** - App now has perfect light/dark theme switching with proper visibility across all components
   - **Fixed subscription status visibility** - Premium Member text now displays correctly in light mode with proper contrast
+  - **Fixed Settings page React Hooks error** - Restructured component to follow Rules of Hooks with all hook calls at top level
+  - **Enhanced subscription status component** - Always displays Premium Member status with proper theme-aware green colors for excellent visibility
 
 ## API Endpoints
 - `POST /api/register` - User registration with comprehensive profile

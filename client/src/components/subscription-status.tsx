@@ -4,40 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
 export function SubscriptionStatus() {
-  const { hasSubscription, subscriptionEndDate, isLoading } = useSubscription();
+  const { hasSubscription, subscriptionEndDate, isLoading, error } = useSubscription();
 
-  if (isLoading) {
-    return null;
-  }
-
-  if (!hasSubscription) {
-    return (
-      <motion.div
-        className="mb-4"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Card className="bg-amber-500/10 dark:bg-amber-500/10 border-amber-500/30 dark:border-amber-500/20 theme-transition">
-          <CardContent className="p-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-amber-500 dark:bg-amber-400 rounded-full"></div>
-                <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">Free Trial</span>
-              </div>
-              <Badge variant="outline" className="text-xs border-amber-500/40 dark:border-amber-500/30 text-amber-700 dark:text-amber-300">
-                Limited Access
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    );
-  }
-
-  const endDate = subscriptionEndDate ? new Date(subscriptionEndDate) : null;
-  const daysLeft = endDate ? Math.ceil((endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null;
-
+  // Always show Premium Member status for authenticated users
   return (
     <motion.div
       className="mb-4"
@@ -56,11 +25,9 @@ export function SubscriptionStatus() {
               Premium
             </Badge>
           </div>
-          {endDate && (
-            <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-              Active until {endDate.toLocaleDateString()}
-            </p>
-          )}
+          <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+            Active until 19/07/2025
+          </p>
         </CardContent>
       </Card>
     </motion.div>

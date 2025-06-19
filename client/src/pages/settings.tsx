@@ -9,6 +9,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth, useLogout, useDeleteAccount } from '@/hooks/useAuth';
 import { useTheme } from '@/contexts/ThemeContext';
+import { SubscriptionStatus } from '@/components/subscription-status';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -199,6 +200,9 @@ export default function Settings() {
           </div>
           <p className="text-muted-foreground">Manage your account and app preferences</p>
         </motion.div>
+
+        {/* Subscription Status */}
+        <SubscriptionStatus />
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
