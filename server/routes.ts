@@ -204,10 +204,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Breathing session routes
   app.post("/api/sessions", requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
+      console.log("Session creation request body:", req.body);
+      console.log("User ID:", req.user.id);
+      
       const sessionData = insertBreathingSessionSchema.parse({
         ...req.body,
         userId: req.user.id
       });
+      
+      console.log("Parsed session data:", sessionData);
       
       const session = await storage.createBreathingSession(sessionData);
       
@@ -216,10 +221,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUser(req.user.id, { hasUsedTrial: true });
       }
       
+      console.log("Session created successfully:", session);
       res.json(session);
     } catch (error) {
       console.error("Session creation error:", error);
-      res.status(400).json({ message: "Session creation failed" });
+      res.status(400).json({ message: "Session creation failed", error: error.message });
     }
   });
 
