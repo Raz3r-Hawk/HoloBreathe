@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
+import { useEffect, useState } from 'react';
 import { HolographicCube } from '@/components/holographic-cube';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,27 @@ import { Button } from '@/components/ui/button';
 export default function Welcome() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
+  const [countdown, setCountdown] = useState(5);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Auto-redirect effect for authenticated users
+  useEffect(() => {
+    if (isAuthenticated && !isRedirecting) {
+      setIsRedirecting(true);
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setLocation('/protocol-selection');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [isAuthenticated, isRedirecting, setLocation]);
 
   if (isLoading) {
     return (
@@ -18,11 +40,58 @@ export default function Welcome() {
 
   if (isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <p className="mb-4">Redirecting to breathing protocols...</p>
-          <Button onClick={() => setLocation('/protocol-selection')}>Continue</Button>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-md"
+        >
+          <div className="mb-8">
+            <motion.div 
+              className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <span className="text-3xl">🧘‍♂️</span>
+            </motion.div>
+            <h2 className="text-3xl font-bold text-white mb-3">Welcome Back!</h2>
+            <p className="text-gray-300 text-lg mb-6">Ready to continue your breathing journey?</p>
+            
+            <div className="bg-gray-800/50 rounded-xl p-4 mb-6">
+              <p className="text-gray-400 text-sm mb-2">Automatically redirecting in:</p>
+              <motion.div 
+                className="text-2xl font-bold text-cyan-400"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.5 }}
+                key={countdown}
+              >
+                {countdown}s
+              </motion.div>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <Button 
+              onClick={() => setLocation('/protocol-selection')}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-4 rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <span>Start Now</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </Button>
+            
+            <Button 
+              variant="outline"
+              onClick={() => setLocation('/settings')}
+              className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 py-3"
+            >
+              Go to Settings
+            </Button>
+          </div>
+        </motion.div>
       </div>
     );
   }
