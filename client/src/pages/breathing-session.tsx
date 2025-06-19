@@ -82,9 +82,10 @@ export default function BreathingSession() {
       const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
       
       recordSessionMutation.mutate({
-        protocolId: selectedProtocol.id,
+        protocol: selectedProtocol.id,
         protocolName: selectedProtocol.name,
-        duration: durationMinutes,
+        duration: selectedProtocol.sessionDuration,
+        completedDuration: sessionState.sessionTimeElapsed,
         cycles: sessionState.cycles,
         completed: true
       });
@@ -105,9 +106,10 @@ export default function BreathingSession() {
       const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
       
       recordSessionMutation.mutate({
-        protocolId: selectedProtocol.id,
+        protocol: selectedProtocol.id,
         protocolName: selectedProtocol.name,
-        duration: durationMinutes,
+        duration: selectedProtocol.sessionDuration,
+        completedDuration: sessionState.sessionTimeElapsed,
         cycles: sessionState.cycles,
         completed: false
       });
