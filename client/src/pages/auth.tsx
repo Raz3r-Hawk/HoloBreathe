@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useLogin, useRegister } from '@/hooks/useAuth';
 import { HolographicCube } from '@/components/holographic-cube';
+import { ArrowLeft } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -80,6 +81,18 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8 bg-gradient-to-br from-black via-gray-900 to-blue-900">
+      {/* Back Button */}
+      <div className="w-full max-w-md mx-auto mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => setLocation('/')}
+          className="text-gray-300 hover:text-white hover:bg-white/10 p-2"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back to Welcome
+        </Button>
+      </div>
+      
       <div className="w-full max-w-md mx-auto">
         <motion.div
           className="text-center mb-8"
