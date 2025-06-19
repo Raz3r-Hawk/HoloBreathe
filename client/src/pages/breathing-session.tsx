@@ -60,13 +60,8 @@ export default function BreathingSession() {
     if (isSessionComplete && !showCompletionMessage) {
       setShowCompletionMessage(true);
       setTimeout(() => {
-        // Check if user was in trial mode and redirect accordingly
-        const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
-        if (hasUsedTrial) {
-          setLocation('/upgrade');
-        } else {
-          setLocation('/');
-        }
+        // Always redirect to protocol selection after session completion
+        setLocation('/protocol-selection');
       }, 3000);
     }
   }, [isSessionComplete, showCompletionMessage, setLocation]);
@@ -74,7 +69,7 @@ export default function BreathingSession() {
   const handleEndSession = () => {
     stopAudio();
     endSession();
-    setLocation('/');
+    setLocation('/protocol-selection');
   };
 
   if (!selectedProtocol) {

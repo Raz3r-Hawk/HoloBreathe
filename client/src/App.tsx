@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import Welcome from "@/pages/welcome";
 import Auth from "@/pages/auth";
 import Settings from "@/pages/settings";
+import Sessions from "@/pages/sessions";
 import About from "@/pages/about";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import ProtocolSelection from "@/pages/protocol-selection";
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/" component={Welcome} />
       <Route path="/auth" component={Auth} />
       <Route path="/settings" component={Settings} />
+      <Route path="/sessions" component={Sessions} />
       <Route path="/about" component={About} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/protocol-selection" component={ProtocolSelection} />

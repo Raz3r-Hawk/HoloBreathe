@@ -6,7 +6,7 @@ import { ProtocolCard } from '@/components/protocol-card';
 import { SubscriptionStatus } from '@/components/subscription-status';
 import { breathingProtocols, BreathingProtocol } from '@/lib/breathing-patterns';
 import { useSubscription } from '@/hooks/use-subscription';
-import { Settings, ArrowLeft } from 'lucide-react';
+import { Settings, ArrowLeft, Activity } from 'lucide-react';
 
 export default function ProtocolSelection() {
   const [, setLocation] = useLocation();
@@ -83,14 +83,25 @@ export default function ProtocolSelection() {
             Back
           </Button>
           
-          <Button
-            variant="outline"
-            onClick={() => setLocation('/settings')}
-            className="border-border text-muted-foreground hover:bg-muted"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setLocation('/sessions')}
+              className="border-border text-muted-foreground hover:bg-muted"
+            >
+              <Activity className="w-4 h-4 mr-2" />
+              Sessions
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={() => setLocation('/settings')}
+              className="border-border text-muted-foreground hover:bg-muted"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+          </div>
         </div>
 
         {/* Subscription Status */}
