@@ -78,6 +78,9 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Added Privacy Policy and About Us page navigation** - Created Help & Support tab in Settings with proper navigation links
   - **Fixed session tracking issues** - Corrected API validation errors preventing session recording and analytics updates
   - **Enhanced Settings navigation** - Added 5-tab layout with Help section containing Privacy Policy, About Us, and contact support links
+  - **Updated contact information** - Changed all contact emails from various addresses to contact@geeksgrow.com across Privacy Policy, About Us, and Settings pages
+  - **Fixed Settings navigation design** - Redesigned tab layout with vertical icons, proper spacing, and improved visual hierarchy
+  - **Resolved React warnings** - Fixed setState during render issues in Welcome component with proper effect timing
 
 ## API Endpoints
 - `POST /api/register` - User registration with comprehensive profile

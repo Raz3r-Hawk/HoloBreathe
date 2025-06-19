@@ -230,9 +230,9 @@ export default function About() {
                   <Button
                     variant="outline"
                     className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
-                    onClick={() => window.open('mailto:support@breathingapp.com', '_blank')}
+                    onClick={() => window.open('mailto:contact@geeksgrow.com', '_blank')}
                   >
-                    Email: support@breathingapp.com
+                    Email: contact@geeksgrow.com
                   </Button>
                   
                   <div className="text-center pt-4">

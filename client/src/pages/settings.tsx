@@ -540,7 +540,7 @@ export default function Settings() {
                     
                     <Button
                       variant="outline"
-                      onClick={() => window.open('mailto:support@breathingapp.com', '_blank')}
+                      onClick={() => window.open('mailto:contact@geeksgrow.com', '_blank')}
                       className="flex items-center justify-start theme-transition border-border text-foreground hover:bg-accent"
                     >
                       <Mail className="w-4 h-4 mr-3" />

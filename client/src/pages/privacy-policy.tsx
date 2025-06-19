@@ -284,10 +284,10 @@ export default function PrivacyPolicy() {
                 <Button
                   variant="outline"
                   className="w-full justify-start theme-transition border-border text-foreground hover:bg-accent"
-                  onClick={() => window.open('mailto:privacy@breathingapp.com', '_blank')}
+                  onClick={() => window.open('mailto:contact@geeksgrow.com', '_blank')}
                 >
                   <Mail className="w-4 h-4 mr-2" />
-                  Email: privacy@breathingapp.com
+                  Email: contact@geeksgrow.com
                 </Button>
                 
                 <div className="text-center pt-4">
