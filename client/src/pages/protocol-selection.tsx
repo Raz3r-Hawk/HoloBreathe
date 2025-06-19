@@ -32,8 +32,8 @@ export default function ProtocolSelection() {
       // If in trial mode and hasn't used trial, allow access to one protocol
       if (isTrialMode && !hasUsedTrial) return;
       
-      // Otherwise, redirect to subscription
-      setLocation('/subscription');
+      // Show upgrade prompt instead of forcing subscription
+      // This allows users to try protocols before subscribing
     }
   }, [hasSubscription, isLoading, isTrialMode, hasUsedTrial, setLocation]);
 
