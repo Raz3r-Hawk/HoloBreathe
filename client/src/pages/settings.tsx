@@ -34,7 +34,9 @@ import {
   HelpCircle,
   MessageSquare,
   Flag,
-  ArrowLeft
+  ArrowLeft,
+  FileText,
+  Info
 } from 'lucide-react';
 
 const profileSchema = z.object({
@@ -210,7 +212,7 @@ export default function Settings() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid grid-cols-4 w-full theme-tabs theme-transition">
+            <TabsList className="grid grid-cols-5 w-full theme-tabs theme-transition">
               <TabsTrigger value="profile" className="theme-tab theme-transition">
                 <User className="w-4 h-4 mr-2" />
                 Profile
@@ -226,6 +228,10 @@ export default function Settings() {
               <TabsTrigger value="account" className="theme-tab theme-transition">
                 <Shield className="w-4 h-4 mr-2" />
                 Account
+              </TabsTrigger>
+              <TabsTrigger value="help" className="theme-tab theme-transition">
+                <HelpCircle className="w-4 h-4 mr-2" />
+                Help
               </TabsTrigger>
             </TabsList>
 
@@ -479,6 +485,57 @@ export default function Settings() {
                       </AlertDescription>
                     </Alert>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Help & Support Tab */}
+            <TabsContent value="help" className="space-y-6">
+              <Card className="theme-card theme-transition">
+                <CardHeader>
+                  <CardTitle className="text-foreground flex items-center">
+                    <HelpCircle className="w-5 h-5 mr-2" />
+                    Help & Support
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    Get help and learn more about our app
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => setLocation('/privacy-policy')}
+                      className="flex items-center justify-start theme-transition border-border text-foreground hover:bg-accent"
+                    >
+                      <FileText className="w-4 h-4 mr-3" />
+                      Privacy Policy
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => setLocation('/about')}
+                      className="flex items-center justify-start theme-transition border-border text-foreground hover:bg-accent"
+                    >
+                      <Info className="w-4 h-4 mr-3" />
+                      About Us
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open('mailto:support@breathingapp.com', '_blank')}
+                      className="flex items-center justify-start theme-transition border-border text-foreground hover:bg-accent"
+                    >
+                      <Mail className="w-4 h-4 mr-3" />
+                      Contact Support
+                    </Button>
+                  </div>
+                  
+                  <div className="pt-4 text-center">
+                    <p className="text-muted-foreground text-sm">
+                      Need help? We're here to support your wellness journey
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
