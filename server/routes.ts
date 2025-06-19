@@ -1,7 +1,12 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import Razorpay from "razorpay";
+
+// Extend Request type to include session
+interface SessionRequest extends Request {
+  session: any;
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize Razorpay with demo keys for testing
@@ -11,12 +16,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Simple subscription status check (without authentication for now)
-  app.get("/api/subscription-status", async (req, res) => {
+  app.get("/api/subscription-status", async (req: SessionRequest, res) => {
     // For demo purposes, return subscription status from session
     // In production, this would check user authentication and database
-    const session = req.session as any;
-    const hasSubscription = session?.hasSubscription || false;
-    const subscriptionEndDate = session?.subscriptionEndDate;
+    const hasSubscription = req.session?.hasSubscription || false;
+    const subscriptionEndDate = req.session?.subscriptionEndDate;
     
     res.json({ 
       hasSubscription,
@@ -65,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Verify payment and activate subscription
-  app.post("/api/verify-payment", async (req, res) => {
+  app.post("/api/verify-payment", async (req: SessionRequest, res) => {
     try {
       const { 
         razorpay_order_id, 
@@ -94,9 +98,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const subscriptionEndDate = new Date();
       subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1); // 1 month subscription
 
-      const session = req.session as any;
-      session.hasSubscription = true;
-      session.subscriptionEndDate = subscriptionEndDate;
+      req.session.hasSubscription = true;
+      req.session.subscriptionEndDate = subscriptionEndDate;
 
       res.json({ 
         success: true, 
