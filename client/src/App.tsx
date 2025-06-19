@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 // Pages
 import Welcome from "@/pages/welcome";
@@ -43,14 +44,16 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
-          <div className="w-full max-w-md mx-auto min-h-screen bg-black/20 backdrop-blur-sm">
-            <Toaster />
-            <Router />
+      <ThemeProvider>
+        <TooltipProvider>
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 dark:from-gray-900 dark:via-black dark:to-gray-900 light:from-gray-100 light:via-white light:to-gray-200">
+            <div className="w-full max-w-md mx-auto min-h-screen bg-black/20 dark:bg-black/20 light:bg-white/90 backdrop-blur-sm">
+              <Toaster />
+              <Router />
+            </div>
           </div>
-        </div>
-      </TooltipProvider>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -32,6 +32,35 @@
   --space-gray: 210 11% 11%; /* #1A1A1F */
 }
 
+:root.light {
+  --background: 0 0% 100%; /* #FFFFFF - white */
+  --foreground: 0 0% 3.9%; /* #0A0A0A - dark text */
+  --muted: 0 0% 96.1%; /* #F5F5F5 - light gray */
+  --muted-foreground: 0 0% 45.1%; /* #737373 - medium gray */
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 3.9%;
+  --border: 0 0% 89.8%; /* #E5E5E5 - light border */
+  --input: 0 0% 89.8%;
+  --primary: 180 100% 40%; /* #0099CC - darker cyan for light mode */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96.1%;
+  --secondary-foreground: 0 0% 9%;
+  --accent: 0 0% 96.1%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 180 100% 40%;
+  
+  /* Custom colors for light mode */
+  --neon-cyan: 180 100% 40%; /* #0099CC - darker for visibility */
+  --neon-pink: 328 85% 45%; /* #D91A72 - darker pink */
+  --neon-purple: 271 60% 40%; /* #6B1F9A - darker purple */
+  --space-black: 0 0% 100%; /* #FFFFFF - inverted for light mode */
+  --space-gray: 0 0% 96.1%; /* #F5F5F5 - light gray */
+}
+
 .dark {
   --background: 210 11% 4%;
   --foreground: 0 0% 98%;

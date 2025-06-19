@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth, useLogout, useDeleteAccount } from '@/hooks/useAuth';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +54,7 @@ type FeedbackForm = z.infer<typeof feedbackSchema>;
 export default function Settings() {
   const [, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
+  const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const logoutMutation = useLogout();
@@ -61,8 +63,8 @@ export default function Settings() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 flex items-center justify-center">
-        <div className="text-white text-center">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 dark:from-black dark:via-gray-900 dark:to-blue-900 light:from-gray-100 light:via-white light:to-blue-100 flex items-center justify-center">
+        <div className="text-white dark:text-white light:text-gray-900 text-center">
           <p className="mb-4">Please log in to access settings</p>
           <Button onClick={() => setLocation('/auth')}>Go to Login</Button>
         </div>
@@ -109,25 +111,13 @@ export default function Settings() {
     },
   });
 
-  const updateThemeMutation = useMutation({
-    mutationFn: async (theme: string) => {
-      return await apiRequest("PUT", "/api/user", { themePreference: theme });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      toast({
-        title: "Theme updated",
-        description: "Your theme preference has been saved.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Theme update failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'auto') => {
+    setTheme(newTheme);
+    toast({
+      title: "Theme updated",
+      description: `Theme set to ${newTheme} mode.`,
+    });
+  };
 
   const submitFeedbackMutation = useMutation({
     mutationFn: async (data: FeedbackForm) => {
@@ -157,9 +147,7 @@ export default function Settings() {
     submitFeedbackMutation.mutate(data);
   };
 
-  const handleThemeChange = (theme: string) => {
-    updateThemeMutation.mutate(theme);
-  };
+
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -328,15 +316,15 @@ export default function Settings() {
                         { id: 'light', label: 'Light', icon: Sun },
                         { id: 'dark', label: 'Dark', icon: Moon },
                         { id: 'auto', label: 'Auto', icon: Monitor },
-                      ].map((theme) => {
-                        const Icon = theme.icon;
-                        const isActive = user?.themePreference === theme.id;
+                      ].map((themeOption) => {
+                        const Icon = themeOption.icon;
+                        const isActive = theme === themeOption.id;
                         
                         return (
                           <Button
-                            key={theme.id}
+                            key={themeOption.id}
                             variant={isActive ? "default" : "outline"}
-                            onClick={() => handleThemeChange(theme.id)}
+                            onClick={() => handleThemeChange(themeOption.id as any)}
                             className={`flex flex-col items-center p-4 h-auto ${
                               isActive 
                                 ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white" 
@@ -344,7 +332,7 @@ export default function Settings() {
                             }`}
                           >
                             <Icon className="w-6 h-6 mb-2" />
-                            <span>{theme.label}</span>
+                            <span>{themeOption.label}</span>
                           </Button>
                         );
                       })}
