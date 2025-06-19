@@ -110,14 +110,14 @@ export default function ProtocolSelection() {
         {/* Trial Mode Banner */}
         {isTrialMode && !hasUsedTrial && (
           <motion.div
-            className="mb-6 p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl"
+            className="mb-6 p-4 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-500/20 dark:to-orange-500/20 border border-yellow-300 dark:border-yellow-500/30 rounded-xl theme-transition"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <div className="text-center">
-              <p className="text-yellow-300 font-semibold mb-1">Free Trial</p>
-              <p className="text-xs text-yellow-200/80">Choose one protocol to try for free</p>
+              <p className="text-yellow-800 dark:text-yellow-300 font-semibold mb-1">Free Trial</p>
+              <p className="text-xs text-yellow-700 dark:text-yellow-200/80">Choose one protocol to try for free</p>
             </div>
           </motion.div>
         )}
@@ -161,7 +161,7 @@ export default function ProtocolSelection() {
         {/* Back Button */}
         <motion.button
           onClick={() => setLocation('/')}
-          className="w-full py-3 text-gray-400 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2"
+          className="w-full py-3 text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center justify-center space-x-2 theme-transition"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}

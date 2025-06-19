@@ -81,19 +81,19 @@ export default function ActivationSequence() {
   }, []);
 
   const getStepColor = (color: string, isActive: boolean) => {
-    if (!isActive) return 'text-gray-600 bg-gray-800/50 border-gray-700';
+    if (!isActive) return 'text-muted-foreground bg-muted/30 border-border';
     
     switch (color) {
       case 'cyan':
-        return 'text-cyan-400 bg-cyan-400/20 border-cyan-400';
+        return 'text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-400/20 border-cyan-300 dark:border-cyan-400';
       case 'pink':
-        return 'text-pink-400 bg-pink-400/20 border-pink-400';
+        return 'text-pink-600 dark:text-pink-400 bg-pink-100 dark:bg-pink-400/20 border-pink-300 dark:border-pink-400';
       case 'purple':
-        return 'text-purple-400 bg-purple-400/20 border-purple-400';
+        return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-400/20 border-purple-300 dark:border-purple-400';
       case 'white':
-        return 'text-white bg-white/20 border-white';
+        return 'text-foreground bg-background/20 border-foreground';
       default:
-        return 'text-gray-400 bg-gray-400/20 border-gray-400';
+        return 'text-primary bg-primary/10 border-primary';
     }
   };
 
@@ -102,7 +102,7 @@ export default function ActivationSequence() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12">
+    <div className="min-h-screen theme-bg theme-transition flex flex-col justify-center items-center px-6 py-12">
       <div className="w-full max-w-md mx-auto">
         {/* Title */}
         <motion.div
@@ -112,9 +112,9 @@ export default function ActivationSequence() {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-3xl font-bold mb-2">
-            <span className="text-cyan-400">Activation</span> Sequence
+            <span className="text-primary">Activation</span> <span className="text-foreground">Sequence</span>
           </h2>
-          <p className="text-gray-400">Preparing {selectedProtocol.name} Protocol</p>
+          <p className="text-muted-foreground">Preparing {selectedProtocol.name} Protocol</p>
         </motion.div>
         
         {/* Steps */}
@@ -131,8 +131,8 @@ export default function ActivationSequence() {
             return (
               <motion.div
                 key={step.id}
-                className={`flex items-center space-x-4 p-4 rounded-xl transition-all duration-500 ${
-                  isActive ? 'glass-card' : 'bg-gray-900/30'
+                className={`flex items-center space-x-4 p-4 rounded-xl transition-all duration-500 theme-transition ${
+                  isActive ? 'theme-card border border-border' : 'bg-muted/30 border border-transparent'
                 }`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -173,12 +173,12 @@ export default function ActivationSequence() {
                 
                 <div className="flex-1">
                   <h3 className={`text-lg font-semibold transition-colors duration-500 ${
-                    isActive ? getStepColor(step.color, true).split(' ')[0] : 'text-gray-600'
+                    isActive ? getStepColor(step.color, true).split(' ')[0] : 'text-muted-foreground'
                   }`}>
                     {step.title}
                   </h3>
                   <p className={`text-sm transition-colors duration-500 ${
-                    isActive ? 'text-gray-300' : 'text-gray-600'
+                    isActive ? 'text-foreground' : 'text-muted-foreground'
                   }`}>
                     {step.description}
                   </p>
@@ -205,17 +205,17 @@ export default function ActivationSequence() {
         {/* Continue Button */}
         <motion.button
           onClick={() => setLocation('/breathing-session')}
-          className="w-full holographic-border mb-4"
+          className="w-full theme-card border-2 border-primary theme-transition mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.8 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="bg-gray-900/80 backdrop-blur-sm py-4 rounded-2xl text-lg font-semibold flex items-center justify-center space-x-2">
-            <span className="text-cyan-400">Begin Session</span>
+          <div className="py-4 rounded-2xl text-lg font-semibold flex items-center justify-center space-x-2">
+            <span className="text-primary">Begin Session</span>
             <motion.svg
-              className="w-5 h-5 text-pink-400"
+              className="w-5 h-5 text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -235,7 +235,7 @@ export default function ActivationSequence() {
         {/* Back Button */}
         <motion.button
           onClick={() => setLocation('/protocol-selection')}
-          className="w-full py-3 text-gray-400 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2"
+          className="w-full py-3 text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center justify-center space-x-2 theme-transition"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8, duration: 0.5 }}

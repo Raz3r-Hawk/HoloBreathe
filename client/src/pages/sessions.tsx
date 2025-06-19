@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Activity, TrendingUp, BarChart3, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, Activity, TrendingUp, BarChart3, ArrowLeft, Target } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface SessionData {
@@ -123,26 +123,30 @@ export default function Sessions() {
 
             {/* Analytics Tab */}
             <TabsContent value="analytics">
-              <div className="space-y-6">
-                {/* Period Selection */}
+              <div className="space-y-8">
+                {/* Period Selection - Redesigned */}
                 <Card className="theme-card theme-transition">
-                  <CardHeader>
-                    <CardTitle className="text-card-foreground flex items-center">
-                      <Calendar className="w-5 h-5 mr-2 text-primary" />
+                  <CardHeader className="pb-6">
+                    <CardTitle className="text-card-foreground flex items-center text-xl font-semibold">
+                      <Calendar className="w-6 h-6 mr-3 text-primary" />
                       Time Period
                     </CardTitle>
-                    <CardDescription className="text-muted-foreground">
+                    <CardDescription className="text-muted-foreground text-base mt-2">
                       Select the time period for your analytics
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                  <CardContent className="pt-0">
+                    <div className="flex flex-wrap gap-3">
                       {periodOptions.map((option) => (
                         <Button
                           key={option.value}
                           variant={selectedPeriod === option.value ? 'default' : 'outline'}
-                          size="sm"
                           onClick={() => setSelectedPeriod(option.value)}
+                          className={`px-6 py-3 text-sm font-medium theme-transition rounded-lg ${
+                            selectedPeriod === option.value
+                              ? 'bg-primary text-primary-foreground shadow-md hover:bg-primary/90'
+                              : 'border-2 border-border hover:bg-muted hover:border-primary/50'
+                          }`}
                         >
                           {option.label}
                         </Button>
@@ -151,71 +155,103 @@ export default function Sessions() {
                   </CardContent>
                 </Card>
 
-                {/* Analytics Cards */}
+                {/* Analytics Cards - Redesigned Layout */}
                 {analyticsLoading ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[...Array(6)].map((_, i) => (
-                      <Card key={i} className="bg-card border-border">
-                        <CardContent className="p-6">
-                          <div className="animate-pulse">
-                            <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                            <div className="h-8 bg-muted rounded w-1/2"></div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                  <div className="space-y-6">
+                    {/* Top Row - 3 Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {[...Array(3)].map((_, i) => (
+                        <Card key={i} className="theme-card theme-transition">
+                          <CardContent className="p-8">
+                            <div className="animate-pulse">
+                              <div className="h-4 bg-muted rounded w-3/4 mb-4"></div>
+                              <div className="h-12 bg-muted rounded w-1/2"></div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                    {/* Bottom Row - 2 Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {[...Array(2)].map((_, i) => (
+                        <Card key={i + 3} className="theme-card theme-transition">
+                          <CardContent className="p-8">
+                            <div className="animate-pulse">
+                              <div className="h-4 bg-muted rounded w-3/4 mb-4"></div>
+                              <div className="h-12 bg-muted rounded w-1/2"></div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
                 ) : analytics ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Card className="bg-card border-border">
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Activity className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-medium text-muted-foreground">Total Sessions</span>
-                        </div>
-                        <div className="text-3xl font-bold text-card-foreground">{analytics.totalSessions}</div>
-                      </CardContent>
-                    </Card>
+                  <div className="space-y-6">
+                    {/* Top Row - 3 Main Metrics */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <Card className="theme-card theme-transition hover:shadow-lg">
+                        <CardContent className="p-8 text-center">
+                          <div className="flex items-center justify-center mb-4">
+                            <div className="p-3 rounded-full bg-primary/10">
+                              <Activity className="w-6 h-6 text-primary" />
+                            </div>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground mb-2">Total Sessions</p>
+                          <p className="text-4xl font-bold text-card-foreground">{analytics.totalSessions}</p>
+                        </CardContent>
+                      </Card>
 
-                    <Card className="bg-card border-border">
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Clock className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-medium text-muted-foreground">Total Minutes</span>
-                        </div>
-                        <div className="text-3xl font-bold text-card-foreground">{analytics.totalMinutes}</div>
-                      </CardContent>
-                    </Card>
+                      <Card className="theme-card theme-transition hover:shadow-lg">
+                        <CardContent className="p-8 text-center">
+                          <div className="flex items-center justify-center mb-4">
+                            <div className="p-3 rounded-full bg-primary/10">
+                              <Clock className="w-6 h-6 text-primary" />
+                            </div>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground mb-2">Total Minutes</p>
+                          <p className="text-4xl font-bold text-card-foreground">{analytics.totalMinutes}</p>
+                        </CardContent>
+                      </Card>
 
-                    <Card className="bg-card border-border">
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <TrendingUp className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-medium text-muted-foreground">Average Session</span>
-                        </div>
-                        <div className="text-3xl font-bold text-card-foreground">{analytics.averageSessionLength}m</div>
-                      </CardContent>
-                    </Card>
+                      <Card className="theme-card theme-transition hover:shadow-lg">
+                        <CardContent className="p-8 text-center">
+                          <div className="flex items-center justify-center mb-4">
+                            <div className="p-3 rounded-full bg-primary/10">
+                              <TrendingUp className="w-6 h-6 text-primary" />
+                            </div>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground mb-2">Average Session</p>
+                          <p className="text-4xl font-bold text-card-foreground">{analytics.averageSessionLength}m</p>
+                        </CardContent>
+                      </Card>
+                    </div>
 
-                    <Card className="bg-card border-border">
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <BarChart3 className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-medium text-muted-foreground">Most Used Protocol</span>
-                        </div>
-                        <div className="text-xl font-bold text-card-foreground">{analytics.mostUsedProtocol}</div>
-                      </CardContent>
-                    </Card>
+                    {/* Bottom Row - 2 Additional Metrics */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Card className="theme-card theme-transition hover:shadow-lg">
+                        <CardContent className="p-8 text-center">
+                          <div className="flex items-center justify-center mb-4">
+                            <div className="p-3 rounded-full bg-primary/10">
+                              <BarChart3 className="w-6 h-6 text-primary" />
+                            </div>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground mb-2">Most Used Protocol</p>
+                          <p className="text-2xl font-bold text-card-foreground">{analytics.mostUsedProtocol || 'None'}</p>
+                        </CardContent>
+                      </Card>
 
-                    <Card className="bg-card border-border">
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <TrendingUp className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-medium text-muted-foreground">Completion Rate</span>
-                        </div>
-                        <div className="text-3xl font-bold text-card-foreground">{analytics.completionRate}%</div>
-                      </CardContent>
-                    </Card>
+                      <Card className="theme-card theme-transition hover:shadow-lg">
+                        <CardContent className="p-8 text-center">
+                          <div className="flex items-center justify-center mb-4">
+                            <div className="p-3 rounded-full bg-primary/10">
+                              <Target className="w-6 h-6 text-primary" />
+                            </div>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground mb-2">Completion Rate</p>
+                          <p className="text-4xl font-bold text-card-foreground">{analytics.completionRate}%</p>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 ) : (
                   <Card className="bg-card border-border">

@@ -159,7 +159,7 @@ export default function BreathingSession() {
   const phaseDuration = getCurrentPhasePattern();
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-6">
+    <div className="min-h-screen theme-bg theme-transition flex flex-col px-6 py-6">
       <div className="w-full max-w-md mx-auto flex flex-col min-h-screen">
         {/* Protocol Info - top section */}
         <motion.div
@@ -168,11 +168,11 @@ export default function BreathingSession() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="glass-card rounded-xl p-4 backdrop-blur-md border border-white/10">
+          <div className="theme-card theme-transition rounded-xl p-4 border border-border">
             <h3 className={`text-xl font-bold ${colorClasses.text} mb-1 text-center`}>
               {selectedProtocol.name} Protocol
             </h3>
-            <p className="text-gray-300 text-sm text-center">Follow the glowing guide</p>
+            <p className="text-muted-foreground text-sm text-center">Follow the glowing guide</p>
           </div>
         </motion.div>
         
@@ -200,15 +200,15 @@ export default function BreathingSession() {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="mb-2"
           >
-            <div className="w-full bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
+            <div className="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
               <motion.div
-                className="bg-gradient-to-r from-cyan-400 to-pink-400 h-2 rounded-full transition-all duration-1000"
+                className="bg-gradient-to-r from-primary to-blue-500 h-2 rounded-full transition-all duration-1000"
                 style={{ width: `${getProgress()}%` }}
                 animate={{
                   boxShadow: [
-                    '0 0 10px rgba(0,255,255,0.5)',
-                    '0 0 20px rgba(255,20,147,0.8)',
-                    '0 0 10px rgba(0,255,255,0.5)',
+                    '0 0 10px rgba(59,130,246,0.5)',
+                    '0 0 20px rgba(99,102,241,0.8)',
+                    '0 0 10px rgba(59,130,246,0.5)',
                   ],
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -216,13 +216,13 @@ export default function BreathingSession() {
             </div>
             
             <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400">
-                Session: <span className="text-cyan-400 font-mono">{getFormattedTime()}</span>
+              <span className="text-muted-foreground">
+                Session: <span className="text-primary font-mono">{getFormattedTime()}</span>
               </span>
-              <span className="text-gray-400">
-                Cycles: <span className="text-pink-400 font-mono">{sessionState.cycles}</span>
+              <span className="text-muted-foreground">
+                Cycles: <span className="text-primary font-mono">{sessionState.cycles}</span>
               </span>
-              <span className="text-gray-400">
+              <span className="text-muted-foreground">
                 / 5:00
               </span>
             </div>

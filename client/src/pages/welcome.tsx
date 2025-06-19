@@ -101,7 +101,7 @@ export default function Welcome() {
             <Button 
               variant="outline"
               onClick={() => setLocation('/settings')}
-              className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 py-3"
+              className="w-full theme-transition py-3"
             >
               Go to Settings
             </Button>

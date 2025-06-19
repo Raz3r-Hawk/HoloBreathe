@@ -17,7 +17,7 @@ export function ProtocolCard({ protocol, onClick, index }: ProtocolCardProps) {
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`glass-card rounded-xl p-6 cursor-pointer transition-all duration-300 hover:${colorClasses.border} hover:shadow-lg`}
+      className={`theme-card theme-transition rounded-xl p-6 cursor-pointer transition-all duration-300 hover:${colorClasses.border} hover:shadow-lg border-2 border-border hover:border-primary/50`}
       onClick={onClick}
       style={{
         boxShadow: `0 0 20px hsla(var(--neon-${protocol.color}), 0.1)`,
@@ -32,11 +32,11 @@ export function ProtocolCard({ protocol, onClick, index }: ProtocolCardProps) {
         </span>
       </div>
       
-      <p className="text-gray-300 mb-2">
+      <p className="text-muted-foreground mb-2 theme-transition">
         {protocol.pattern.join('-')} breathing pattern
       </p>
       
-      <p className="text-sm text-gray-400 mb-4">
+      <p className="text-sm text-muted-foreground/80 mb-4 theme-transition">
         {protocol.description}
       </p>
       
