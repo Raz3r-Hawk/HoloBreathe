@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Pages
 import Welcome from "@/pages/welcome";
+import Auth from "@/pages/auth";
 import ProtocolSelection from "@/pages/protocol-selection";
 import ActivationSequence from "@/pages/activation-sequence";
 import BreathingSession from "@/pages/breathing-session";
@@ -19,6 +20,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Welcome} />
+      <Route path="/auth" component={Auth} />
       <Route path="/protocol-selection" component={ProtocolSelection} />
       <Route path="/activation-sequence" component={ActivationSequence} />
       <Route path="/breathing-session" component={BreathingSession} />

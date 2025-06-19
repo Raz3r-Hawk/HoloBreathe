@@ -1,313 +1,256 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HolographicCube } from '@/components/holographic-cube';
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+import { Check, Star, Sparkles, Zap } from 'lucide-react';
 
 export default function Subscription() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { isAuthenticated, isLoading } = useAuth();
 
-  // Check current subscription status
-  const { data: subscriptionStatus, isLoading } = useQuery({
-    queryKey: ['/api/subscription-status'],
-    queryFn: () => apiRequest('GET', '/api/subscription-status').then(res => res.json()),
-  });
-
-  // Redirect if already subscribed
-  useEffect(() => {
-    if (subscriptionStatus?.hasSubscription) {
-      setLocation('/protocol-selection');
-    }
-  }, [subscriptionStatus, setLocation]);
-
-  // Create payment order mutation
-  const createOrderMutation = useMutation({
-    mutationFn: (amount: number) => 
-      apiRequest('POST', '/api/create-payment-order', { amount }).then(res => res.json()),
-    onSuccess: (orderData) => {
-      initiatePayment(orderData);
+  // Immediate subscription activation mutation
+  const subscribeMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("POST", "/api/subscribe", {});
     },
-    onError: (error: any) => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription-status"] });
       toast({
-        title: "Payment Error",
-        description: "Failed to create payment order. Please try again.",
-        variant: "destructive",
+        title: "Welcome to Premium!",
+        description: "You now have full access to all breathing protocols.",
       });
-      setIsProcessing(false);
-    }
-  });
-
-  // Verify payment mutation
-  const verifyPaymentMutation = useMutation({
-    mutationFn: (paymentData: any) =>
-      apiRequest('POST', '/api/verify-payment', paymentData).then(res => res.json()),
-    onSuccess: (data) => {
-      const message = data.isDemo 
-        ? "Demo subscription activated! You now have full access to all breathing protocols."
-        : "Payment successful! Your subscription is now active.";
-      
-      toast({
-        title: "Subscription Activated!",
-        description: message,
-      });
-      
-      // Show additional success information
       setTimeout(() => {
-        toast({
-          title: "Welcome to Premium!",
-          description: "Access all breathing protocols, unlimited sessions, and premium features.",
-        });
-      }, 1500);
-      
-      queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
-      setLocation('/protocol-selection');
+        setLocation('/protocol-selection');
+      }, 1000);
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
-        title: "Payment Verification Failed",
-        description: "Please contact support if payment was deducted.",
+        title: "Subscription Failed",
+        description: error.message,
         variant: "destructive",
       });
-      setIsProcessing(false);
-    }
+    },
   });
-
-  const initiatePayment = (orderData: any) => {
-    // Check if this is demo mode
-    if (orderData.key === "rzp_test_demo_key") {
-      // Simulate demo payment
-      toast({
-        title: "Demo Mode",
-        description: "Simulating payment for demonstration...",
-      });
-      
-      setTimeout(() => {
-        // Simulate successful payment response
-        verifyPaymentMutation.mutate({
-          razorpay_order_id: orderData.orderId,
-          razorpay_payment_id: `pay_demo_${Date.now()}`,
-          razorpay_signature: `demo_signature_${Date.now()}`,
-        });
-      }, 2000);
-      return;
-    }
-
-    const options = {
-      key: orderData.key,
-      amount: orderData.amount,
-      currency: orderData.currency,
-      name: "Breathing App Premium",
-      description: "Monthly Subscription to Premium Breathing Protocols",
-      order_id: orderData.orderId,
-      handler: function (response: any) {
-        verifyPaymentMutation.mutate({
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-        });
-      },
-      modal: {
-        ondismiss: function() {
-          setIsProcessing(false);
-        }
-      },
-      prefill: {
-        name: "User",
-        email: "user@example.com",
-        contact: "9999999999"
-      },
-      notes: {
-        address: "Breathing App Subscription"
-      },
-      theme: {
-        color: "#3B82F6"
-      }
-    };
-
-    if (window.Razorpay) {
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } else {
-      toast({
-        title: "Payment Error",
-        description: "Payment service not available. Please refresh and try again.",
-        variant: "destructive",
-      });
-      setIsProcessing(false);
-    }
-  };
-
-  const handleSubscribe = async () => {
-    setIsProcessing(true);
-    createOrderMutation.mutate(99900); // ₹999 in paise
-  };
-
-  useEffect(() => {
-    // Load Razorpay script
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-blue-900">
+        <div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full" />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
-      <div className="w-full max-w-md mx-auto">
-        {/* Demo Mode Banner */}
-        <motion.div
-          className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="text-center">
-            <p className="text-blue-300 font-semibold mb-1">Demo Mode Active</p>
-            <p className="text-xs text-blue-200/80">Click Subscribe to simulate the payment process</p>
-          </div>
-        </motion.div>
+  if (!isAuthenticated) {
+    setLocation('/auth');
+    return null;
+  }
 
-        {/* Header */}
+  const handleSubscribe = () => {
+    subscribeMutation.mutate();
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
+      {/* Background gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/50 via-black/70 to-gray-900/50" />
+      
+      {/* Floating particles effect */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
+          className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full opacity-60"
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0.6, 1, 0.6],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute top-1/3 right-1/3 w-1 h-1 bg-blue-400 rounded-full opacity-40"
+          animate={{
+            y: [0, 40, 0],
+            opacity: [0.4, 0.8, 0.4],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-purple-400 rounded-full opacity-30"
+          animate={{
+            y: [0, -50, 0],
+            opacity: [0.3, 0.7, 0.3],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 text-center max-w-4xl mx-auto">
+        {/* Header section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="mb-12"
         >
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-6">
             <HolographicCube size="lg" />
           </div>
-          <h1 className="text-3xl font-bold gradient-text mb-2">
+          
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-4">
             Unlock Premium Breathing
           </h1>
-          <p className="text-gray-300">
-            Access advanced protocols and personalized sessions
+          <p className="text-xl text-gray-300 mb-8">
+            Access all advanced breathing protocols and premium features
           </p>
         </motion.div>
 
-        {/* Subscription Card */}
+        {/* Pricing card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Card className="glass-card border-white/10 backdrop-blur-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl text-white mb-2">
-                Premium Monthly
+          <Card className="bg-gradient-to-br from-gray-900/80 to-black/60 border-cyan-500/30 backdrop-blur-lg shadow-2xl max-w-md mx-auto">
+            <CardHeader className="text-center pb-4">
+              <div className="flex justify-center mb-4">
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold px-4 py-1">
+                  <Star className="w-4 h-4 mr-1" />
+                  PREMIUM
+                </Badge>
+              </div>
+              <CardTitle className="text-3xl font-bold text-white mb-2">
+                Monthly Access
               </CardTitle>
               <CardDescription className="text-gray-300">
                 Full access to all breathing protocols
               </CardDescription>
-              <div className="flex items-center justify-center space-x-2 mt-4">
+              <div className="text-center mt-4">
                 <span className="text-4xl font-bold text-cyan-400">₹999</span>
-                <span className="text-gray-400">/month</span>
+                <span className="text-lg text-gray-400 ml-2">/month</span>
               </div>
             </CardHeader>
-            
+
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                  <span className="text-gray-300">All breathing protocols</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                  <span className="text-gray-300">Advanced breathing patterns</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  <span className="text-gray-300">Personalized sessions</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span className="text-gray-300">Session tracking & analytics</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                  <span className="text-gray-300">Ambient audio library</span>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-lg border border-cyan-500/20">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
-                    Limited Time
-                  </Badge>
-                </div>
-                <p className="text-sm text-center text-gray-300">
-                  7-day free trial included with subscription
-                </p>
+                {[
+                  "All 8 breathing protocols",
+                  "Unlimited sessions",
+                  "Session analytics & tracking",
+                  "Ambient audio library",
+                  "Personalized recommendations",
+                  "Premium themes & animations"
+                ].map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                    className="flex items-center space-x-3"
+                  >
+                    <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <span className="text-gray-300">{feature}</span>
+                  </motion.div>
+                ))}
               </div>
             </CardContent>
 
-            <CardFooter>
+            <CardFooter className="pt-6">
               <Button
                 onClick={handleSubscribe}
-                disabled={isProcessing}
-                className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                disabled={subscribeMutation.isPending}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
               >
-                {isProcessing ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                    <span>Processing...</span>
+                {subscribeMutation.isPending ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+                    <span>Activating...</span>
                   </div>
                 ) : (
-                  "Subscribe Now"
+                  <div className="flex items-center justify-center space-x-2">
+                    <Sparkles className="w-5 h-5" />
+                    <span>Get Premium Access</span>
+                  </div>
                 )}
               </Button>
             </CardFooter>
           </Card>
         </motion.div>
 
-        {/* Back Button */}
-        <motion.button
-          onClick={() => setLocation('/')}
-          className="w-full mt-6 py-3 text-gray-400 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2"
+        {/* Features highlight */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto"
+        >
+          {[
+            {
+              icon: <Zap className="w-8 h-8 text-yellow-400" />,
+              title: "Instant Access",
+              description: "Immediate activation of all premium features"
+            },
+            {
+              icon: <Star className="w-8 h-8 text-purple-400" />,
+              title: "Premium Protocols",
+              description: "Access advanced breathing techniques"
+            },
+            {
+              icon: <Sparkles className="w-8 h-8 text-cyan-400" />,
+              title: "Enhanced Experience",
+              description: "Beautiful animations and ambient sounds"
+            }
+          ].map((feature, index) => (
+            <Card key={index} className="bg-gray-900/40 border-gray-700/50 backdrop-blur-lg">
+              <CardContent className="p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  {feature.icon}
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  {feature.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </motion.div>
+
+        {/* Back button */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-12"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/protocol-selection')}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          <span>Back to Home</span>
-        </motion.button>
+            Back to Protocols
+          </Button>
+        </motion.div>
       </div>
     </div>
   );

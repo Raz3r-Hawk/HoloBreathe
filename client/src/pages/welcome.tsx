@@ -1,9 +1,29 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { HolographicCube } from '@/components/holographic-cube';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 export default function Welcome() {
   const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-blue-900">
+        <div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    setLocation('/protocol-selection');
+    return null;
+  }
+
+  const handleGetStarted = () => {
+    setLocation('/auth');
+  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
