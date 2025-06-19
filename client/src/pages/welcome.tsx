@@ -196,6 +196,21 @@ export default function Welcome() {
             </div>
             <p className="text-xs opacity-90">Unlock all breathing protocols</p>
           </motion.button>
+
+          {/* Demo Link */}
+          <motion.button
+            className="w-full text-gray-400 hover:text-cyan-400 transition-colors duration-300 py-2"
+            onClick={() => setLocation('/subscription-demo')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm">See how payment validation works</span>
+            </div>
+          </motion.button>
         </motion.div>
       </motion.div>
     </div>

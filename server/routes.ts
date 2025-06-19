@@ -29,6 +29,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { amount = 99900 } = req.body; // Default ₹999 for subscription
       
+      // Check if using demo keys
+      const isDemo = !process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID === "rzp_test_demo_key";
+      
+      if (isDemo) {
+        // Return demo order for testing
+        res.json({
+          orderId: `order_demo_${Date.now()}`,
+          amount: amount,
+          currency: "INR",
+          key: "rzp_test_demo_key"
+        });
+        return;
+      }
+
       const order = await razorpay.orders.create({
         amount: amount, // Amount in paise (₹999 = 99900 paise)
         currency: "INR",
@@ -59,19 +73,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         razorpay_signature 
       } = req.body;
 
-      // Verify payment signature
-      const crypto = require('crypto');
-      const body = razorpay_order_id + "|" + razorpay_payment_id;
-      const expectedSignature = crypto
-        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-        .update(body.toString())
-        .digest('hex');
+      // Check if using demo mode
+      const isDemo = !process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_KEY_SECRET === "demo_secret_key";
+      
+      if (!isDemo) {
+        // Verify payment signature for real payments
+        const crypto = require('crypto');
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSignature = crypto
+          .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+          .update(body.toString())
+          .digest('hex');
 
-      if (expectedSignature !== razorpay_signature) {
-        return res.status(400).json({ error: "Invalid payment signature" });
+        if (expectedSignature !== razorpay_signature) {
+          return res.status(400).json({ error: "Invalid payment signature" });
+        }
       }
 
-      // Payment verified, activate subscription in session
+      // Payment verified (or demo mode), activate subscription in session
       const subscriptionEndDate = new Date();
       subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1); // 1 month subscription
 
@@ -82,7 +101,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         success: true, 
         message: "Subscription activated successfully",
-        subscriptionEndDate: subscriptionEndDate
+        subscriptionEndDate: subscriptionEndDate,
+        isDemo: isDemo
       });
     } catch (error: any) {
       console.error("Error verifying payment:", error);

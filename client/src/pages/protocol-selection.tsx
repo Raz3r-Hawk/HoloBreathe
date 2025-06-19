@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { useState, useEffect } from 'react';
 import { ProtocolCard } from '@/components/protocol-card';
+import { SubscriptionStatus } from '@/components/subscription-status';
 import { breathingProtocols, BreathingProtocol } from '@/lib/breathing-patterns';
 import { useSubscription } from '@/hooks/use-subscription';
 
@@ -69,6 +70,9 @@ export default function ProtocolSelection() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12">
       <div className="w-full max-w-md mx-auto">
+        {/* Subscription Status */}
+        <SubscriptionStatus />
+
         {/* Trial Mode Banner */}
         {isTrialMode && !hasUsedTrial && (
           <motion.div

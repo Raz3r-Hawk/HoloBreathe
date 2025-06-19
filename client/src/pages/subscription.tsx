@@ -55,11 +55,24 @@ export default function Subscription() {
   const verifyPaymentMutation = useMutation({
     mutationFn: (paymentData: any) =>
       apiRequest('POST', '/api/verify-payment', paymentData).then(res => res.json()),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const message = data.isDemo 
+        ? "Demo subscription activated! You now have full access to all breathing protocols."
+        : "Payment successful! Your subscription is now active.";
+      
       toast({
         title: "Subscription Activated!",
-        description: "Welcome to premium breathing protocols!",
+        description: message,
       });
+      
+      // Show additional success information
+      setTimeout(() => {
+        toast({
+          title: "Welcome to Premium!",
+          description: "Access all breathing protocols, unlimited sessions, and premium features.",
+        });
+      }, 1500);
+      
       queryClient.invalidateQueries({ queryKey: ['/api/subscription-status'] });
       setLocation('/protocol-selection');
     },
@@ -74,6 +87,25 @@ export default function Subscription() {
   });
 
   const initiatePayment = (orderData: any) => {
+    // Check if this is demo mode
+    if (orderData.key === "rzp_test_demo_key") {
+      // Simulate demo payment
+      toast({
+        title: "Demo Mode",
+        description: "Simulating payment for demonstration...",
+      });
+      
+      setTimeout(() => {
+        // Simulate successful payment response
+        verifyPaymentMutation.mutate({
+          razorpay_order_id: orderData.orderId,
+          razorpay_payment_id: `pay_demo_${Date.now()}`,
+          razorpay_signature: `demo_signature_${Date.now()}`,
+        });
+      }, 2000);
+      return;
+    }
+
     const options = {
       key: orderData.key,
       amount: orderData.amount,
@@ -147,6 +179,19 @@ export default function Subscription() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
       <div className="w-full max-w-md mx-auto">
+        {/* Demo Mode Banner */}
+        <motion.div
+          className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="text-center">
+            <p className="text-blue-300 font-semibold mb-1">Demo Mode Active</p>
+            <p className="text-xs text-blue-200/80">Click Subscribe to simulate the payment process</p>
+          </div>
+        </motion.div>
+
         {/* Header */}
         <motion.div
           className="text-center mb-8"
