@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,15 +8,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Activity, TrendingUp, BarChart3, ArrowLeft, Target } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { queryClient } from '@/lib/queryClient';
 
 interface SessionData {
   id: number;
-  protocolId: string;
+  protocol: string;
   protocolName: string;
   duration: number;
-  completedAt: string;
+  completedDuration: number;
   cycles: number;
   completed: boolean;
+  createdAt: string;
 }
 
 interface AnalyticsData {
@@ -31,6 +33,14 @@ export default function Sessions() {
   const [, setLocation] = useLocation();
   const { isAuthenticated } = useAuth();
   const [selectedPeriod, setSelectedPeriod] = useState<string>('weekly');
+
+  // Force refresh sessions data on component mount
+  useEffect(() => {
+    if (isAuthenticated) {
+      queryClient.invalidateQueries({ queryKey: ['/api/sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/analytics'] });
+    }
+  }, [isAuthenticated]);
 
   // Fetch user sessions
   const { data: sessions = [], isLoading: sessionsLoading } = useQuery<SessionData[]>({
@@ -303,12 +313,12 @@ export default function Sessions() {
                               </Badge>
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              {formatDate(session.completedAt)}
+                              {formatDate(session.createdAt)}
                             </p>
                           </div>
                           <div className="text-right">
                             <div className="text-lg font-semibold text-card-foreground">
-                              {formatDuration(session.duration)}
+                              {formatDuration(session.completedDuration)}
                             </div>
                             <div className="text-sm text-muted-foreground">
                               {session.cycles} cycles
