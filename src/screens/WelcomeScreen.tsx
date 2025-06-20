@@ -4,6 +4,8 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -13,16 +15,149 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
+const {width, height} = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  gradient: {
+    flex: 1,
+    paddingHorizontal: Math.max(24, width * 0.06),
+    justifyContent: 'space-between',
+  },
+  header: {
+    alignItems: 'center',
+    marginTop: height * 0.08,
+    marginBottom: height * 0.04,
+  },
+  title: {
+    fontSize: Math.min(width * 0.12, 48),
+    fontWeight: 'bold',
+    color: '#00ffff',
+    textShadowColor: '#00ffff80',
+    textShadowOffset: {width: 0, height: 0},
+    textShadowRadius: 20,
+    letterSpacing: width * 0.02,
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: Math.min(width * 0.042, 18),
+    color: '#ffffff80',
+    letterSpacing: 1,
+    textAlign: 'center',
+  },
+  cubeContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  holoCube: {
+    width: Math.min(width * 0.32, 128),
+    height: Math.min(width * 0.32, 128),
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: '#00ffff40',
+    overflow: 'hidden',
+    shadowColor: '#00ffff',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  cubeGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cubeText: {
+    fontSize: Math.min(width * 0.16, 64),
+    color: '#ffffff',
+    textShadowColor: '#00ffff',
+    textShadowOffset: {width: 0, height: 0},
+    textShadowRadius: 15,
+  },
+  descriptionContainer: {
+    marginBottom: height * 0.04,
+    paddingHorizontal: width * 0.04,
+  },
+  description: {
+    fontSize: Math.min(width * 0.04, 16),
+    color: '#ffffff90',
+    textAlign: 'center',
+    lineHeight: Math.min(width * 0.06, 24),
+  },
+  buttonContainer: {
+    marginBottom: height * 0.04,
+  },
+  trialButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 16,
+    shadowColor: '#00ffff',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  trialGradient: {
+    paddingVertical: height * 0.025,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  trialButtonText: {
+    fontSize: Math.min(width * 0.05, 20),
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  trialSubtext: {
+    fontSize: Math.min(width * 0.035, 14),
+    color: '#00000080',
+    marginTop: 4,
+  },
+  subscribeButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#ff00ff',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  subscribeGradient: {
+    paddingVertical: height * 0.025,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  subscribeButtonText: {
+    fontSize: Math.min(width * 0.05, 20),
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  subscribeSubtext: {
+    fontSize: Math.min(width * 0.035, 14),
+    color: '#ffffff80',
+    marginTop: 4,
+  },
+  featuresContainer: {
+    paddingBottom: height * 0.04,
+    alignItems: 'center',
+  },
+  featureText: {
+    fontSize: Math.min(width * 0.035, 14),
+    color: '#ffffff60',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+});
+
 const WelcomeScreen = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
   const handleStartFreeTrial = async () => {
-    try {
-      await AsyncStorage.setItem('trialMode', 'true');
-      navigation.navigate('ProtocolSelection');
-    } catch (error) {
-      console.error('Error setting trial mode:', error);
-    }
+    await AsyncStorage.setItem('userType', 'trial');
+    navigation.navigate('ProtocolSelection');
   };
 
   const handleSubscribe = () => {
@@ -30,75 +165,62 @@ const WelcomeScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
+    <SafeAreaView style={styles.container}>
       <LinearGradient
         colors={['#000', '#1a1a2e', '#16213e']}
-        className="flex-1 px-6 justify-between">
+        style={styles.gradient}>
         
         {/* Header */}
-        <View className="items-center mt-16 mb-8">
-          <Text className="text-5xl font-bold text-cyan-400 tracking-widest mb-2" 
-                style={{textShadowColor: '#00ffff80', textShadowOffset: {width: 0, height: 0}, textShadowRadius: 20}}>
-            BREATHE
-          </Text>
-          <Text className="text-lg text-white/50 tracking-wide text-center">
-            Holographic Breathing Experience
-          </Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>BREATHE</Text>
+          <Text style={styles.subtitle}>Holographic Breathing Experience</Text>
         </View>
 
         {/* Holographic Cube */}
-        <View className="flex-1 items-center justify-center">
-          <View className="w-32 h-32 rounded-3xl border-2 border-cyan-400/25 overflow-hidden"
-                style={{shadowColor: '#00ffff', shadowOffset: {width: 0, height: 0}, shadowOpacity: 0.5, shadowRadius: 20, elevation: 10}}>
+        <View style={styles.cubeContainer}>
+          <View style={styles.holoCube}>
             <LinearGradient
               colors={['#00ffff40', '#ff00ff40', '#ffff0040']}
-              className="flex-1 items-center justify-center">
-              <Text className="text-6xl text-white" 
-                    style={{textShadowColor: '#00ffff', textShadowOffset: {width: 0, height: 0}, textShadowRadius: 15}}>
-                ◊
-              </Text>
+              style={styles.cubeGradient}>
+              <Text style={styles.cubeText}>◊</Text>
             </LinearGradient>
           </View>
         </View>
 
         {/* Description */}
-        <View className="mb-8 px-4">
-          <Text className="text-base text-white/80 text-center leading-6">
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>
             Transform your breathing with advanced holographic protocols designed
             for deep relaxation and enhanced focus.
           </Text>
         </View>
 
         {/* Buttons */}
-        <View className="mb-8 space-y-4">
-          <TouchableOpacity onPress={handleStartFreeTrial}
-                           className="rounded-2xl overflow-hidden"
-                           style={{shadowColor: '#00ffff', shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8}}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.trialButton} onPress={handleStartFreeTrial}>
             <LinearGradient
               colors={['#00ffff', '#0080ff']}
-              className="py-5 px-8 items-center">
-              <Text className="text-xl font-bold text-black">Start Free Trial</Text>
-              <Text className="text-sm text-black/70 mt-1">Try one protocol free</Text>
+              style={styles.trialGradient}>
+              <Text style={styles.trialButtonText}>Start Free Trial</Text>
+              <Text style={styles.trialSubtext}>Try one protocol free</Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleSubscribe}
-                           className="rounded-2xl overflow-hidden"
-                           style={{shadowColor: '#ff00ff', shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8}}>
+          <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
             <LinearGradient
               colors={['#ff00ff', '#8000ff']}
-              className="py-5 px-8 items-center">
-              <Text className="text-xl font-bold text-white">Subscribe - ₹999/month</Text>
-              <Text className="text-sm text-white/70 mt-1">Unlock all protocols</Text>
+              style={styles.subscribeGradient}>
+              <Text style={styles.subscribeButtonText}>Subscribe - ₹999/month</Text>
+              <Text style={styles.subscribeSubtext}>Unlock all protocols</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
 
         {/* Features */}
-        <View className="pb-8 items-center space-y-2">
-          <Text className="text-sm text-white/40 text-center">✨ 7 Advanced Breathing Protocols</Text>
-          <Text className="text-sm text-white/40 text-center">🎯 Personalized Session Tracking</Text>
-          <Text className="text-sm text-white/40 text-center">🔮 Holographic Visual Experience</Text>
+        <View style={styles.featuresContainer}>
+          <Text style={styles.featureText}>✨ 7 Advanced Breathing Protocols</Text>
+          <Text style={styles.featureText}>🎯 Personalized Session Tracking</Text>
+          <Text style={styles.featureText}>🔮 Holographic Visual Experience</Text>
         </View>
       </LinearGradient>
     </SafeAreaView>
