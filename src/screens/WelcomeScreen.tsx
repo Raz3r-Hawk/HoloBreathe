@@ -3,8 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Dimensions,
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -14,8 +12,6 @@ import {RootStackParamList} from '../../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
-
-const {width, height} = Dimensions.get('window');
 
 const WelcomeScreen = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
@@ -34,204 +30,79 @@ const WelcomeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-black">
       <LinearGradient
         colors={['#000', '#1a1a2e', '#16213e']}
-        style={styles.gradient}>
+        className="flex-1 px-6 justify-between">
         
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>BREATHE</Text>
-          <Text style={styles.subtitle}>Holographic Breathing Experience</Text>
+        <View className="items-center mt-16 mb-8">
+          <Text className="text-5xl font-bold text-cyan-400 tracking-widest mb-2" 
+                style={{textShadowColor: '#00ffff80', textShadowOffset: {width: 0, height: 0}, textShadowRadius: 20}}>
+            BREATHE
+          </Text>
+          <Text className="text-lg text-white/50 tracking-wide text-center">
+            Holographic Breathing Experience
+          </Text>
         </View>
 
-        {/* Holographic Cube Placeholder */}
-        <View style={styles.cubeContainer}>
-          <View style={styles.holoCube}>
+        {/* Holographic Cube */}
+        <View className="flex-1 items-center justify-center">
+          <View className="w-32 h-32 rounded-3xl border-2 border-cyan-400/25 overflow-hidden"
+                style={{shadowColor: '#00ffff', shadowOffset: {width: 0, height: 0}, shadowOpacity: 0.5, shadowRadius: 20, elevation: 10}}>
             <LinearGradient
               colors={['#00ffff40', '#ff00ff40', '#ffff0040']}
-              style={styles.cubeGradient}>
-              <Text style={styles.cubeText}>◊</Text>
+              className="flex-1 items-center justify-center">
+              <Text className="text-6xl text-white" 
+                    style={{textShadowColor: '#00ffff', textShadowOffset: {width: 0, height: 0}, textShadowRadius: 15}}>
+                ◊
+              </Text>
             </LinearGradient>
           </View>
         </View>
 
         {/* Description */}
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
+        <View className="mb-8 px-4">
+          <Text className="text-base text-white/80 text-center leading-6">
             Transform your breathing with advanced holographic protocols designed
             for deep relaxation and enhanced focus.
           </Text>
         </View>
 
         {/* Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.trialButton} onPress={handleStartFreeTrial}>
+        <View className="mb-8 space-y-4">
+          <TouchableOpacity onPress={handleStartFreeTrial}
+                           className="rounded-2xl overflow-hidden"
+                           style={{shadowColor: '#00ffff', shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8}}>
             <LinearGradient
               colors={['#00ffff', '#0080ff']}
-              style={styles.trialGradient}>
-              <Text style={styles.trialButtonText}>Start Free Trial</Text>
-              <Text style={styles.trialSubtext}>Try one protocol free</Text>
+              className="py-5 px-8 items-center">
+              <Text className="text-xl font-bold text-black">Start Free Trial</Text>
+              <Text className="text-sm text-black/70 mt-1">Try one protocol free</Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
+          <TouchableOpacity onPress={handleSubscribe}
+                           className="rounded-2xl overflow-hidden"
+                           style={{shadowColor: '#ff00ff', shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8}}>
             <LinearGradient
               colors={['#ff00ff', '#8000ff']}
-              style={styles.subscribeGradient}>
-              <Text style={styles.subscribeButtonText}>Subscribe - ₹999/month</Text>
-              <Text style={styles.subscribeSubtext}>Unlock all protocols</Text>
+              className="py-5 px-8 items-center">
+              <Text className="text-xl font-bold text-white">Subscribe - ₹999/month</Text>
+              <Text className="text-sm text-white/70 mt-1">Unlock all protocols</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
 
         {/* Features */}
-        <View style={styles.featuresContainer}>
-          <Text style={styles.featureText}>✨ 7 Advanced Breathing Protocols</Text>
-          <Text style={styles.featureText}>🎯 Personalized Session Tracking</Text>
-          <Text style={styles.featureText}>🔮 Holographic Visual Experience</Text>
+        <View className="pb-8 items-center space-y-2">
+          <Text className="text-sm text-white/40 text-center">✨ 7 Advanced Breathing Protocols</Text>
+          <Text className="text-sm text-white/40 text-center">🎯 Personalized Session Tracking</Text>
+          <Text className="text-sm text-white/40 text-center">🔮 Holographic Visual Experience</Text>
         </View>
       </LinearGradient>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  gradient: {
-    flex: 1,
-    paddingHorizontal: Math.max(24, width * 0.06),
-    justifyContent: 'space-between',
-  },
-  header: {
-    alignItems: 'center',
-    marginTop: height * 0.08,
-    marginBottom: height * 0.04,
-  },
-  title: {
-    fontSize: Math.min(width * 0.12, 52),
-    fontWeight: 'bold',
-    color: '#00ffff',
-    textShadowColor: '#00ffff80',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 20,
-    letterSpacing: width * 0.02,
-  },
-  subtitle: {
-    fontSize: Math.min(width * 0.042, 18),
-    color: '#ffffff80',
-    marginTop: 8,
-    letterSpacing: 1,
-    textAlign: 'center',
-  },
-  cubeContainer: {
-    alignItems: 'center',
-    marginVertical: height * 0.03,
-    flex: 1,
-    justifyContent: 'center',
-  },
-  holoCube: {
-    width: Math.min(width * 0.3, 140),
-    height: Math.min(width * 0.3, 140),
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: '#00ffff40',
-    overflow: 'hidden',
-    shadowColor: '#00ffff',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  cubeGradient: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cubeText: {
-    fontSize: Math.min(width * 0.15, 70),
-    color: '#ffffff',
-    textShadowColor: '#00ffff',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 15,
-  },
-  descriptionContainer: {
-    marginBottom: height * 0.04,
-    paddingHorizontal: width * 0.05,
-  },
-  description: {
-    fontSize: Math.min(width * 0.042, 17),
-    color: '#ffffff90',
-    textAlign: 'center',
-    lineHeight: Math.min(width * 0.063, 26),
-  },
-  buttonContainer: {
-    marginBottom: height * 0.03,
-    paddingHorizontal: width * 0.02,
-  },
-  trialButton: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginBottom: 16,
-    shadowColor: '#00ffff',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  trialGradient: {
-    paddingVertical: height * 0.025,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  trialButtonText: {
-    fontSize: Math.min(width * 0.048, 20),
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  trialSubtext: {
-    fontSize: Math.min(width * 0.035, 15),
-    color: '#00000080',
-    marginTop: 4,
-  },
-  subscribeButton: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#ff00ff',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  subscribeGradient: {
-    paddingVertical: height * 0.025,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  subscribeButtonText: {
-    fontSize: Math.min(width * 0.048, 20),
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  subscribeSubtext: {
-    fontSize: Math.min(width * 0.035, 15),
-    color: '#ffffff80',
-    marginTop: 4,
-  },
-  featuresContainer: {
-    paddingBottom: height * 0.04,
-    alignItems: 'center',
-  },
-  featureText: {
-    fontSize: Math.min(width * 0.035, 15),
-    color: '#ffffff60',
-    textAlign: 'center',
-    marginBottom: 8,
-    paddingHorizontal: width * 0.02,
-  },
-});
 
 export default WelcomeScreen;
