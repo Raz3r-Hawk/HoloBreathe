@@ -1,21 +1,15 @@
-/// <reference types="nativewind/types" />
+// React Native type declarations
+declare module "*.png" {
+  const value: any;
+  export default value;
+}
 
-import "react-native";
+declare module "*.jpg" {
+  const value: any;
+  export default value;
+}
 
-declare module "react-native" {
-  interface ViewProps {
-    className?: string;
-  }
-  interface TextProps {
-    className?: string;
-  }
-  interface TouchableOpacityProps {
-    className?: string;
-  }
-  interface SafeAreaViewProps {
-    className?: string;
-  }
-  interface ScrollViewProps {
-    className?: string;
-  }
+declare module "*.svg" {
+  const value: any;
+  export default value;
 }

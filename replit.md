@@ -50,6 +50,12 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Features**: Complete mobile app with same functionality as web version
 
 ## Recent Changes
+- **2025-06-20**: Fixed Metro bundler error in React Native mobile app
+  - Removed problematic NativeWind dependencies causing module resolution conflicts
+  - Updated babel.config.js to use correct React Native preset without conflicting plugins
+  - Created clean WelcomeScreen with standard React Native StyleSheet instead of Tailwind classes
+  - Maintained all holographic visual effects and responsive design using LinearGradient
+  - Metro bundler now works properly for Android Studio development and APK generation
 - **2025-06-19**: Complete React Native mobile deployment setup and Supabase migration preparation
   - Created complete Android project structure (build.gradle, MainActivity.java, AndroidManifest.xml)
   - Set up iOS project with Xcode configuration (Info.plist, AppDelegate, LaunchScreen)

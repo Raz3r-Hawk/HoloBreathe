@@ -4,11 +4,11 @@ module.exports = {
       platforms: {
         ios: {
           sourceDir: '../node_modules/react-native-vector-icons/Fonts',
-          fonts: ['*.ttf'],
+          files: ['*.ttf'],
         },
         android: {
           sourceDir: '../node_modules/react-native-vector-icons/Fonts',
-          fonts: ['*.ttf'],
+          fontDir: './app/src/main/assets/fonts',
         },
       },
     },
