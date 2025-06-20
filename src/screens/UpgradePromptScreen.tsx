@@ -3,90 +3,81 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   SafeAreaView,
+  StyleSheet,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LinearGradient from 'react-native-linear-gradient';
-import {RootStackParamList} from '../../App';
+import {RootStackParamList} from '../App';
 
-type UpgradePromptScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'UpgradePrompt'
->;
+type UpgradePromptScreenNavigationProp = StackNavigationProp<RootStackParamList, 'UpgradePrompt'>;
 
 const UpgradePromptScreen = () => {
   const navigation = useNavigation<UpgradePromptScreenNavigationProp>();
 
+  const handleUpgrade = () => {
+    navigation.navigate('Subscription');
+  };
+
+  const handleContinueTrial = () => {
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={['#000', '#1a1a2e', '#16213e']}
-        style={styles.gradient}>
+      <LinearGradient colors={['#000000', '#1a1a2e', '#16213e']} style={styles.gradient}>
         
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.backButton}>←</Text>
-          </TouchableOpacity>
+          <Text style={styles.title}>Unlock Premium Features</Text>
+          <Text style={styles.subtitle}>Your trial session is complete. Upgrade to continue your breathing journey.</Text>
         </View>
 
-        {/* Main Content */}
-        <View style={styles.content}>
-          <View style={styles.iconContainer}>
-            <Text style={styles.lockIcon}>🔒</Text>
+        {/* Feature Highlights */}
+        <View style={styles.featuresContainer}>
+          <View style={styles.featureCard}>
+            <LinearGradient colors={['#ff00ff40', '#8000ff40']} style={styles.featureGradient}>
+              <Text style={styles.featureTitle}>7 Advanced Protocols</Text>
+              <Text style={styles.featureDescription}>Access all breathing techniques including Wim Hof Method and Navy SEAL training</Text>
+            </LinearGradient>
           </View>
 
-          <Text style={styles.title}>Trial Complete</Text>
-          <Text style={styles.subtitle}>
-            You've used your free trial. Subscribe to continue your breathing journey.
-          </Text>
-
-          <View style={styles.benefitsContainer}>
-            <Text style={styles.benefitsTitle}>With Premium Access:</Text>
-            <View style={styles.benefitItem}>
-              <Text style={styles.benefitIcon}>✨</Text>
-              <Text style={styles.benefitText}>All 7 Advanced Protocols</Text>
-            </View>
-            <View style={styles.benefitItem}>
-              <Text style={styles.benefitIcon}>🎯</Text>
-              <Text style={styles.benefitText}>Unlimited Sessions</Text>
-            </View>
-            <View style={styles.benefitItem}>
-              <Text style={styles.benefitIcon}>🔮</Text>
-              <Text style={styles.benefitText}>Enhanced Holographic Experience</Text>
-            </View>
-            <View style={styles.benefitItem}>
-              <Text style={styles.benefitIcon}>📊</Text>
-              <Text style={styles.benefitText}>Progress Tracking</Text>
-            </View>
+          <View style={styles.featureCard}>
+            <LinearGradient colors={['#00ffff40', '#0080ff40']} style={styles.featureGradient}>
+              <Text style={styles.featureTitle}>Unlimited Sessions</Text>
+              <Text style={styles.featureDescription}>Practice as long as you want with personalized session tracking</Text>
+            </LinearGradient>
           </View>
 
-          <View style={styles.pricingContainer}>
-            <Text style={styles.price}>₹999</Text>
-            <Text style={styles.period}>per month</Text>
+          <View style={styles.featureCard}>
+            <LinearGradient colors={['#ff8000', '#ff0080']} style={styles.featureGradient}>
+              <Text style={styles.featureTitle}>Progress Analytics</Text>
+              <Text style={styles.featureDescription}>Track your breathing journey with detailed insights and statistics</Text>
+            </LinearGradient>
           </View>
         </View>
 
-        {/* Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.subscribeButton}
-            onPress={() => navigation.navigate('Subscription')}>
-            <LinearGradient
-              colors={['#ff00ff', '#8000ff']}
-              style={styles.subscribeGradient}>
-              <Text style={styles.subscribeButtonText}>
-                Upgrade to Premium
-              </Text>
+        {/* Pricing */}
+        <View style={styles.pricingContainer}>
+          <Text style={styles.priceText}>Only ₹999/month</Text>
+          <Text style={styles.priceSubtext}>Cancel anytime • Start immediately</Text>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgrade}>
+            <LinearGradient colors={['#ff00ff', '#8000ff']} style={styles.buttonGradient}>
+              <Text style={styles.upgradeButtonText}>Upgrade Now</Text>
+              <Text style={styles.buttonSubtext}>Unlock full potential</Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.backToHomeButton}
-            onPress={() => navigation.navigate('Welcome')}>
-            <Text style={styles.backToHomeText}>Back to Home</Text>
+          <TouchableOpacity style={styles.continueButton} onPress={handleContinueTrial}>
+            <View style={styles.continueButtonContent}>
+              <Text style={styles.continueButtonText}>Continue Trial</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -97,114 +88,129 @@ const UpgradePromptScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   gradient: {
     flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    paddingTop: Platform.OS === 'android' ? 40 : 20,
+    paddingBottom: 40,
   },
   header: {
-    padding: 20,
-    paddingTop: 40,
-  },
-  backButton: {
-    fontSize: 24,
-    color: '#ffffff',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  iconContainer: {
-    marginBottom: 32,
-  },
-  lockIcon: {
-    fontSize: 80,
-    textAlign: 'center',
+    marginBottom: 40,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    color: '#00ffff',
     marginBottom: 16,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: '#ffffff80',
     textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 40,
+    lineHeight: 22,
     paddingHorizontal: 20,
   },
-  benefitsContainer: {
-    marginBottom: 40,
+  featuresContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 20,
   },
-  benefitsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#00ffff',
-    textAlign: 'center',
-    marginBottom: 20,
+  featureCard: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#ffffff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+      },
+    }),
   },
-  benefitItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
+  featureGradient: {
+    padding: 20,
   },
-  benefitIcon: {
+  featureTitle: {
     fontSize: 20,
-    marginRight: 12,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 8,
   },
-  benefitText: {
-    fontSize: 16,
+  featureDescription: {
+    fontSize: 14,
     color: '#ffffff90',
+    lineHeight: 20,
   },
   pricingContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginVertical: 30,
   },
-  price: {
-    fontSize: 48,
+  priceText: {
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#ff00ff',
-    textShadowColor: '#ff00ff40',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 10,
+    marginBottom: 4,
   },
-  period: {
-    fontSize: 16,
-    color: '#ffffff70',
-    marginTop: 4,
+  priceSubtext: {
+    fontSize: 14,
+    color: '#ffffff60',
   },
-  buttonContainer: {
-    padding: 20,
+  buttonsContainer: {
     gap: 16,
   },
-  subscribeButton: {
-    borderRadius: 16,
+  upgradeButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#ff00ff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
+  },
+  continueButton: {
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#00ffff40',
     overflow: 'hidden',
   },
-  subscribeGradient: {
+  buttonGradient: {
     paddingVertical: 18,
+    paddingHorizontal: 32,
     alignItems: 'center',
   },
-  subscribeButtonText: {
-    fontSize: 18,
+  continueButtonContent: {
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  upgradeButtonText: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
   },
-  backToHomeButton: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ffffff30',
-    borderRadius: 16,
+  continueButtonText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#00ffff',
   },
-  backToHomeText: {
-    fontSize: 16,
+  buttonSubtext: {
+    fontSize: 14,
     color: '#ffffff80',
+    marginTop: 4,
   },
 });
 

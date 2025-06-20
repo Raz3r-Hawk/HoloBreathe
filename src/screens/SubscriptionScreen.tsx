@@ -1,142 +1,110 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   SafeAreaView,
-  Alert,
-  ActivityIndicator,
+  StyleSheet,
+  ScrollView,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LinearGradient from 'react-native-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {RootStackParamList} from '../../App';
+import {RootStackParamList} from '../App';
 
-type SubscriptionScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Subscription'
->;
+type SubscriptionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Subscription'>;
 
 const SubscriptionScreen = () => {
   const navigation = useNavigation<SubscriptionScreenNavigationProp>();
-  const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubscribe = async () => {
-    setIsProcessing(true);
-    
-    // Simulate payment processing (replace with actual Razorpay integration)
-    try {
-      // Demo: Simulate 2-second payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mark subscription as active
-      await AsyncStorage.setItem('hasSubscription', 'true');
-      await AsyncStorage.setItem('subscriptionEndDate', 
-        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-      );
-      
-      Alert.alert(
-        'Subscription Successful!',
-        'You now have access to all breathing protocols.',
-        [
-          {
-            text: 'Start Breathing',
-            onPress: () => navigation.navigate('ProtocolSelection'),
-          },
-        ]
-      );
-    } catch (error) {
-      Alert.alert('Payment Failed', 'Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleSubscribe = () => {
+    // Handle subscription logic here
+    navigation.navigate('ProtocolSelection');
   };
 
-  const features = [
-    '7 Advanced Breathing Protocols',
-    'Unlimited Session Access',
-    'Progress Tracking',
-    'Holographic Visual Experience',
-    'Personalized Recommendations',
-    'Offline Mode Support',
-  ];
+  const handleBackToTrial = () => {
+    navigation.goBack();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={['#000', '#1a1a2e', '#16213e']}
-        style={styles.gradient}>
-        
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.backButton}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Premium Subscription</Text>
-          <View style={styles.placeholder} />
-        </View>
+      <LinearGradient colors={['#000000', '#1a1a2e', '#16213e']} style={styles.gradient}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Premium Breathing Experience</Text>
+            <Text style={styles.subtitle}>Unlock the full potential of holographic breathing</Text>
+          </View>
 
-        {/* Pricing Card */}
-        <View style={styles.pricingCard}>
-          <LinearGradient
-            colors={['#ff00ff20', '#8000ff20']}
-            style={styles.cardGradient}>
-            
-            <Text style={styles.priceAmount}>₹999</Text>
-            <Text style={styles.pricePeriod}>per month</Text>
-            
-            <Text style={styles.priceDescription}>
-              Unlock unlimited access to all breathing protocols
-            </Text>
-          </LinearGradient>
-        </View>
-
-        {/* Features List */}
-        <View style={styles.featuresContainer}>
-          <Text style={styles.featuresTitle}>What You Get:</Text>
-          {features.map((feature, index) => (
-            <View key={index} style={styles.featureItem}>
-              <Text style={styles.featureIcon}>✓</Text>
-              <Text style={styles.featureText}>{feature}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Subscribe Button */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.subscribeButton}
-            onPress={handleSubscribe}
-            disabled={isProcessing}>
-            <LinearGradient
-              colors={isProcessing ? ['#666', '#444'] : ['#ff00ff', '#8000ff']}
-              style={styles.subscribeGradient}>
-              {isProcessing ? (
-                <View style={styles.processingContainer}>
-                  <ActivityIndicator color="#ffffff" size="small" />
-                  <Text style={styles.processingText}>Processing...</Text>
-                </View>
-              ) : (
-                <Text style={styles.subscribeButtonText}>
-                  Subscribe Now
-                </Text>
-              )}
+          {/* Pricing Card */}
+          <View style={styles.pricingCard}>
+            <LinearGradient colors={['#ff00ff', '#8000ff']} style={styles.pricingGradient}>
+              <Text style={styles.priceAmount}>₹999</Text>
+              <Text style={styles.pricePeriod}>per month</Text>
+              <Text style={styles.priceDescription}>Full access to all breathing protocols</Text>
             </LinearGradient>
-          </TouchableOpacity>
+          </View>
 
-          <Text style={styles.disclaimer}>
-            Cancel anytime. Secure payment processing.
-          </Text>
-        </View>
+          {/* Features List */}
+          <View style={styles.featuresContainer}>
+            <Text style={styles.featuresTitle}>What's Included</Text>
+            
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>✨</Text>
+              <Text style={styles.featureText}>7 Advanced Breathing Protocols</Text>
+            </View>
+            
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>🎯</Text>
+              <Text style={styles.featureText}>Personalized Session Tracking</Text>
+            </View>
+            
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>🔮</Text>
+              <Text style={styles.featureText}>Holographic Visual Experience</Text>
+            </View>
+            
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>📊</Text>
+              <Text style={styles.featureText}>Detailed Progress Analytics</Text>
+            </View>
+            
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>🎵</Text>
+              <Text style={styles.featureText}>Ambient Audio Library</Text>
+            </View>
+            
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>⚡</Text>
+              <Text style={styles.featureText}>Unlimited Session Duration</Text>
+            </View>
+          </View>
 
-        {/* Trial Info */}
-        <View style={styles.trialInfo}>
-          <Text style={styles.trialText}>
-            Already used your free trial? Subscribe to continue your journey.
-          </Text>
-        </View>
+          {/* Action Buttons */}
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
+              <LinearGradient colors={['#ff00ff', '#8000ff']} style={styles.buttonGradient}>
+                <Text style={styles.subscribeButtonText}>Subscribe Now</Text>
+                <Text style={styles.buttonSubtext}>Start your premium journey</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.backButton} onPress={handleBackToTrial}>
+              <LinearGradient colors={['#00ffff40', '#0080ff40']} style={styles.buttonGradient}>
+                <Text style={styles.backButtonText}>Continue with Trial</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          {/* Terms */}
+          <View style={styles.termsContainer}>
+            <Text style={styles.termsText}>
+              Subscription automatically renews monthly. Cancel anytime from your account settings.
+            </Text>
+          </View>
+        </ScrollView>
       </LinearGradient>
     </SafeAreaView>
   );
@@ -145,97 +113,123 @@ const SubscriptionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   gradient: {
     flex: 1,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: 40,
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'android' ? 40 : 20,
+    paddingBottom: 40,
   },
-  backButton: {
-    fontSize: 24,
-    color: '#ffffff',
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
   },
   title: {
-    fontSize: 20,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#00ffff',
+    marginBottom: 12,
+    textAlign: 'center',
   },
-  placeholder: {
-    width: 24,
+  subtitle: {
+    fontSize: 16,
+    color: '#ffffff80',
+    textAlign: 'center',
+    lineHeight: 22,
   },
   pricingCard: {
-    margin: 20,
-    borderRadius: 16,
+    marginBottom: 40,
+    borderRadius: 20,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#ff00ff40',
+    ...Platform.select({
+      android: {
+        elevation: 15,
+      },
+      ios: {
+        shadowColor: '#ff00ff',
+        shadowOffset: {width: 0, height: 8},
+        shadowOpacity: 0.4,
+        shadowRadius: 16,
+      },
+    }),
   },
-  cardGradient: {
-    padding: 32,
+  pricingGradient: {
+    padding: 30,
     alignItems: 'center',
   },
   priceAmount: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#ff00ff',
-    textShadowColor: '#ff00ff40',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 10,
+    color: '#ffffff',
+    marginBottom: 4,
   },
   pricePeriod: {
     fontSize: 18,
-    color: '#ffffff80',
-    marginBottom: 16,
+    color: '#ffffff90',
+    marginBottom: 12,
   },
   priceDescription: {
     fontSize: 16,
-    color: '#ffffff90',
+    color: '#ffffff',
     textAlign: 'center',
-    lineHeight: 22,
   },
   featuresContainer: {
-    margin: 20,
-    marginTop: 10,
+    marginBottom: 40,
   },
   featuresTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#00ffff',
-    marginBottom: 16,
+    marginBottom: 20,
+    textAlign: 'center',
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
+    paddingHorizontal: 20,
   },
   featureIcon: {
-    fontSize: 16,
-    color: '#00ff00',
-    marginRight: 12,
-    fontWeight: 'bold',
+    fontSize: 20,
+    marginRight: 16,
+    width: 30,
   },
   featureText: {
     fontSize: 16,
     color: '#ffffff90',
     flex: 1,
   },
-  buttonContainer: {
-    padding: 20,
-    paddingTop: 10,
+  buttonsContainer: {
+    marginBottom: 30,
   },
   subscribeButton: {
-    borderRadius: 16,
+    marginBottom: 16,
+    borderRadius: 20,
     overflow: 'hidden',
-    marginBottom: 12,
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#ff00ff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
   },
-  subscribeGradient: {
+  backButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#00ffff40',
+  },
+  buttonGradient: {
     paddingVertical: 18,
+    paddingHorizontal: 32,
     alignItems: 'center',
   },
   subscribeButtonText: {
@@ -243,30 +237,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
   },
-  processingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  processingText: {
+  backButtonText: {
     fontSize: 18,
-    color: '#ffffff',
     fontWeight: '600',
+    color: '#00ffff',
   },
-  disclaimer: {
+  buttonSubtext: {
+    fontSize: 14,
+    color: '#ffffff80',
+    marginTop: 4,
+  },
+  termsContainer: {
+    alignItems: 'center',
+  },
+  termsText: {
     fontSize: 12,
     color: '#ffffff60',
     textAlign: 'center',
-  },
-  trialInfo: {
-    padding: 20,
-    paddingTop: 0,
-  },
-  trialText: {
-    fontSize: 14,
-    color: '#ffffff70',
-    textAlign: 'center',
-    fontStyle: 'italic',
+    lineHeight: 18,
+    paddingHorizontal: 20,
   },
 });
 

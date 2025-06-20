@@ -1,75 +1,84 @@
-import {BreathingProtocol} from '../types';
+export interface BreathingProtocol {
+  id: string;
+  name: string;
+  pattern: number[]; // [inhale, hold, exhale, hold] in seconds
+  phases: string[];
+  color: string;
+  benefit: string;
+  description: string;
+  sessionDuration: number; // in seconds
+}
 
 export const breathingProtocols: BreathingProtocol[] = [
   {
-    id: 'foundation',
-    name: 'Foundation Protocol',
-    pattern: [4, 4, 4, 4],
-    phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
-    color: '#00ffff',
-    benefit: 'Basic breathing foundation',
-    description: 'Perfect for beginners to establish proper breathing rhythm and technique.',
+    id: '478',
+    name: '4-7-8 Relaxation',
+    pattern: [4, 7, 8, 0],
+    phases: ['Inhale', 'Hold', 'Exhale', 'Rest'],
+    color: 'cyan',
+    benefit: 'Deep Relaxation & Sleep',
+    description: 'Perfect for reducing anxiety and preparing for sleep',
     sessionDuration: 300, // 5 minutes
   },
   {
-    id: 'stress-relief',
-    name: 'Stress Relief',
-    pattern: [4, 7, 8, 0],
+    id: 'box',
+    name: 'Box Breathing',
+    pattern: [4, 4, 4, 4],
+    phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
+    color: 'purple',
+    benefit: 'Focus & Concentration',
+    description: 'Used by Navy SEALs for mental clarity and stress control',
+    sessionDuration: 600, // 10 minutes
+  },
+  {
+    id: 'wim',
+    name: 'Wim Hof Method',
+    pattern: [3, 0, 1, 15],
+    phases: ['Deep Inhale', 'Release', 'Exhale', 'Hold'],
+    color: 'orange',
+    benefit: 'Energy & Immune Boost',
+    description: 'Increases energy levels and strengthens immune system',
+    sessionDuration: 900, // 15 minutes
+  },
+  {
+    id: 'triangle',
+    name: 'Triangle Breathing',
+    pattern: [4, 4, 4, 0],
     phases: ['Inhale', 'Hold', 'Exhale', 'Rest'],
-    color: '#ff6b6b',
-    benefit: 'Reduces stress and anxiety',
-    description: 'Activates parasympathetic nervous system for deep relaxation.',
+    color: 'green',
+    benefit: 'Balance & Harmony',
+    description: 'Creates equilibrium between mind, body, and spirit',
     sessionDuration: 480, // 8 minutes
   },
   {
-    id: 'energy-boost',
-    name: 'Energy Boost',
-    pattern: [3, 0, 3, 0],
-    phases: ['Inhale', 'Switch', 'Exhale', 'Switch'],
-    color: '#ffd93d',
-    benefit: 'Increases energy and alertness',
-    description: 'Rapid breathing technique to boost energy and mental clarity.',
-    sessionDuration: 300, // 5 minutes
-  },
-  {
-    id: 'focus-enhancement',
-    name: 'Focus Enhancement',
-    pattern: [6, 2, 6, 2],
-    phases: ['Inhale', 'Hold', 'Exhale', 'Pause'],
-    color: '#6bcf7f',
-    benefit: 'Improves concentration',
-    description: 'Enhances mental focus and cognitive performance.',
-    sessionDuration: 600, // 10 minutes
-  },
-  {
-    id: 'sleep-preparation',
-    name: 'Sleep Preparation',
-    pattern: [4, 4, 6, 2],
-    phases: ['Inhale', 'Hold', 'Exhale', 'Rest'],
-    color: '#a8e6cf',
-    benefit: 'Prepares body for sleep',
-    description: 'Calms the nervous system for better sleep quality.',
+    id: 'coherent',
+    name: 'Coherent Breathing',
+    pattern: [5, 0, 5, 0],
+    phases: ['Inhale', 'Transition', 'Exhale', 'Transition'],
+    color: 'blue',
+    benefit: 'Heart Rate Variability',
+    description: 'Optimizes heart rhythm for emotional balance',
     sessionDuration: 720, // 12 minutes
   },
   {
-    id: 'anxiety-relief',
-    name: 'Anxiety Relief',
-    pattern: [3, 3, 6, 3],
-    phases: ['Inhale', 'Hold', 'Exhale', 'Pause'],
-    color: '#dda0dd',
-    benefit: 'Reduces anxiety symptoms',
-    description: 'Specifically designed to calm anxiety and racing thoughts.',
-    sessionDuration: 600, // 10 minutes
+    id: 'power',
+    name: 'Power Breath',
+    pattern: [1, 0, 2, 0],
+    phases: ['Quick Inhale', 'Release', 'Strong Exhale', 'Reset'],
+    color: 'red',
+    benefit: 'Instant Energy',
+    description: 'Rapid energizing technique for immediate vitality',
+    sessionDuration: 180, // 3 minutes
   },
   {
-    id: 'performance',
-    name: 'Performance Mode',
-    pattern: [5, 5, 5, 5],
-    phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
-    color: '#ff8c42',
-    benefit: 'Peak performance state',
-    description: 'Advanced protocol for athletes and high performers.',
-    sessionDuration: 900, // 15 minutes
+    id: 'extended',
+    name: 'Extended Exhale',
+    pattern: [4, 0, 8, 0],
+    phases: ['Inhale', 'Transition', 'Long Exhale', 'Rest'],
+    color: 'indigo',
+    benefit: 'Stress Relief',
+    description: 'Activates parasympathetic nervous system for deep calm',
+    sessionDuration: 420, // 7 minutes
   },
 ];
 

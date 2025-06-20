@@ -3,53 +3,40 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Dimensions,
   SafeAreaView,
+  StyleSheet,
   Animated,
+  Platform,
 } from 'react-native';
-import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {RootStackParamList} from '../../App';
-import {BreathingProtocol, BreathingSessionState} from '../types';
+import {RootStackParamList} from '../App';
 
-type BreathingSessionScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'BreathingSession'
->;
-
-type BreathingSessionScreenRouteProp = RouteProp<
-  RootStackParamList,
-  'BreathingSession'
->;
-
-const {width, height} = Dimensions.get('window');
+type BreathingSessionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'BreathingSession'>;
+type BreathingSessionScreenRouteProp = RouteProp<RootStackParamList, 'BreathingSession'>;
 
 const BreathingSessionScreen = () => {
   const navigation = useNavigation<BreathingSessionScreenNavigationProp>();
   const route = useRoute<BreathingSessionScreenRouteProp>();
   const {protocol} = route.params;
 
-  const [sessionState, setSessionState] = useState<BreathingSessionState>({
-    isActive: false,
-    isPaused: false,
-    currentPhase: 0,
-    phaseTimeLeft: protocol.pattern[0],
-    sessionTimeElapsed: 0,
-    cycles: 0,
-  });
+  const [currentPhase, setCurrentPhase] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(protocol.pattern[0]);
+  const [isActive, setIsActive] = useState(false);
+  const [cycles, setCycles] = useState(0);
 
-  const breathingAnimation = useRef(new Animated.Value(0.5)).current;
+  const animatedValue = useRef(new Animated.Value(1)).current;
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (sessionState.isActive && !sessionState.isPaused) {
-      startTimer();
-      startBreathingAnimation();
-    } else {
-      stopTimer();
-      stopBreathingAnimation();
+    if (isActive && timeLeft > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft(time => time - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && isActive) {
+      handlePhaseComplete();
     }
 
     return () => {
@@ -57,191 +44,118 @@ const BreathingSessionScreen = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [sessionState.isActive, sessionState.isPaused]);
+  }, [isActive, timeLeft]);
 
-  const startTimer = () => {
-    intervalRef.current = setInterval(() => {
-      setSessionState(prevState => {
-        const newTimeLeft = prevState.phaseTimeLeft - 1;
-        
-        if (newTimeLeft <= 0) {
-          const nextPhase = (prevState.currentPhase + 1) % protocol.pattern.length;
-          const newCycles = nextPhase === 0 ? prevState.cycles + 1 : prevState.cycles;
-          
-          return {
-            ...prevState,
-            currentPhase: nextPhase,
-            phaseTimeLeft: protocol.pattern[nextPhase],
-            sessionTimeElapsed: prevState.sessionTimeElapsed + 1,
-            cycles: newCycles,
-          };
-        }
-        
-        return {
-          ...prevState,
-          phaseTimeLeft: newTimeLeft,
-          sessionTimeElapsed: prevState.sessionTimeElapsed + 1,
-        };
-      });
-    }, 1000);
+  const handlePhaseComplete = () => {
+    const nextPhase = (currentPhase + 1) % protocol.pattern.length;
+    
+    if (nextPhase === 0) {
+      setCycles(prev => prev + 1);
+    }
+
+    setCurrentPhase(nextPhase);
+    setTimeLeft(protocol.pattern[nextPhase]);
   };
 
-  const stopTimer = () => {
+  const startSession = () => {
+    setIsActive(true);
+    startBreathingAnimation();
+  };
+
+  const pauseSession = () => {
+    setIsActive(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
-      intervalRef.current = null;
     }
   };
 
-  const startBreathingAnimation = () => {
-    const animateBreathing = () => {
-      const currentPhase = protocol.phases[sessionState.currentPhase];
-      const targetValue = currentPhase === 'Inhale' ? 1 : 0.3;
-      const duration = protocol.pattern[sessionState.currentPhase] * 1000;
-
-      Animated.timing(breathingAnimation, {
-        toValue: targetValue,
-        duration: duration,
-        useNativeDriver: false,
-      }).start(() => {
-        if (sessionState.isActive && !sessionState.isPaused) {
-          animateBreathing();
-        }
-      });
-    };
-    animateBreathing();
-  };
-
-  const stopBreathingAnimation = () => {
-    breathingAnimation.stopAnimation();
-  };
-
-  const toggleSession = () => {
-    setSessionState(prevState => ({
-      ...prevState,
-      isActive: !prevState.isActive,
-      isPaused: false,
-    }));
-  };
-
-  const togglePause = () => {
-    setSessionState(prevState => ({
-      ...prevState,
-      isPaused: !prevState.isPaused,
-    }));
-  };
-
   const endSession = () => {
-    setSessionState({
-      isActive: false,
-      isPaused: false,
-      currentPhase: 0,
-      phaseTimeLeft: protocol.pattern[0],
-      sessionTimeElapsed: 0,
-      cycles: 0,
-    });
+    setIsActive(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
     navigation.goBack();
   };
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  const startBreathingAnimation = () => {
+    const duration = protocol.pattern[currentPhase] * 1000;
+    const toValue = currentPhase === 0 || currentPhase === 2 ? 1.5 : 1;
+
+    Animated.timing(animatedValue, {
+      toValue,
+      duration,
+      useNativeDriver: true,
+    }).start();
   };
 
-  const currentPhase = protocol.phases[sessionState.currentPhase];
+  const getPhaseColors = () => {
+    switch (protocol.color) {
+      case 'cyan': return ['#00ffff', '#0080ff'];
+      case 'purple': return ['#8000ff', '#ff00ff'];
+      case 'green': return ['#00ff80', '#00ffff'];
+      case 'orange': return ['#ff8000', '#ff0080'];
+      default: return ['#00ffff', '#0080ff'];
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={['#000', '#1a1a2e', protocol.color + '20']}
-        style={styles.gradient}>
+      <LinearGradient colors={['#000000', '#1a1a2e', '#16213e']} style={styles.gradient}>
         
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.backButton}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.protocolTitle}>{protocol.name}</Text>
-          <TouchableOpacity onPress={endSession}>
-            <Text style={styles.endButton}>End</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Session Stats */}
-        <View style={styles.statsContainer}>
-          <Text style={styles.timeElapsed}>
-            {formatTime(sessionState.sessionTimeElapsed)}
-          </Text>
-          <Text style={styles.cyclesCount}>
-            Cycles: {sessionState.cycles}
-          </Text>
+          <Text style={styles.protocolName}>{protocol.name}</Text>
+          <Text style={styles.currentPhase}>{protocol.phases[currentPhase]}</Text>
         </View>
 
         {/* Breathing Circle */}
-        <View style={styles.breathingContainer}>
-          <Animated.View
+        <View style={styles.circleContainer}>
+          <Animated.View 
             style={[
               styles.breathingCircle,
-              {
-                transform: [{
-                  scale: breathingAnimation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.5, 1.2],
-                  }),
-                }],
-                opacity: breathingAnimation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.6, 1],
-                }),
-              },
+              {transform: [{scale: animatedValue}]}
             ]}>
-            <LinearGradient
-              colors={[protocol.color + '40', protocol.color + '80']}
+            <LinearGradient 
+              colors={getPhaseColors()} 
               style={styles.circleGradient}>
-              <Text style={styles.phaseText}>{currentPhase}</Text>
+              <Text style={styles.timeDisplay}>{timeLeft}</Text>
             </LinearGradient>
           </Animated.View>
         </View>
 
-        {/* Phase Info */}
-        <View style={styles.phaseContainer}>
-          <Text style={styles.phaseTitle}>{currentPhase}</Text>
-          <Text style={styles.phaseTimer}>
-            {sessionState.phaseTimeLeft}
-          </Text>
-          <Text style={styles.phaseInstruction}>
-            {currentPhase === 'Inhale' && 'Breathe in slowly and deeply'}
-            {currentPhase === 'Hold' && 'Hold your breath gently'}
-            {currentPhase === 'Exhale' && 'Breathe out completely'}
-            {currentPhase === 'Rest' && 'Relax and prepare'}
-            {currentPhase === 'Pause' && 'Brief pause before continuing'}
-            {currentPhase === 'Switch' && 'Quick transition'}
-          </Text>
+        {/* Stats */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Cycles</Text>
+            <Text style={styles.statValue}>{cycles}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Phase</Text>
+            <Text style={styles.statValue}>{currentPhase + 1}/4</Text>
+          </View>
         </View>
 
         {/* Controls */}
         <View style={styles.controlsContainer}>
-          {!sessionState.isActive ? (
-            <TouchableOpacity style={styles.startButton} onPress={toggleSession}>
-              <LinearGradient
-                colors={['#00ffff', '#0080ff']}
-                style={styles.buttonGradient}>
-                <Text style={styles.buttonText}>Start Session</Text>
+          {!isActive ? (
+            <TouchableOpacity style={styles.startButton} onPress={startSession}>
+              <LinearGradient colors={['#00ffff', '#0080ff']} style={styles.buttonGradient}>
+                <Text style={styles.buttonText}>Start</Text>
               </LinearGradient>
             </TouchableOpacity>
           ) : (
-            <View style={styles.activeControls}>
-              <TouchableOpacity style={styles.pauseButton} onPress={togglePause}>
-                <Text style={styles.controlButtonText}>
-                  {sessionState.isPaused ? 'Resume' : 'Pause'}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.stopButton} onPress={toggleSession}>
-                <Text style={styles.controlButtonText}>Stop</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.pauseButton} onPress={pauseSession}>
+              <LinearGradient colors={['#ff8000', '#ff0080']} style={styles.buttonGradient}>
+                <Text style={styles.buttonText}>Pause</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           )}
+          
+          <TouchableOpacity style={styles.endButton} onPress={endSession}>
+            <LinearGradient colors={['#ff0040', '#8000ff']} style={styles.buttonGradient}>
+              <Text style={styles.buttonText}>End</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </LinearGradient>
     </SafeAreaView>
@@ -251,94 +165,102 @@ const BreathingSessionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   gradient: {
     flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 40,
+    paddingTop: Platform.OS === 'android' ? 40 : 20,
+    paddingBottom: 20,
   },
-  backButton: {
-    fontSize: 24,
-    color: '#ffffff',
-  },
-  protocolTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  endButton: {
-    fontSize: 16,
-    color: '#ff6b6b',
-  },
-  statsContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  timeElapsed: {
-    fontSize: 32,
+  protocolName: {
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#00ffff',
     marginBottom: 8,
+    textAlign: 'center',
   },
-  cyclesCount: {
-    fontSize: 16,
-    color: '#ffffff70',
+  currentPhase: {
+    fontSize: 20,
+    color: '#ffffff80',
+    textAlign: 'center',
   },
-  breathingContainer: {
+  circleContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 40,
   },
   breathingCircle: {
     width: 200,
     height: 200,
     borderRadius: 100,
     overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 30,
+      },
+    }),
   },
   circleGradient: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  phaseText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  phaseContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  phaseTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 8,
-  },
-  phaseTimer: {
+  timeDisplay: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#00ffff',
-    marginBottom: 12,
-  },
-  phaseInstruction: {
-    fontSize: 16,
-    color: '#ffffff80',
+    color: '#ffffff',
     textAlign: 'center',
-    paddingHorizontal: 40,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 40,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontSize: 16,
+    color: '#ffffff60',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00ffff',
   },
   controlsContainer: {
-    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingBottom: 40,
   },
   startButton: {
-    borderRadius: 12,
+    flex: 1,
+    marginHorizontal: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  pauseButton: {
+    flex: 1,
+    marginHorizontal: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  endButton: {
+    flex: 1,
+    marginHorizontal: 8,
+    borderRadius: 16,
     overflow: 'hidden',
   },
   buttonGradient: {
@@ -347,29 +269,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  activeControls: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  pauseButton: {
-    flex: 1,
-    backgroundColor: '#444',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  stopButton: {
-    flex: 1,
-    backgroundColor: '#ff6b6b',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  controlButtonText: {
-    fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
   },

@@ -6,151 +6,17 @@ import {
   SafeAreaView,
   StyleSheet,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LinearGradient from 'react-native-linear-gradient';
-import {RootStackParamList} from '../../App';
+import {RootStackParamList} from '../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
 const {width, height} = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  gradient: {
-    flex: 1,
-    paddingHorizontal: Math.max(24, width * 0.06),
-    justifyContent: 'space-between',
-  },
-  header: {
-    alignItems: 'center',
-    marginTop: height * 0.08,
-    marginBottom: height * 0.04,
-  },
-  title: {
-    fontSize: Math.min(width * 0.12, 48),
-    fontWeight: 'bold',
-    color: '#00ffff',
-    textShadowColor: '#00ffff80',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 20,
-    letterSpacing: width * 0.02,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: Math.min(width * 0.042, 18),
-    color: '#ffffff80',
-    letterSpacing: 1,
-    textAlign: 'center',
-  },
-  cubeContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  holoCube: {
-    width: Math.min(width * 0.32, 128),
-    height: Math.min(width * 0.32, 128),
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: '#00ffff40',
-    overflow: 'hidden',
-    shadowColor: '#00ffff',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  cubeGradient: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cubeText: {
-    fontSize: Math.min(width * 0.16, 64),
-    color: '#ffffff',
-    textShadowColor: '#00ffff',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 15,
-  },
-  descriptionContainer: {
-    marginBottom: height * 0.04,
-    paddingHorizontal: width * 0.04,
-  },
-  description: {
-    fontSize: Math.min(width * 0.04, 16),
-    color: '#ffffff90',
-    textAlign: 'center',
-    lineHeight: Math.min(width * 0.06, 24),
-  },
-  buttonContainer: {
-    marginBottom: height * 0.04,
-  },
-  trialButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    marginBottom: 16,
-    shadowColor: '#00ffff',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  trialGradient: {
-    paddingVertical: height * 0.025,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  trialButtonText: {
-    fontSize: Math.min(width * 0.05, 20),
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  trialSubtext: {
-    fontSize: Math.min(width * 0.035, 14),
-    color: '#00000080',
-    marginTop: 4,
-  },
-  subscribeButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#ff00ff',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  subscribeGradient: {
-    paddingVertical: height * 0.025,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  subscribeButtonText: {
-    fontSize: Math.min(width * 0.05, 20),
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  subscribeSubtext: {
-    fontSize: Math.min(width * 0.035, 14),
-    color: '#ffffff80',
-    marginTop: 4,
-  },
-  featuresContainer: {
-    paddingBottom: height * 0.04,
-    alignItems: 'center',
-  },
-  featureText: {
-    fontSize: Math.min(width * 0.035, 14),
-    color: '#ffffff60',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-});
 
 const WelcomeScreen = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
@@ -167,7 +33,7 @@ const WelcomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#000', '#1a1a2e', '#16213e']}
+        colors={['#000000', '#1a1a2e', '#16213e']}
         style={styles.gradient}>
         
         {/* Header */}
@@ -200,18 +66,18 @@ const WelcomeScreen = () => {
           <TouchableOpacity style={styles.trialButton} onPress={handleStartFreeTrial}>
             <LinearGradient
               colors={['#00ffff', '#0080ff']}
-              style={styles.trialGradient}>
+              style={styles.buttonGradient}>
               <Text style={styles.trialButtonText}>Start Free Trial</Text>
-              <Text style={styles.trialSubtext}>Try one protocol free</Text>
+              <Text style={styles.buttonSubtext}>Try one protocol free</Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
             <LinearGradient
               colors={['#ff00ff', '#8000ff']}
-              style={styles.subscribeGradient}>
+              style={styles.buttonGradient}>
               <Text style={styles.subscribeButtonText}>Subscribe - ₹999/month</Text>
-              <Text style={styles.subscribeSubtext}>Unlock all protocols</Text>
+              <Text style={styles.buttonSubtext}>Unlock all protocols</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -226,5 +92,171 @@ const WelcomeScreen = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  gradient: {
+    flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'space-between',
+    paddingTop: Platform.OS === 'android' ? 40 : 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginTop: 40,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#00ffff',
+    letterSpacing: 4,
+    marginBottom: 12,
+    textAlign: 'center',
+    ...Platform.select({
+      android: {
+        textShadowColor: '#00ffff80',
+        textShadowOffset: {width: 0, height: 0},
+        textShadowRadius: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 20,
+      },
+    }),
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#ffffff80',
+    letterSpacing: 1,
+    textAlign: 'center',
+  },
+  cubeContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: 40,
+  },
+  holoCube: {
+    width: 140,
+    height: 140,
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#00ffff40',
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.6,
+        shadowRadius: 25,
+      },
+    }),
+  },
+  cubeGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cubeText: {
+    fontSize: 70,
+    color: '#ffffff',
+    ...Platform.select({
+      android: {
+        textShadowColor: '#00ffff',
+        textShadowOffset: {width: 0, height: 0},
+        textShadowRadius: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 15,
+      },
+    }),
+  },
+  descriptionContainer: {
+    marginBottom: 40,
+    paddingHorizontal: 20,
+  },
+  description: {
+    fontSize: 16,
+    color: '#ffffff90',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  buttonContainer: {
+    marginBottom: 40,
+    gap: 16,
+  },
+  trialButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
+  },
+  subscribeButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#ff00ff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
+  },
+  buttonGradient: {
+    paddingVertical: 20,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  trialButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  subscribeButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  buttonSubtext: {
+    fontSize: 14,
+    marginTop: 4,
+    opacity: 0.8,
+  },
+  featuresContainer: {
+    paddingBottom: 40,
+    alignItems: 'center',
+    gap: 8,
+  },
+  featureText: {
+    fontSize: 14,
+    color: '#ffffff60',
+    textAlign: 'center',
+  },
+});
 
 export default WelcomeScreen;
