@@ -7,18 +7,18 @@ buildscript {
         compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "25.1.8937393"
-        kotlinVersion = "1.9.0"
+        kotlinVersion = "1.8.10"
     }
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()
-        maven { url "https://repo1.maven.org/maven2" }
+        maven { url "https://www.jitpack.io" }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.2.1")
-        classpath("com.facebook.react:react-native-gradle-plugin:0.76.3")
+        classpath("com.android.tools.build:gradle:8.1.4")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        // Note: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
 }
 
@@ -27,5 +27,7 @@ allprojects {
         google()
         mavenCentral()
         maven { url "https://www.jitpack.io" }
+        // React Native Maps dependencies
+        maven { url "https://maven.google.com" }
     }
 }
