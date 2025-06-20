@@ -7,6 +7,7 @@
 - ✅ Installed React Native CLI dependencies
 - ✅ **Fixed missing native_modules.gradle dependencies**
 - ✅ **Added missing repositories configuration**
+- ✅ **Specified React Native Gradle Plugin version 0.76.3**
 - ✅ Simplified Android configuration for modern React Native
 - ✅ Optimized memory settings for large projects
 
