@@ -62,13 +62,13 @@ export default function BreathingSession() {
   }, [setLocation]);
 
   useEffect(() => {
-    // Auto-start session when protocol is loaded
-    if (selectedProtocol && !sessionState.isActive) {
+    // Auto-start session when protocol is loaded (only once)
+    if (selectedProtocol && !sessionState.isActive && !sessionStartTime) {
       console.log('Auto-starting session for protocol:', selectedProtocol.name);
       setSessionStartTime(new Date());
       startSession();
     }
-  }, [selectedProtocol, sessionState.isActive, startSession]);
+  }, [selectedProtocol, sessionState.isActive, sessionStartTime, startSession]);
 
   useEffect(() => {
     // Start ambient audio when session becomes active
@@ -118,6 +118,9 @@ export default function BreathingSession() {
   const handleEndSession = () => {
     console.log('End session clicked - stopping audio and redirecting');
     
+    // Prevent multiple end session calls
+    if (showCompletionMessage) return;
+    
     // Stop audio immediately
     try {
       stopAudio();
@@ -131,6 +134,9 @@ export default function BreathingSession() {
     } catch (error) {
       console.log('End session failed:', error);
     }
+    
+    // Clear session data to prevent restart
+    setSessionStartTime(null);
     
     // Record incomplete session if it was started (optional for trial mode)
     if (selectedProtocol && sessionStartTime && sessionState.sessionTimeElapsed > 30) {
@@ -151,14 +157,7 @@ export default function BreathingSession() {
     // Use setTimeout to avoid setState during render issues
     setTimeout(() => {
       setLocation('/protocol-selection');
-    }, 0);
-    
-    // Backup redirect in case first fails
-    setTimeout(() => {
-      if (window.location.pathname === '/breathing-session') {
-        window.location.href = '/protocol-selection';
-      }
-    }, 1000);
+    }, 100);
   };
 
   // Handle missing protocol with useEffect to avoid setState during render

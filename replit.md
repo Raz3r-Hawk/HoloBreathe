@@ -63,6 +63,9 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Enhanced trial mode experience** - session recording failures don't block completion flow
   - **Added manual navigation controls** - users can manually return to protocol selection
   - **Fixed End button black screen** - comprehensive error handling prevents navigation failures
+  - **Fixed Begin Session functionality** - resolved protocol loading race condition
+  - **Fixed End Session auto-restart loop** - prevented multiple session initialization
+  - **Set dark theme as default** - improved user experience with dark mode by default
   - Ready for immediate APK generation and Google Play Store deployment
 - **2025-06-20**: Complete React Native CLI restructure for Android Studio deployment
   - Restructured entire project with proper React Native CLI setup and file organization
