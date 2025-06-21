@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Force dark theme globally */
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: hsl(224, 71%, 4%) !important;
+  color: hsl(213, 31%, 91%) !important;
+}
+
 /* Default Dark Theme */
 :root {
   --background: 210 11% 4%; /* #0A0A0F - space-black */

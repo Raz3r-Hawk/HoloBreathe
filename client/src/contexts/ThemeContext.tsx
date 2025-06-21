@@ -12,8 +12,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
+    // Always default to dark theme
     const saved = localStorage.getItem('theme');
-    return (saved as Theme) || 'dark';
+    const defaultTheme = (saved as Theme) || 'dark';
+    // Force dark theme if no specific preference
+    if (!saved) {
+      localStorage.setItem('theme', 'dark');
+    }
+    return defaultTheme;
   });
 
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('dark');

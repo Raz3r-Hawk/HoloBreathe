@@ -109,7 +109,8 @@ export default function BreathingSession() {
       // Immediate redirect after showing completion
       const redirectTimer = setTimeout(() => {
         setShowCompletionMessage(false);
-        setLocation('/protocol-selection');
+        sessionStorage.removeItem('selectedProtocol');
+        window.location.href = '/protocol-selection';
       }, 2000);
 
       return () => clearTimeout(redirectTimer);
@@ -161,10 +162,22 @@ export default function BreathingSession() {
     // Clear protocol from sessionStorage to prevent issues
     sessionStorage.removeItem('selectedProtocol');
     
-    // Use setTimeout to avoid setState during render issues
-    setTimeout(() => {
+    // Force navigation immediately with multiple fallbacks
+    console.log('Forcing navigation to protocol selection');
+    
+    // Try wouter navigation first
+    try {
       setLocation('/protocol-selection');
-    }, 100);
+    } catch (error) {
+      console.log('Wouter navigation failed, using window.location');
+    }
+    
+    // Backup with window.location
+    setTimeout(() => {
+      if (window.location.pathname === '/breathing-session') {
+        window.location.href = '/protocol-selection';
+      }
+    }, 200);
   };
 
   // Handle missing protocol with useEffect to avoid setState during render
