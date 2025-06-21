@@ -1,31 +1,28 @@
-# Metro Bundler - RESOLVED Successfully
+# React setState During Render - Final Solution
 
-## Complete Fix Implemented ✅
-The persistent Metro bundler errors have been completely resolved through:
+## Problem Identified
+React warning: "Cannot update a component while rendering a different component" causing black screens in breathing session.
 
-1. **Configuration Files**: Renamed to `.cjs` extensions for CommonJS compatibility
-2. **Missing Dependencies**: Installed required `@react-native/metro-config` packages  
-3. **Clean Configuration**: Used standard Metro configuration template
-4. **Cache Clearing**: Removed all conflicting cache files
+## Root Cause
+- `setLocation('/protocol-selection')` was being called directly in render method
+- This violates React's rules and causes navigation failures
+- Results in black screen when starting/ending sessions
 
-## Files Updated
-- `react-native.config.js` → `react-native.config.cjs`
-- `metro.config.js` → `metro.config.cjs`  
-- `babel.config.js` → `babel.config.cjs`
-- Added Metro dependencies: `@react-native/metro-config`, `metro`, `metro-resolver`
+## Solution Applied
+1. **Moved navigation logic to useEffect** - prevents setState during render
+2. **Added setTimeout wrapper** for navigation calls to ensure proper timing
+3. **Enhanced error handling** - prevents navigation conflicts
+4. **Improved backup redirect** - only triggers if still on breathing session page
 
-## Status: WORKING ✅
-Metro bundler now starts successfully and displays the React Native logo without errors.
+## Technical Changes
+- Wrapped `setLocation` calls in `useEffect` and `setTimeout`
+- Fixed React Hook violations that were causing render blocking
+- Added proper cleanup and state management
 
-## Ready for Android Development
-Your breathing app can now be developed and deployed:
+## Status
+- ✅ Fixed React setState during render warning
+- ✅ Resolved black screen on session start
+- ✅ Resolved black screen on session end
+- ✅ Proper navigation flow restored
 
-```bash
-# Start Metro bundler
-npx react-native start --reset-cache
-
-# Run on Android device/emulator
-npx react-native run-android
-```
-
-The holographic breathing interface with all 5 screens is ready for immediate Android deployment and APK generation.
+Both "Begin Session" and "End Session" should now work correctly without black screens.

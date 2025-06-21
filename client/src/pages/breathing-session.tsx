@@ -139,18 +139,27 @@ export default function BreathingSession() {
       }
     }
     
-    // Force immediate redirect - multiple fallbacks to prevent black screen
-    setLocation('/protocol-selection');
+    // Use setTimeout to avoid setState during render issues
+    setTimeout(() => {
+      setLocation('/protocol-selection');
+    }, 0);
     
     // Backup redirect in case first fails
     setTimeout(() => {
-      window.location.href = '/protocol-selection';
-    }, 500);
+      if (window.location.pathname === '/breathing-session') {
+        window.location.href = '/protocol-selection';
+      }
+    }, 1000);
   };
 
+  // Handle missing protocol with useEffect to avoid setState during render
+  useEffect(() => {
+    if (!selectedProtocol) {
+      setLocation('/protocol-selection');
+    }
+  }, [selectedProtocol, setLocation]);
+
   if (!selectedProtocol) {
-    // Redirect to protocol selection if no protocol selected
-    setLocation('/protocol-selection');
     return (
       <div className="min-h-screen theme-bg theme-transition flex items-center justify-center">
         <div className="text-center">
