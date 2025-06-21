@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { BreathingAnimation } from '@/components/breathing-animation';
 import { useBreathingSession } from '@/hooks/use-breathing-session';
 import { useAmbientAudio } from '@/hooks/use-ambient-audio';
+import { useAuth } from '@/hooks/useAuth';
 import { BreathingProtocol, getColorClasses } from '@/lib/breathing-patterns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
