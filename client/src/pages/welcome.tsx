@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { HolographicCube } from '@/components/holographic-cube';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Welcome() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
   const [countdown, setCountdown] = useState(5);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const { toast } = useToast();
 
   // Clear any trial mode flags and reset navigation state on welcome page load
   useEffect(() => {
@@ -19,20 +21,26 @@ export default function Welcome() {
   }, []);
 
   const handleTryFree = () => {
-    console.log('Try free clicked - starting trial mode');
+    console.log('Try free clicked - checking trial eligibility');
     
-    // Always allow trial access (reset any previous restrictions for testing)
-    // In production, you may want to enable the trial limits below
+    // Check trial attempts
+    const trialAttempts = parseInt(localStorage.getItem('trialAttempts') || '0');
+    const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
     
-    // Optional: Check trial attempts (currently disabled for testing)
-    // const trialAttempts = parseInt(localStorage.getItem('trialAttempts') || '0');
-    // const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
-    // 
-    // if (trialAttempts >= 2 || hasUsedTrial) {
-    //   console.log('Trial limit exceeded, redirecting to signup');
-    //   setLocation('/auth');
-    //   return;
-    // }
+    if (trialAttempts >= 2 || hasUsedTrial) {
+      console.log('Trial limit exceeded, showing toast and redirecting to signup');
+      toast({
+        title: "Trial Limit Reached",
+        description: "You have exceeded your trial limit of 2 sessions. Please sign up to continue breathing with all protocols.",
+        variant: "destructive",
+      });
+      
+      // Delay redirect to show toast
+      setTimeout(() => {
+        setLocation('/auth');
+      }, 2000);
+      return;
+    }
     
     // Activate trial mode for Foundation protocol only
     localStorage.setItem('trialMode', 'true');

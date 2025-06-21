@@ -59,8 +59,9 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Fixed End Session navigation** - authenticated users now properly redirect to protocol selection instead of login screen
   - **Applied aggressive button focus removal** - targeting persistent rectangular highlights on rounded buttons with comprehensive CSS overrides
   - **Database connectivity resolved** - switched from unreachable Supabase to working Replit PostgreSQL database for session storage
-  - **Session data now persisting** - breathing sessions properly recorded in Replit database, not Supabase due to connectivity restrictions
+  - **Session data now persisting** - breathing sessions properly recorded in Replit database, confirmed with 3 sessions in analytics
   - **Enhanced button styling** - added inline styles and global CSS to eliminate webkit tap highlights completely
+  - **Re-enabled trial restrictions** - users limited to 2 trial sessions with toast notification when limit exceeded
 - **2025-06-21**: Comprehensive UI/UX redesign and trial system overhaul completed
   - **Fixed End Session navigation permanently** - trial sessions now redirect to signup, regular sessions to protocol selection
   - **Redesigned free trial system** - restricted to Foundation 4-4-4-4 protocol only with 2 attempt maximum
