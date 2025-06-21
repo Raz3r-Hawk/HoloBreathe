@@ -1,288 +1,262 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, StatusBar } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-  withSequence,
-  withDelay,
-} from 'react-native-reanimated';
-import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../contexts/AuthContext';
-import { Button } from '../components/ui/Button';
+import React from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+  Platform,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import LinearGradient from 'react-native-linear-gradient';
+import {RootStackParamList} from '../App';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const { width, height } = Dimensions.get('window');
+type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
-interface WelcomeScreenProps {
-  navigation: any;
-}
+const {width, height} = Dimensions.get('window');
 
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
-  const { theme, isDark } = useTheme();
-  const { user } = useAuth();
+const WelcomeScreen = () => {
+  const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
-  // Animation values
-  const logoScale = useSharedValue(0.5);
-  const logoOpacity = useSharedValue(0);
-  const titleY = useSharedValue(50);
-  const titleOpacity = useSharedValue(0);
-  const subtitleY = useSharedValue(30);
-  const subtitleOpacity = useSharedValue(0);
-  const buttonsY = useSharedValue(40);
-  const buttonsOpacity = useSharedValue(0);
+  const handleStartFreeTrial = async () => {
+    await AsyncStorage.setItem('userType', 'trial');
+    navigation.navigate('ProtocolSelection');
+  };
 
-  useEffect(() => {
-    // Entrance animations
-    logoScale.value = withTiming(1, { duration: 800 });
-    logoOpacity.value = withTiming(1, { duration: 800 });
-    
-    titleY.value = withDelay(300, withTiming(0, { duration: 600 }));
-    titleOpacity.value = withDelay(300, withTiming(1, { duration: 600 }));
-    
-    subtitleY.value = withDelay(600, withTiming(0, { duration: 600 }));
-    subtitleOpacity.value = withDelay(600, withTiming(1, { duration: 600 }));
-    
-    buttonsY.value = withDelay(900, withTiming(0, { duration: 600 }));
-    buttonsOpacity.value = withDelay(900, withTiming(1, { duration: 600 }));
-
-    // Breathing animation for logo
-    const breathingAnimation = () => {
-      logoScale.value = withSequence(
-        withTiming(1.1, { duration: 2000 }),
-        withTiming(1, { duration: 2000 })
-      );
-      setTimeout(breathingAnimation, 4000);
-    };
-    
-    setTimeout(breathingAnimation, 2000);
-  }, []);
-
-  const logoAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: logoScale.value }],
-    opacity: logoOpacity.value,
-  }));
-
-  const titleAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: titleY.value }],
-    opacity: titleOpacity.value,
-  }));
-
-  const subtitleAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: subtitleY.value }],
-    opacity: subtitleOpacity.value,
-  }));
-
-  const buttonsAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: buttonsY.value }],
-    opacity: buttonsOpacity.value,
-  }));
-
-  const handleGetStarted = () => {
-    if (user) {
-      navigation.navigate('ProtocolSelection');
-    } else {
-      navigation.navigate('Auth');
-    }
+  const handleSubscribe = () => {
+    navigation.navigate('Subscription');
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-      
-      {/* Background gradient */}
+    <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={isDark 
-          ? ['#0A0A0F', '#1A1A2E', '#16213E'] 
-          : ['#FFFFFF', '#F8F9FA', '#E3F2FD']
-        }
-        style={StyleSheet.absoluteFill}
-      />
+        colors={['#000000', '#1a1a2e', '#16213e']}
+        style={styles.gradient}>
+        
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>BREATHE</Text>
+          <Text style={styles.subtitle}>Holographic Breathing Experience</Text>
+        </View>
 
-      {/* Floating orbs for visual appeal */}
-      <View style={styles.orbContainer}>
-        <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={[styles.orb, styles.orb1]} />
-        <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={[styles.orb, styles.orb2]} />
-        <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={[styles.orb, styles.orb3]} />
-      </View>
+        {/* Holographic Cube */}
+        <View style={styles.cubeContainer}>
+          <View style={styles.holoCube}>
+            <LinearGradient
+              colors={['#00ffff40', '#ff00ff40', '#ffff0040']}
+              style={styles.cubeGradient}>
+              <Text style={styles.cubeText}>◊</Text>
+            </LinearGradient>
+          </View>
+        </View>
 
-      {/* Content */}
-      <View style={styles.content}>
-        {/* Logo */}
-        <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-          <LinearGradient
-            colors={['#0066FF', '#00D4AA', '#8B5CF6']}
-            style={styles.logo}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.logoText}>HB</Text>
-          </LinearGradient>
-        </Animated.View>
-
-        {/* Title */}
-        <Animated.View style={titleAnimatedStyle}>
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            HoloBreathe
+        {/* Description */}
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>
+            Transform your breathing with advanced holographic protocols designed
+            for deep relaxation and enhanced focus.
           </Text>
-          <LinearGradient
-            colors={['#0066FF', '#00D4AA']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.titleUnderline}
-          />
-        </Animated.View>
-
-        {/* Subtitle */}
-        <Animated.View style={subtitleAnimatedStyle}>
-          <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Transform your mind with guided breathing exercises
-          </Text>
-          <Text style={[styles.description, { color: theme.colors.textSecondary }]}>
-            Discover inner peace, reduce stress, and enhance focus through 
-            scientifically-proven breathing techniques.
-          </Text>
-        </Animated.View>
+        </View>
 
         {/* Buttons */}
-        <Animated.View style={[styles.buttonContainer, buttonsAnimatedStyle]}>
-          <Button
-            title={user ? "Continue Practice" : "Get Started"}
-            onPress={handleGetStarted}
-            variant="primary"
-            size="large"
-            gradient={true}
-            style={styles.primaryButton}
-          />
-          
-          {!user && (
-            <Button
-              title="Already have an account? Sign In"
-              onPress={() => navigation.navigate('Auth')}
-              variant="ghost"
-              size="medium"
-              style={styles.secondaryButton}
-            />
-          )}
-        </Animated.View>
-      </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.trialButton} onPress={handleStartFreeTrial}>
+            <LinearGradient
+              colors={['#00ffff', '#0080ff']}
+              style={styles.buttonGradient}>
+              <Text style={styles.trialButtonText}>Start Free Trial</Text>
+              <Text style={styles.buttonSubtext}>Try one protocol free</Text>
+            </LinearGradient>
+          </TouchableOpacity>
 
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={[styles.footerText, { color: theme.colors.textSecondary }]}>
-          Made in India with ♥
-        </Text>
-      </View>
-    </View>
+          <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
+            <LinearGradient
+              colors={['#ff00ff', '#8000ff']}
+              style={styles.buttonGradient}>
+              <Text style={styles.subscribeButtonText}>Subscribe - ₹999/month</Text>
+              <Text style={styles.buttonSubtext}>Unlock all protocols</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        {/* Features */}
+        <View style={styles.featuresContainer}>
+          <Text style={styles.featureText}>✨ 7 Advanced Breathing Protocols</Text>
+          <Text style={styles.featureText}>🎯 Personalized Session Tracking</Text>
+          <Text style={styles.featureText}>🔮 Holographic Visual Experience</Text>
+        </View>
+      </LinearGradient>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000000',
   },
-  orbContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
-  orb: {
-    position: 'absolute',
-    borderRadius: 100,
-  },
-  orb1: {
-    width: 200,
-    height: 200,
-    top: height * 0.1,
-    right: -100,
-    backgroundColor: 'rgba(0, 102, 255, 0.1)',
-  },
-  orb2: {
-    width: 150,
-    height: 150,
-    bottom: height * 0.2,
-    left: -75,
-    backgroundColor: 'rgba(0, 212, 170, 0.1)',
-  },
-  orb3: {
-    width: 120,
-    height: 120,
-    top: height * 0.3,
-    left: width * 0.7,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-  },
-  content: {
+  gradient: {
     flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'space-between',
+    paddingTop: Platform.OS === 'android' ? 40 : 20,
+  },
+  header: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-  },
-  logoContainer: {
-    marginBottom: 40,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#0066FF',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 16,
-  },
-  logoText: {
-    fontSize: 48,
-    fontWeight: '900',
-    color: '#FFFFFF',
+    marginTop: 40,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 42,
-    fontWeight: '800',
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#00ffff',
+    letterSpacing: 4,
+    marginBottom: 12,
     textAlign: 'center',
-    marginBottom: 8,
-  },
-  titleUnderline: {
-    height: 4,
-    borderRadius: 2,
-    marginBottom: 24,
+    ...Platform.select({
+      android: {
+        textShadowColor: '#00ffff80',
+        textShadowOffset: {width: 0, height: 0},
+        textShadowRadius: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 20,
+      },
+    }),
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 18,
+    color: '#ffffff80',
+    letterSpacing: 1,
     textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 28,
+  },
+  cubeContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: 40,
+  },
+  holoCube: {
+    width: 140,
+    height: 140,
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#00ffff40',
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.6,
+        shadowRadius: 25,
+      },
+    }),
+  },
+  cubeGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cubeText: {
+    fontSize: 70,
+    color: '#ffffff',
+    ...Platform.select({
+      android: {
+        textShadowColor: '#00ffff',
+        textShadowOffset: {width: 0, height: 0},
+        textShadowRadius: 20,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 15,
+      },
+    }),
+  },
+  descriptionContainer: {
+    marginBottom: 40,
+    paddingHorizontal: 20,
   },
   description: {
     fontSize: 16,
+    color: '#ffffff90',
     textAlign: 'center',
     lineHeight: 24,
-    paddingHorizontal: 20,
   },
   buttonContainer: {
-    width: '100%',
-    marginTop: 48,
-  },
-  primaryButton: {
-    marginBottom: 24,
+    marginBottom: 40,
+    gap: 16,
   },
   trialButton: {
-    marginBottom: 32,
-    borderColor: '#00D4FF',
-    borderWidth: 2,
+    borderRadius: 20,
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#00ffff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
   },
-  secondaryButton: {
-    marginTop: 8,
+  subscribeButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+      ios: {
+        shadowColor: '#ff00ff',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
   },
-  footer: {
-    paddingBottom: 32,
+  buttonGradient: {
+    paddingVertical: 20,
+    paddingHorizontal: 32,
     alignItems: 'center',
   },
-  footerText: {
+  trialButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  subscribeButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  buttonSubtext: {
     fontSize: 14,
-    fontWeight: '500',
+    marginTop: 4,
+    opacity: 0.8,
+  },
+  featuresContainer: {
+    paddingBottom: 40,
+    alignItems: 'center',
+    gap: 8,
+  },
+  featureText: {
+    fontSize: 14,
+    color: '#ffffff60',
+    textAlign: 'center',
   },
 });
+
+export default WelcomeScreen;

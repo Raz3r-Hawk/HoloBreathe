@@ -26,17 +26,18 @@ function Router() {
     <Switch>
       <Route path="/" component={Welcome} />
       <Route path="/auth" component={Auth} />
-      <Route path="/protocol-selection" component={ProtocolSelection} />
-      <Route path="/breathing-session" component={BreathingSession} />
       <Route path="/settings" component={Settings} />
       <Route path="/sessions" component={Sessions} />
       <Route path="/about" component={About} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
-      <Route path="/activation" component={ActivationSequence} />
+      <Route path="/protocol-selection" component={ProtocolSelection} />
+      <Route path="/activation-sequence" component={ActivationSequence} />
+      <Route path="/breathing-session" component={BreathingSession} />
       <Route path="/subscription" component={Subscription} />
       <Route path="/subscription-demo" component={SubscriptionDemo} />
       <Route path="/data-storage" component={DataStorageInfo} />
       <Route path="/upgrade" component={UpgradePrompt} />
+      {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
   );
