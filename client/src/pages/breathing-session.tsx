@@ -110,8 +110,7 @@ export default function BreathingSession() {
       const redirectTimer = setTimeout(() => {
         setShowCompletionMessage(false);
         sessionStorage.removeItem('selectedProtocol');
-        // Use replace to avoid back button issues
-        window.location.replace('/protocol-selection');
+        window.location.href = '/protocol-selection';
       }, 2000);
 
       return () => clearTimeout(redirectTimer);
@@ -119,89 +118,41 @@ export default function BreathingSession() {
   }, [isSessionComplete, showCompletionMessage, selectedProtocol, sessionStartTime, sessionState.cycles, recordSessionMutation, setLocation]);
 
   const handleEndSession = () => {
-    console.log('End session clicked - stopping audio and redirecting');
+    console.log('End session clicked - immediate cleanup and redirect');
     
-    // Prevent multiple end session calls
+    // Prevent multiple calls
     if (showCompletionMessage || isManuallyEnded) return;
     
-    // Mark as manually ended to prevent auto-restart
+    // Mark as manually ended
     setIsManuallyEnded(true);
     
-    // Stop audio immediately
+    // Stop everything immediately
     try {
       stopAudio();
-    } catch (error) {
-      console.log('Audio stop failed:', error);
-    }
-    
-    // End the breathing session
-    try {
       endSession();
     } catch (error) {
-      console.log('End session failed:', error);
+      console.log('Session cleanup failed:', error);
     }
     
-    // Clear session data to prevent restart
+    // Clear all session data
     setSessionStartTime(null);
-    
-    // Record incomplete session if it was started (optional for trial mode)
-    if (selectedProtocol && sessionStartTime && sessionState.sessionTimeElapsed > 30) {
-      try {
-        recordSessionMutation.mutate({
-          protocol: selectedProtocol.id,
-          protocolName: selectedProtocol.name,
-          duration: selectedProtocol.sessionDuration,
-          completedDuration: sessionState.sessionTimeElapsed,
-          cycles: sessionState.cycles,
-          completed: false
-        });
-      } catch (error) {
-        console.log('Session recording skipped (trial mode):', error);
-      }
-    }
-    
-    // Clear protocol from sessionStorage to prevent issues
     sessionStorage.removeItem('selectedProtocol');
     
-    // Force navigation immediately with multiple fallbacks
-    console.log('Forcing navigation to protocol selection');
-    
-    // Multiple redirect strategies
-    console.log('Redirecting immediately to protocol selection');
-    
-    // Strategy 1: Try wouter first
-    try {
-      setLocation('/protocol-selection');
-      console.log('Wouter navigation attempted');
-    } catch (e) {
-      console.log('Wouter failed:', e);
-    }
-    
-    // Strategy 2: Force window location immediately
-    setTimeout(() => {
-      console.log('Forcing window.location redirect');
-      window.location.replace('/protocol-selection');
-    }, 50);
-    
-    // Strategy 3: Ultimate fallback
-    setTimeout(() => {
-      console.log('Ultimate fallback redirect');
-      window.location.href = '/protocol-selection';
-    }, 200);
+    // IMMEDIATE REDIRECT - no delays, no async operations
+    console.log('Performing immediate redirect to protocol selection');
+    window.location.href = '/protocol-selection';
   };
 
-  // Handle missing protocol with useEffect to avoid setState during render
+  // Handle missing protocol with immediate redirect
   useEffect(() => {
-    // Only redirect if we've had time to load the protocol and it's still missing
-    const timer = setTimeout(() => {
-      if (!selectedProtocol) {
-        console.log('No protocol available after timeout, redirecting to protocol selection');
-        setLocation('/protocol-selection');
-      }
-    }, 500); // Give 500ms for protocol to load
-
-    return () => clearTimeout(timer);
-  }, [selectedProtocol, setLocation]);
+    if (!selectedProtocol) {
+      console.log('No protocol available, immediate redirect to protocol selection');
+      const timer = setTimeout(() => {
+        window.location.href = '/protocol-selection';
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedProtocol]);
 
   if (!selectedProtocol) {
     return (
@@ -210,7 +161,7 @@ export default function BreathingSession() {
           <div className="animate-spin w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-slate-400">Loading breathing session...</p>
           <button 
-            onClick={() => setLocation('/protocol-selection')}
+            onClick={() => window.location.href = '/protocol-selection'}
             className="mt-4 px-4 py-2 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-colors"
           >
             Return to Protocols
@@ -250,7 +201,7 @@ export default function BreathingSession() {
           <p className="text-slate-400 mb-6">You completed {sessionState.cycles} cycles!</p>
           
           <motion.button
-            onClick={() => setLocation('/protocol-selection')}
+            onClick={() => window.location.href = '/protocol-selection'}
             className="px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-black rounded-lg font-semibold hover:opacity-90 transition-opacity"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
