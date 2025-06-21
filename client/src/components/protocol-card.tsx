@@ -64,7 +64,7 @@ export function ProtocolCard({ protocol, onClick, index }: ProtocolCardProps) {
         {protocol.pattern.map((duration, idx) => (
           <motion.div
             key={idx}
-            className={`w-2 h-2 rounded-full ${colorClasses.text}`}
+            className="w-2 h-2 rounded-full bg-cyan-400"
             style={{
               opacity: duration === 0 ? 0.3 : Math.min(duration / 8, 1),
             }}

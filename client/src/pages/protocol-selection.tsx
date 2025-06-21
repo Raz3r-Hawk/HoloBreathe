@@ -169,7 +169,7 @@ export default function ProtocolSelection() {
         {/* Back Button */}
         <motion.button
           onClick={() => setLocation('/')}
-          className="w-full py-3 bg-slate-900 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors duration-300 flex items-center justify-center space-x-2 rounded-lg"
+          className="btn-enhanced w-full py-3 bg-slate-900 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors duration-300 flex items-center justify-center space-x-2 rounded-lg outline-none focus:outline-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}

@@ -193,7 +193,7 @@ export default function BreathingSession() {
           <p className="text-slate-400">Loading breathing session...</p>
           <button 
             onClick={() => window.location.href = '/protocol-selection'}
-            className="mt-4 px-4 py-2 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-colors"
+            className="btn-enhanced mt-4 px-4 py-2 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-colors outline-none focus:outline-none"
           >
             Return to Protocols
           </button>

@@ -294,7 +294,7 @@ export default function Welcome() {
         >
           {/* Free Trial Button */}
           <motion.button
-            className="holographic-border group relative overflow-hidden w-full"
+            className="btn-enhanced holographic-border group relative overflow-hidden w-full outline-none focus:outline-none"
             onClick={handleTryFree}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
