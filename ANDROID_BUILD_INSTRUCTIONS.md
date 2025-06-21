@@ -1,8 +1,9 @@
 # Android Studio Build Instructions
 
 ## Prerequisites
-- Android Studio with SDK 34
-- Java 17
+- Android Studio Hedgehog (2023.1.1) or newer
+- Android SDK 34
+- Java 17 (JDK 17)
 - Node.js 18+ with npm
 
 ## Build Steps
@@ -15,17 +16,28 @@
 2. **Android Studio Setup**
    - Open Android Studio
    - File → Open → Select this project folder
-   - Let Gradle sync complete
-   - Build → Make Project
+   - Wait for Gradle sync to complete (may take 5-10 minutes first time)
+   - If sync fails, try: Build → Clean Project, then Build → Rebuild Project
 
-3. **Generate APK**
+3. **Fix Common Issues**
+   - If "Could not find main class" error: File → Invalidate Caches and Restart
+   - If Gradle version issues: Use the wrapper properties included (Gradle 8.4)
+   - If Java version issues: File → Project Structure → SDK Location → JDK Location
+
+4. **Generate APK**
    ```bash
    cd android
+   ./gradlew clean
    ./gradlew assembleRelease
    ```
 
-4. **APK Location**
+5. **APK Location**
    - Generated APK: `android/app/build/outputs/apk/release/app-release.apk`
+
+## Troubleshooting
+- **Heap size error**: Already fixed in gradle.properties (2GB heap)
+- **Build tools not found**: SDK Manager → Install Build Tools 34.0.0
+- **Gradle sync failed**: Use "Gradle Wrapper" in Android Studio settings
 
 ## Database Configuration
 - Update `DATABASE_URL` in production environment
