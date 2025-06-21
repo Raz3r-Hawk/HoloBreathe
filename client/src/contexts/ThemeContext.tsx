@@ -32,6 +32,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Update document class
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(newEffectiveTheme);
+    
+    // Force dark theme application
+    if (newEffectiveTheme === 'dark') {
+      document.body.style.backgroundColor = 'hsl(224, 71%, 4%)';
+      document.body.style.color = 'hsl(213, 31%, 91%)';
+    }
 
     // Save to localStorage
     localStorage.setItem('theme', theme);

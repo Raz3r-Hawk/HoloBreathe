@@ -13,6 +13,7 @@ export default function BreathingSession() {
   const [selectedProtocol, setSelectedProtocol] = useState<BreathingProtocol | null>(null);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const [isManuallyEnded, setIsManuallyEnded] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -62,13 +63,13 @@ export default function BreathingSession() {
   }, [setLocation]);
 
   useEffect(() => {
-    // Auto-start session when protocol is loaded (only once)
-    if (selectedProtocol && !sessionState.isActive && !sessionStartTime) {
+    // Auto-start session when protocol is loaded (only once, unless manually ended)
+    if (selectedProtocol && !sessionState.isActive && !sessionStartTime && !isManuallyEnded) {
       console.log('Auto-starting session for protocol:', selectedProtocol.name);
       setSessionStartTime(new Date());
       startSession();
     }
-  }, [selectedProtocol, sessionState.isActive, sessionStartTime, startSession]);
+  }, [selectedProtocol, sessionState.isActive, sessionStartTime, isManuallyEnded, startSession]);
 
   useEffect(() => {
     // Start ambient audio when session becomes active
@@ -119,7 +120,10 @@ export default function BreathingSession() {
     console.log('End session clicked - stopping audio and redirecting');
     
     // Prevent multiple end session calls
-    if (showCompletionMessage) return;
+    if (showCompletionMessage || isManuallyEnded) return;
+    
+    // Mark as manually ended to prevent auto-restart
+    setIsManuallyEnded(true);
     
     // Stop audio immediately
     try {
@@ -153,6 +157,9 @@ export default function BreathingSession() {
         console.log('Session recording skipped (trial mode):', error);
       }
     }
+    
+    // Clear protocol from sessionStorage to prevent issues
+    sessionStorage.removeItem('selectedProtocol');
     
     // Use setTimeout to avoid setState during render issues
     setTimeout(() => {
