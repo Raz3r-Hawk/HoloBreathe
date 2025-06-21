@@ -6,15 +6,30 @@ export default function Welcome() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6">
       <div className="max-w-2xl mx-auto text-center">
-        {/* Logo */}
+        {/* Hologram Logo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           className="mb-8"
         >
-          <div className="w-24 h-24 mx-auto bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center mb-6">
-            <span className="text-3xl font-bold text-white">HB</span>
+          <div className="relative w-32 h-32 mx-auto mb-6">
+            {/* Holographic effect with multiple layers */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-full opacity-20 animate-pulse"></div>
+            <div className="absolute inset-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-30 animate-pulse delay-75"></div>
+            <div className="absolute inset-4 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 rounded-full opacity-40 animate-pulse delay-150"></div>
+            
+            {/* Main logo with holographic glow */}
+            <div className="absolute inset-6 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/50">
+              <div className="text-2xl font-bold text-white relative">
+                <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent blur-sm">H</span>
+                <span className="relative bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">H</span>
+              </div>
+            </div>
+            
+            {/* Animated rings */}
+            <div className="absolute inset-0 border-2 border-cyan-400/30 rounded-full animate-spin-slow"></div>
+            <div className="absolute inset-2 border border-blue-400/20 rounded-full animate-spin-reverse"></div>
           </div>
         </motion.div>
 
@@ -45,8 +60,14 @@ export default function Welcome() {
           className="space-y-4"
         >
           <Link to="/protocols">
-            <button className="w-full py-4 px-8 bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
+            <button className="w-full py-4 px-8 bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
               Start Your Journey
+            </button>
+          </Link>
+          
+          <Link to="/breathing-session?protocol=foundation&trial=true">
+            <button className="w-full py-3 px-6 border-2 border-cyan-400/50 bg-cyan-400/10 text-cyan-400 font-semibold rounded-lg hover:bg-cyan-400/20 transition-all backdrop-blur-sm">
+              Test Free Protocol
             </button>
           </Link>
           

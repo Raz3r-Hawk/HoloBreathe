@@ -269,6 +269,11 @@ const styles = StyleSheet.create({
   primaryButton: {
     marginBottom: 16,
   },
+  trialButton: {
+    marginBottom: 24,
+    borderColor: '#00D4FF',
+    borderWidth: 2,
+  },
   secondaryButton: {
     marginTop: 8,
   },

@@ -1,422 +1,231 @@
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'wouter';
-import { useState, useEffect } from 'react';
-import { BreathingAnimation } from '@/components/breathing-animation';
-import { useBreathingSession } from '@/hooks/use-breathing-session';
-import { useAmbientAudio } from '@/hooks/use-ambient-audio';
-import { BreathingProtocol, getColorClasses } from '@/lib/breathing-patterns';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { useLocation, Link } from 'wouter';
+import { useSearchParams } from '../hooks/useSearchParams';
+
+const protocols = {
+  foundation: {
+    name: 'Foundation Breath',
+    pattern: [4, 4, 4, 4],
+    phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
+    color: 'from-cyan-500 to-blue-500',
+    duration: 300 // 5 minutes
+  },
+  calm: {
+    name: 'Calming Breath',
+    pattern: [4, 0, 6, 0],
+    phases: ['Inhale', '', 'Exhale', ''],
+    color: 'from-blue-500 to-indigo-500',
+    duration: 360 // 6 minutes
+  },
+  energize: {
+    name: 'Energizing Breath',
+    pattern: [3, 1, 3, 1],
+    phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
+    color: 'from-orange-500 to-red-500',
+    duration: 180 // 3 minutes
+  }
+};
 
 export default function BreathingSession() {
-  const [, setLocation] = useLocation();
-  const [selectedProtocol, setSelectedProtocol] = useState<BreathingProtocol | null>(null);
-  const [showCompletionMessage, setShowCompletionMessage] = useState(false);
-  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
-  const [isManuallyEnded, setIsManuallyEnded] = useState(false);
-  const queryClient = useQueryClient();
-
-  const {
-    sessionState,
-    getCurrentPhaseName,
-    getCurrentPhasePattern,
-    getProgress,
-    getFormattedTime,
-    startSession,
-    pauseSession,
-    endSession,
-    isSessionComplete,
-  } = useBreathingSession(selectedProtocol);
-
-  const { play: playAudio, stop: stopAudio, isPlaying: audioIsPlaying, isLoaded: audioIsLoaded } = useAmbientAudio();
-
-  // Session recording mutation
-  const recordSessionMutation = useMutation({
-    mutationFn: async (sessionData: any) => {
-      return apiRequest('POST', '/api/sessions', sessionData);
-    },
-    onSuccess: () => {
-      // Invalidate sessions and analytics queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['/api/sessions'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/analytics'] });
-    },
-  });
+  const [location] = useLocation();
+  const searchParams = useSearchParams();
+  const protocolId = searchParams.get('protocol') || 'foundation';
+  const isTrial = searchParams.get('trial') === 'true';
+  
+  const protocol = protocols[protocolId as keyof typeof protocols] || protocols.foundation;
+  
+  const [isActive, setIsActive] = useState(false);
+  const [currentPhase, setCurrentPhase] = useState(0);
+  const [phaseProgress, setPhaseProgress] = useState(0);
+  const [sessionTime, setSessionTime] = useState(0);
+  const [breathCount, setBreathCount] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    // Retrieve selected protocol from sessionStorage
-    const protocolData = sessionStorage.getItem('selectedProtocol');
-    console.log('SessionStorage protocol data:', protocolData);
-    
-    if (protocolData) {
-      try {
-        const protocol = JSON.parse(protocolData);
-        console.log('Loading protocol:', protocol.name);
-        setSelectedProtocol(protocol);
-      } catch (error) {
-        console.error('Failed to parse protocol data:', error);
-        setTimeout(() => setLocation('/protocol-selection'), 100);
-      }
-    } else {
-      console.log('No protocol found in sessionStorage, redirecting...');
-      setTimeout(() => setLocation('/protocol-selection'), 100);
-    }
-  }, [setLocation]);
+    if (!isActive || isPaused) return;
+
+    const currentPhaseDuration = protocol.pattern[currentPhase] * 1000;
+    const interval = setInterval(() => {
+      setPhaseProgress(prev => {
+        if (prev >= 100) {
+          setCurrentPhase(prevPhase => {
+            const nextPhase = (prevPhase + 1) % protocol.pattern.length;
+            if (nextPhase === 0) {
+              setBreathCount(prev => prev + 1);
+            }
+            return nextPhase;
+          });
+          return 0;
+        }
+        return prev + (100 / (currentPhaseDuration / 100));
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isActive, currentPhase, protocol.pattern, isPaused]);
 
   useEffect(() => {
-    // Auto-start session when protocol is loaded (only once, unless manually ended)
-    if (selectedProtocol && !sessionState.isActive && !sessionStartTime && !isManuallyEnded) {
-      console.log('Auto-starting session for protocol:', selectedProtocol.name);
-      setSessionStartTime(new Date());
-      startSession();
-    }
-  }, [selectedProtocol, sessionState.isActive, sessionStartTime, isManuallyEnded, startSession]);
+    if (!isActive) return;
 
-  useEffect(() => {
-    // Start ambient audio when session becomes active
-    if (sessionState.isActive && !sessionState.isPaused && audioIsLoaded && !audioIsPlaying) {
-      playAudio();
-    }
-    // Stop ambient audio when session ends or is paused
-    else if ((!sessionState.isActive || sessionState.isPaused) && audioIsPlaying) {
-      stopAudio();
-    }
-  }, [sessionState.isActive, sessionState.isPaused, audioIsLoaded, audioIsPlaying, playAudio, stopAudio]);
+    const timer = setInterval(() => {
+      setSessionTime(prev => prev + 1);
+    }, 1000);
 
-  useEffect(() => {
-    // Handle session completion
-    if (isSessionComplete && !showCompletionMessage && selectedProtocol && sessionStartTime) {
-      setShowCompletionMessage(true);
-      
-      // Record the completed session
-      const sessionEndTime = new Date();
-      const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
-      
-      // Only record session if authenticated (not in trial mode)
-      try {
-        recordSessionMutation.mutate({
-          protocol: selectedProtocol.id,
-          protocolName: selectedProtocol.name,
-          duration: selectedProtocol.sessionDuration,
-          completedDuration: sessionState.sessionTimeElapsed,
-          cycles: sessionState.cycles,
-          completed: true
-        });
-      } catch (error) {
-        // Silent fail for trial users - don't block completion flow
-        console.log('Session recording skipped (trial mode)');
-      }
-      
-      // Immediate redirect after showing completion
-      const redirectTimer = setTimeout(() => {
-        setShowCompletionMessage(false);
-        sessionStorage.removeItem('selectedProtocol');
-        window.location.href = '/protocol-selection';
-      }, 2000);
+    return () => clearInterval(timer);
+  }, [isActive]);
 
-      return () => clearTimeout(redirectTimer);
-    }
-  }, [isSessionComplete, showCompletionMessage, selectedProtocol, sessionStartTime, sessionState.cycles, recordSessionMutation, setLocation]);
-
-  const handleEndSession = () => {
-    console.log('End session clicked - immediate cleanup and redirect');
-    
-    // Prevent multiple calls
-    if (showCompletionMessage || isManuallyEnded) return;
-    
-    // Mark as manually ended
-    setIsManuallyEnded(true);
-    
-    // Stop everything immediately
-    try {
-      stopAudio();
-      endSession();
-    } catch (error) {
-      console.log('Session cleanup failed:', error);
-    }
-    
-    // Clear all session data
-    setSessionStartTime(null);
-    sessionStorage.removeItem('selectedProtocol');
-    
-    // IMMEDIATE REDIRECT - no delays, no async operations
-    console.log('Performing immediate redirect to protocol selection');
-    window.location.href = '/protocol-selection';
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Handle missing protocol with immediate redirect
-  useEffect(() => {
-    if (!selectedProtocol) {
-      console.log('No protocol available, immediate redirect to protocol selection');
-      const timer = setTimeout(() => {
-        window.location.href = '/protocol-selection';
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [selectedProtocol]);
-
-  if (!selectedProtocol) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading breathing session...</p>
-          <button 
-            onClick={() => window.location.href = '/protocol-selection'}
-            className="mt-4 px-4 py-2 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-colors"
-          >
-            Return to Protocols
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (showCompletionMessage) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-6">
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.div
-            className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 flex items-center justify-center"
-            animate={{
-              boxShadow: [
-                '0 0 20px rgba(0,255,255,0.5)',
-                '0 0 40px rgba(59,130,246,0.8)',
-                '0 0 20px rgba(147,51,234,0.5)',
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </motion.div>
-          
-          <h2 className="text-3xl font-bold mb-4 text-white">Session Complete!</h2>
-          <p className="text-slate-400 mb-4">Great job on completing your breathing session.</p>
-          <p className="text-slate-400 mb-6">You completed {sessionState.cycles} cycles!</p>
-          
-          <motion.button
-            onClick={() => window.location.href = '/protocol-selection'}
-            className="px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-black rounded-lg font-semibold hover:opacity-90 transition-opacity"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Continue
-          </motion.button>
-          
-          <p className="text-sm text-slate-500 mt-4">Or wait for automatic redirect...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  const colorClasses = getColorClasses(selectedProtocol.color);
-  const currentPhase = getCurrentPhaseName();
-  const phaseDuration = getCurrentPhasePattern();
+  const currentPhaseText = protocol.phases[currentPhase];
+  const circleScale = currentPhase % 2 === 0 ? 
+    1 + (phaseProgress / 100) * 0.5 : 
+    1.5 - (phaseProgress / 100) * 0.5;
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col px-6 py-6">
-      <div className="w-full max-w-md mx-auto flex flex-col min-h-screen">
-        {/* Protocol Info - top section */}
-        <motion.div
-          className="mb-12 relative"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
-            <h3 className={`text-xl font-bold ${colorClasses.text} mb-1 text-center`}>
-              {selectedProtocol.name} Protocol
-            </h3>
-            <p className="text-muted-foreground text-sm text-center">Follow the glowing guide</p>
-          </div>
-        </motion.div>
-        
-        {/* Breathing Animation - center section with more space */}
-        <motion.div
-          className="flex-1 flex items-center justify-center my-16"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          <BreathingAnimation
-            isActive={sessionState.isActive && !sessionState.isPaused}
-            currentPhase={currentPhase}
-            phaseTimeLeft={sessionState.phaseTimeLeft}
-            phaseDuration={phaseDuration}
-          />
-        </motion.div>
-        
-        {/* Bottom UI Section with better spacing */}
-        <div className="space-y-6 mb-8">
-          {/* Progress Indicator */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6">
+      <div className="max-w-2xl mx-auto text-center">
+        {!isActive ? (
+          // Start Screen
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="mb-2"
-          >
-            <div className="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
-              <motion.div
-                className="bg-gradient-to-r from-primary to-blue-500 h-2 rounded-full transition-all duration-1000"
-                style={{ width: `${getProgress()}%` }}
-                animate={{
-                  boxShadow: [
-                    '0 0 10px rgba(59,130,246,0.5)',
-                    '0 0 20px rgba(99,102,241,0.8)',
-                    '0 0 10px rgba(59,130,246,0.5)',
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </div>
-            
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted-foreground">
-                Session: <span className="text-primary font-mono">{getFormattedTime()}</span>
-              </span>
-              <span className="text-muted-foreground">
-                Cycles: <span className="text-primary font-mono">{sessionState.cycles}</span>
-              </span>
-              <span className="text-muted-foreground">
-                / 5:00
-              </span>
-            </div>
-          </motion.div>
-          
-          {/* Phase Info */}
-          <motion.div
-            className="p-4 glass-card rounded-xl border border-white/10 mb-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
+            className="space-y-8"
           >
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400">Current Phase:</span>
-              <span className={`font-semibold ${colorClasses.text}`}>{currentPhase}</span>
-            </div>
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-gray-400">Time Left:</span>
-              <span className="font-mono text-white">{sessionState.phaseTimeLeft}s</span>
-            </div>
-          </motion.div>
-          
-          {/* Control Buttons */}
-          <motion.div
-            className="flex justify-center space-x-4 mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-          >
-            <button
-              onClick={pauseSession}
-              className="holographic-border flex-1 max-w-32"
-              disabled={!sessionState.isActive}
-            >
-              <div className="bg-gray-900/80 backdrop-blur-sm px-6 py-3 rounded-xl flex items-center justify-center space-x-2">
-                <AnimatePresence mode="wait">
-                  {sessionState.isPaused ? (
-                    <motion.svg
-                      key="play"
-                      className="w-4 h-4 text-cyan-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </motion.svg>
-                  ) : (
-                    <motion.svg
-                      key="pause"
-                      className="w-4 h-4 text-pink-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </motion.svg>
-                  )}
-                </AnimatePresence>
-                <span className="text-white text-sm">
-                  {sessionState.isPaused ? 'Resume' : 'Pause'}
-                </span>
+            {isTrial && (
+              <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-lg p-4 mb-6">
+                <p className="text-amber-400 font-semibold">Free Trial Session</p>
+                <p className="text-amber-300/80 text-sm">Experience the Foundation breathing protocol</p>
               </div>
-            </button>
+            )}
+            
+            <div className={`w-32 h-32 mx-auto bg-gradient-to-r ${protocol.color} rounded-full flex items-center justify-center mb-6 shadow-lg`}>
+              <span className="text-white font-bold text-2xl">
+                {protocol.pattern.join('-')}
+              </span>
+            </div>
+            
+            <h1 className="text-4xl font-bold text-white mb-4">{protocol.name}</h1>
+            <p className="text-slate-400 text-lg mb-8">
+              Follow the breathing pattern: {protocol.pattern.join('-')} seconds
+            </p>
             
             <button
-              onClick={handleEndSession}
-              className="border border-gray-600 hover:border-purple-400 flex-1 max-w-32 px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 bg-gray-900 hover:bg-gray-800"
+              onClick={() => setIsActive(true)}
+              className={`py-4 px-8 bg-gradient-to-r ${protocol.color} text-white font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg`}
             >
-              <svg
-                className="w-4 h-4 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 10h6v4H9z"
-                />
-              </svg>
-              <span className="text-gray-400 hover:text-white text-sm">End</span>
+              Begin Session
             </button>
+            
+            <Link to="/">
+              <button className="block mx-auto mt-4 px-6 py-2 text-slate-400 hover:text-white transition-colors">
+                ← Back to Home
+              </button>
+            </Link>
           </motion.div>
-          
-          {/* Back Button */}
-          <motion.button
-            onClick={() => setLocation('/activation-sequence')}
-            className="w-full py-3 text-gray-400 hover:text-white transition-colors duration-300 flex items-center justify-center space-x-2"
+        ) : (
+          // Active Session
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.1, duration: 0.5 }}
+            className="space-y-8"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
+            {/* Session Stats */}
+            <div className="flex justify-between text-slate-400 text-sm">
+              <span>Time: {formatTime(sessionTime)}</span>
+              <span>Breaths: {breathCount}</span>
+            </div>
+            
+            {/* Breathing Circle */}
+            <div className="relative">
+              <motion.div
+                animate={{ scale: circleScale }}
+                transition={{ duration: 0.1, ease: "linear" }}
+                className={`w-64 h-64 mx-auto bg-gradient-to-r ${protocol.color} rounded-full shadow-2xl`}
+                style={{
+                  boxShadow: `0 0 60px ${currentPhase % 2 === 0 ? '#3B82F6' : '#8B5CF6'}40`
+                }}
               />
-            </svg>
-            <span>Back to Setup</span>
-          </motion.button>
-        </div>
+              
+              {/* Progress Ring */}
+              <div className="absolute inset-0 w-64 h-64 mx-auto">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.1)"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="url(#gradient)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray="283"
+                    strokeDashoffset={283 - (283 * phaseProgress) / 100}
+                    className="transition-all duration-100 ease-linear"
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#06B6D4" />
+                      <stop offset="100%" stopColor="#3B82F6" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+            
+            {/* Phase Instruction */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPhase}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="text-center"
+              >
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  {currentPhaseText || 'Pause'}
+                </h2>
+                <p className="text-slate-400">
+                  {protocol.pattern[currentPhase]} seconds
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            
+            {/* Controls */}
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => setIsPaused(!isPaused)}
+                className="px-6 py-3 bg-slate-800 border border-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+              >
+                {isPaused ? 'Resume' : 'Pause'}
+              </button>
+              <button
+                onClick={() => {
+                  setIsActive(false);
+                  setCurrentPhase(0);
+                  setPhaseProgress(0);
+                  setSessionTime(0);
+                  setBreathCount(0);
+                  setIsPaused(false);
+                }}
+                className="px-6 py-3 bg-red-900/50 border border-red-700 text-red-400 rounded-lg hover:bg-red-900/70 transition-colors"
+              >
+                End Session
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

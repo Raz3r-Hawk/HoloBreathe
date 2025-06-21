@@ -50,6 +50,12 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Features**: Complete mobile app with same functionality as web version
 
 ## Recent Changes
+- **2025-06-21**: Fixed web demo 404 error and added missing features:
+  - Created holographic logo with animated rings and glow effects for both web and mobile
+  - Added "Test Free Protocol" button that launches Foundation breathing session in trial mode
+  - Fixed routing issues in web demo with proper path resolution
+  - Enhanced breathing session page with real-time animations, progress tracking, and session controls
+  - Both web demo and React Native app now feature complete holographic branding and trial functionality
 - **2025-06-21**: Complete React Native app rebuild with Apple-grade design
   - Created comprehensive React Native architecture with TypeScript
   - Implemented beautiful UI/UX with glassmorphism effects and smooth animations
