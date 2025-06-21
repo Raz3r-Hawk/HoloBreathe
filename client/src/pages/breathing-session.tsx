@@ -9,26 +9,25 @@ const protocols = {
     pattern: [4, 4, 4, 4],
     phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
     color: 'from-cyan-500 to-blue-500',
-    duration: 300 // 5 minutes
+    duration: 300
   },
   calm: {
     name: 'Calming Breath',
     pattern: [4, 0, 6, 0],
     phases: ['Inhale', '', 'Exhale', ''],
     color: 'from-blue-500 to-indigo-500',
-    duration: 360 // 6 minutes
+    duration: 360
   },
   energize: {
     name: 'Energizing Breath',
     pattern: [3, 1, 3, 1],
     phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
     color: 'from-orange-500 to-red-500',
-    duration: 180 // 3 minutes
+    duration: 180
   }
 };
 
 export default function BreathingSession() {
-  const [location] = useLocation();
   const searchParams = useSearchParams();
   const protocolId = searchParams.get('protocol') || 'foundation';
   const isTrial = searchParams.get('trial') === 'true';
@@ -83,48 +82,63 @@ export default function BreathingSession() {
 
   const currentPhaseText = protocol.phases[currentPhase];
   const circleScale = currentPhase % 2 === 0 ? 
-    1 + (phaseProgress / 100) * 0.5 : 
-    1.5 - (phaseProgress / 100) * 0.5;
+    1 + (phaseProgress / 100) * 0.3 : 
+    1.3 - (phaseProgress / 100) * 0.3;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6">
-      <div className="max-w-2xl mx-auto text-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+      {/* Ambient background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
+      <div className="relative flex flex-col items-center justify-center min-h-screen px-8">
         {!isActive ? (
           // Start Screen
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
+            className="text-center max-w-2xl"
           >
             {isTrial && (
-              <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-lg p-4 mb-6">
-                <p className="text-amber-400 font-semibold">Free Trial Session</p>
-                <p className="text-amber-300/80 text-sm">Experience the Foundation breathing protocol</p>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mb-8 p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl backdrop-blur-xl"
+              >
+                <h3 className="text-amber-400 font-semibold text-xl mb-2">Free Trial Session</h3>
+                <p className="text-amber-300/80">Experience the Foundation breathing protocol</p>
+              </motion.div>
             )}
             
-            <div className={`w-32 h-32 mx-auto bg-gradient-to-r ${protocol.color} rounded-full flex items-center justify-center mb-6 shadow-lg`}>
-              <span className="text-white font-bold text-2xl">
+            <div className={`w-40 h-40 mx-auto mb-8 bg-gradient-to-r ${protocol.color} rounded-3xl flex items-center justify-center shadow-2xl backdrop-blur-xl border border-white/10`}>
+              <span className="text-white font-bold text-3xl tracking-wider">
                 {protocol.pattern.join('-')}
               </span>
             </div>
             
-            <h1 className="text-4xl font-bold text-white mb-4">{protocol.name}</h1>
-            <p className="text-slate-400 text-lg mb-8">
-              Follow the breathing pattern: {protocol.pattern.join('-')} seconds
+            <h1 className="text-5xl font-black text-white mb-4 tracking-tight">{protocol.name}</h1>
+            <p className="text-xl text-slate-300 mb-12 leading-relaxed">
+              Follow the breathing pattern: <span className="text-cyan-400 font-semibold">{protocol.pattern.join('-')} seconds</span>
             </p>
             
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setIsActive(true)}
-              className={`py-4 px-8 bg-gradient-to-r ${protocol.color} text-white font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg`}
+              className={`py-5 px-12 bg-gradient-to-r ${protocol.color} text-white font-semibold text-lg rounded-2xl shadow-2xl transition-all duration-300 backdrop-blur-sm border border-white/10 mb-8`}
             >
               Begin Session
-            </button>
+            </motion.button>
             
             <Link to="/">
-              <button className="block mx-auto mt-4 px-6 py-2 text-slate-400 hover:text-white transition-colors">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                className="text-slate-400 hover:text-white transition-colors font-medium"
+              >
                 ← Back to Home
-              </button>
+              </motion.button>
             </Link>
           </motion.div>
         ) : (
@@ -132,76 +146,66 @@ export default function BreathingSession() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-8"
+            className="text-center w-full max-w-4xl"
           >
-            {/* Session Stats - Prominent Neon Display */}
-            <div className="flex justify-between items-center mb-8">
-              <div className="text-center">
-                <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 rounded-lg p-4 backdrop-blur-sm">
-                  <div className="text-2xl font-bold text-cyan-400 mb-1">{formatTime(sessionTime)}</div>
-                  <div className="text-xs text-cyan-300/80 uppercase tracking-wider">Time</div>
-                </div>
+            {/* Premium Session Stats */}
+            <div className="flex justify-center gap-8 mb-12">
+              <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 border border-cyan-400/20 rounded-2xl p-6 backdrop-blur-xl min-w-[140px]">
+                <div className="text-3xl font-bold text-cyan-400 mb-2">{formatTime(sessionTime)}</div>
+                <div className="text-sm text-cyan-300/60 uppercase tracking-wider font-medium">Time</div>
               </div>
-              <div className="text-center">
-                <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-lg p-4 backdrop-blur-sm">
-                  <div className="text-2xl font-bold text-purple-400 mb-1">{breathCount}</div>
-                  <div className="text-xs text-purple-300/80 uppercase tracking-wider">Breaths</div>
-                </div>
+              <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 border border-purple-400/20 rounded-2xl p-6 backdrop-blur-xl min-w-[140px]">
+                <div className="text-3xl font-bold text-purple-400 mb-2">{breathCount}</div>
+                <div className="text-sm text-purple-300/60 uppercase tracking-wider font-medium">Breaths</div>
               </div>
             </div>
             
-            {/* Enhanced Neon Breathing Circle */}
-            <div className="relative mb-8">
-              {/* Outer glow effects */}
+            {/* Premium Breathing Circle */}
+            <div className="relative mb-12">
+              {/* Ambient glow */}
               <div className="absolute inset-0 w-80 h-80 mx-auto">
-                <div className={`absolute inset-0 bg-gradient-to-r ${protocol.color} rounded-full opacity-20 blur-xl animate-pulse`}></div>
-                <div className={`absolute inset-4 bg-gradient-to-r ${protocol.color} rounded-full opacity-30 blur-lg animate-pulse delay-75`}></div>
+                <div className={`absolute inset-0 bg-gradient-to-r ${protocol.color} rounded-full opacity-20 blur-2xl animate-pulse`}></div>
               </div>
               
-              {/* Main breathing circle with neon effect */}
+              {/* Main breathing circle */}
               <motion.div
                 animate={{ scale: circleScale }}
                 transition={{ duration: 0.1, ease: "linear" }}
-                className={`relative w-64 h-64 mx-auto bg-gradient-to-r ${protocol.color} rounded-full shadow-2xl border border-cyan-400/50`}
+                className={`relative w-72 h-72 mx-auto bg-gradient-to-r ${protocol.color} rounded-full shadow-2xl border border-white/20 backdrop-blur-xl`}
                 style={{
-                  boxShadow: `0 0 80px ${currentPhase % 2 === 0 ? '#06B6D4' : '#8B5CF6'}60, inset 0 0 40px rgba(255,255,255,0.1)`
+                  boxShadow: `0 0 100px ${currentPhase % 2 === 0 ? 'rgba(6, 182, 212, 0.4)' : 'rgba(139, 92, 246, 0.4)'}, inset 0 0 80px rgba(255, 255, 255, 0.1)`
                 }}
               >
-                {/* Inner holographic effect */}
-                <div className="absolute inset-4 bg-gradient-to-tl from-transparent via-white/20 to-transparent rounded-full"></div>
-                <div className="absolute inset-8 bg-gradient-to-br from-transparent via-cyan-400/30 to-transparent rounded-full"></div>
+                {/* Glass effect */}
+                <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-white/10 to-transparent rounded-full"></div>
               </motion.div>
               
-              {/* Enhanced Progress Ring with Neon Effect */}
-              <div className="absolute inset-0 w-64 h-64 mx-auto">
+              {/* Progress Ring */}
+              <div className="absolute inset-0 w-72 h-72 mx-auto">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  {/* Background ring */}
                   <circle
                     cx="50"
                     cy="50"
-                    r="45"
+                    r="46"
                     fill="none"
-                    stroke="rgba(6,182,212,0.2)"
-                    strokeWidth="3"
+                    stroke="rgba(255,255,255,0.1)"
+                    strokeWidth="2"
                   />
-                  {/* Progress ring with glow */}
                   <circle
                     cx="50"
                     cy="50"
-                    r="45"
+                    r="46"
                     fill="none"
-                    stroke="url(#neonGradient)"
-                    strokeWidth="4"
+                    stroke="url(#progressGradient)"
+                    strokeWidth="3"
                     strokeLinecap="round"
-                    strokeDasharray="283"
-                    strokeDashoffset={283 - (283 * phaseProgress) / 100}
-                    className="transition-all duration-100 ease-linear drop-shadow-lg"
-                    style={{
-                      filter: 'drop-shadow(0 0 8px #06B6D4)'
-                    }}
+                    strokeDasharray="289"
+                    strokeDashoffset={289 - (289 * phaseProgress) / 100}
+                    className="transition-all duration-100 ease-linear"
+                    style={{ filter: 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))' }}
                   />
                   <defs>
-                    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#06B6D4" />
                       <stop offset="50%" stopColor="#3B82F6" />
                       <stop offset="100%" stopColor="#8B5CF6" />
@@ -209,48 +213,43 @@ export default function BreathingSession() {
                   </defs>
                 </svg>
               </div>
-              
-              {/* Floating particles around circle */}
-              <div className="absolute top-0 left-1/2 w-2 h-2 bg-cyan-400 rounded-full opacity-80 animate-bounce"></div>
-              <div className="absolute bottom-0 right-1/3 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-60 animate-bounce delay-200"></div>
-              <div className="absolute top-1/3 left-0 w-1 h-1 bg-purple-400 rounded-full opacity-70 animate-bounce delay-400"></div>
             </div>
             
-            {/* Enhanced Phase Instruction */}
+            {/* Phase Instruction */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPhase}
-                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.9 }}
-                className="text-center mb-8"
+                exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                className="mb-12"
               >
-                <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-cyan-400/30 rounded-xl p-6 backdrop-blur-sm">
-                  <h2 className="text-4xl font-bold text-white mb-3 drop-shadow-lg">
+                <div className="bg-gradient-to-r from-slate-800/60 to-slate-700/60 border border-cyan-400/20 rounded-2xl p-8 backdrop-blur-xl max-w-md mx-auto">
+                  <h2 className="text-4xl font-bold text-white mb-4 tracking-tight">
                     <span className={`bg-gradient-to-r ${protocol.color} bg-clip-text text-transparent`}>
                       {currentPhaseText || 'Pause'}
                     </span>
                   </h2>
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                    <p className="text-slate-300 text-lg font-medium">
-                      {protocol.pattern[currentPhase]} seconds
-                    </p>
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse delay-200"></div>
-                  </div>
+                  <p className="text-slate-300 text-xl font-medium">
+                    {protocol.pattern[currentPhase]} {protocol.pattern[currentPhase] === 1 ? 'second' : 'seconds'}
+                  </p>
                 </div>
               </motion.div>
             </AnimatePresence>
             
-            {/* Enhanced Neon Controls */}
+            {/* Premium Controls */}
             <div className="flex gap-6 justify-center">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setIsPaused(!isPaused)}
-                className="px-8 py-4 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border-2 border-cyan-400/50 text-cyan-400 font-semibold rounded-xl hover:bg-cyan-400/20 transition-all backdrop-blur-sm shadow-lg shadow-cyan-500/20"
+                className="px-8 py-4 bg-gradient-to-r from-slate-700/80 to-slate-600/80 border border-cyan-400/40 text-cyan-400 font-semibold rounded-xl hover:border-cyan-400/60 transition-all backdrop-blur-xl shadow-lg"
               >
-                {isPaused ? '▶️ Resume' : '⏸️ Pause'}
-              </button>
-              <button
+                {isPaused ? '▶ Resume' : '⏸ Pause'}
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setIsActive(false);
                   setCurrentPhase(0);
@@ -259,10 +258,10 @@ export default function BreathingSession() {
                   setBreathCount(0);
                   setIsPaused(false);
                 }}
-                className="px-8 py-4 bg-gradient-to-r from-red-600/20 to-pink-600/20 border-2 border-red-400/50 text-red-400 font-semibold rounded-xl hover:bg-red-400/20 transition-all backdrop-blur-sm shadow-lg shadow-red-500/20"
+                className="px-8 py-4 bg-gradient-to-r from-red-600/20 to-pink-600/20 border border-red-400/40 text-red-400 font-semibold rounded-xl hover:border-red-400/60 transition-all backdrop-blur-xl shadow-lg"
               >
                 🛑 End Session
-              </button>
+              </motion.button>
             </div>
           </motion.div>
         )}

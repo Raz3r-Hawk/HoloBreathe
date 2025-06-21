@@ -50,6 +50,15 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Features**: Complete mobile app with same functionality as web version
 
 ## Recent Changes
+- **2025-06-21**: Complete Apple-grade dark theme rebuild:
+  - Rebuilt entire web app with premium dark theme design only (no theme switching)
+  - Created stunning 3D holographic floating cube logo with realistic depth and smooth animations
+  - Implemented Apple-grade typography with proper font weights and spacing
+  - Enhanced breathing session with premium glass morphism effects and ambient lighting
+  - Added comprehensive protocol selection with 6 breathing techniques (Foundation, Calm, Energize, Advanced, Power, Elite)
+  - Fixed all routing issues with proper path configuration
+  - Premium interaction design with subtle hover effects and smooth transitions
+  - Optimized for dark environments with proper contrast and visual hierarchy
 - **2025-06-21**: Enhanced UI/UX design based on user feedback:
   - Improved button spacing between "Start Your Journey" and "Test Free Protocol"
   - Fixed routing error by correcting path to "/protocol-selection"
