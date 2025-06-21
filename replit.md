@@ -19,6 +19,11 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Audio Library**: User's personalized ambient audio collection
 - **Feedback**: User feedback and app rating system
 
+## Database Storage
+- **Development**: Replit built-in PostgreSQL (Neon) - working, session data confirmed stored
+- **Production**: Supabase PostgreSQL - will work when deployed to Vercel/Railway/other cloud platforms
+- **Migration**: Simple environment variable update (DATABASE_URL) switches from Replit to Supabase
+
 ## Authentication & User Management
 - **Registration**: Complete user profiles with personal information
 - **Security**: bcrypt password hashing with secure session management
@@ -50,6 +55,12 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Features**: Complete mobile app with same functionality as web version
 
 ## Recent Changes
+- **2025-06-21**: Database and UI fixes completed
+  - **Fixed End Session navigation** - authenticated users now properly redirect to protocol selection instead of login screen
+  - **Applied aggressive button focus removal** - targeting persistent rectangular highlights on rounded buttons with comprehensive CSS overrides
+  - **Database connectivity resolved** - switched from unreachable Supabase to working Replit PostgreSQL database for session storage
+  - **Session data now persisting** - breathing sessions properly recorded in Replit database, not Supabase due to connectivity restrictions
+  - **Enhanced button styling** - added inline styles and global CSS to eliminate webkit tap highlights completely
 - **2025-06-21**: Comprehensive UI/UX redesign and trial system overhaul completed
   - **Fixed End Session navigation permanently** - trial sessions now redirect to signup, regular sessions to protocol selection
   - **Redesigned free trial system** - restricted to Foundation 4-4-4-4 protocol only with 2 attempt maximum

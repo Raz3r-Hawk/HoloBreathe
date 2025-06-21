@@ -177,6 +177,39 @@ body {
     color: hsl(var(--foreground));
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
+
+/* ULTIMATE BUTTON FOCUS REMOVAL - GLOBAL OVERRIDE */
+* {
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  -webkit-focus-ring-color: rgba(0,0,0,0) !important;
+}
+
+*:focus,
+*:active,
+*:focus-visible {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+}
+
+button,
+.holographic-border {
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  -webkit-focus-ring-color: rgba(0,0,0,0) !important;
+  outline: none !important;
+}
+
+button:focus,
+button:active,
+.holographic-border:focus,
+.holographic-border:active {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+  border: inherit !important;
+}
   
   .input-light:focus {
     border-color: hsl(var(--primary));
