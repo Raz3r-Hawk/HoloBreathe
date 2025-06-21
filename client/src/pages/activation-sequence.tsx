@@ -204,7 +204,10 @@ export default function ActivationSequence() {
         
         {/* Continue Button */}
         <motion.button
-          onClick={() => setLocation('/breathing-session')}
+          onClick={() => {
+            console.log('Begin Session clicked - navigating to breathing session');
+            setLocation('/breathing-session');
+          }}
           className="w-full theme-card border-2 border-primary theme-transition mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

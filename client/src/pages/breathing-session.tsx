@@ -45,10 +45,16 @@ export default function BreathingSession() {
     // Retrieve selected protocol from sessionStorage
     const protocolData = sessionStorage.getItem('selectedProtocol');
     if (protocolData) {
-      const protocol = JSON.parse(protocolData);
-      setSelectedProtocol(protocol);
+      try {
+        const protocol = JSON.parse(protocolData);
+        console.log('Loading protocol:', protocol.name);
+        setSelectedProtocol(protocol);
+      } catch (error) {
+        console.error('Failed to parse protocol data:', error);
+        setLocation('/protocol-selection');
+      }
     } else {
-      // If no protocol selected, redirect to protocol selection
+      console.log('No protocol found in sessionStorage, redirecting...');
       setLocation('/protocol-selection');
     }
   }, [setLocation]);
@@ -155,7 +161,8 @@ export default function BreathingSession() {
   // Handle missing protocol with useEffect to avoid setState during render
   useEffect(() => {
     if (!selectedProtocol) {
-      setLocation('/protocol-selection');
+      console.log('No protocol available, redirecting to protocol selection');
+      setTimeout(() => setLocation('/protocol-selection'), 100);
     }
   }, [selectedProtocol, setLocation]);
 
@@ -164,7 +171,13 @@ export default function BreathingSession() {
       <div className="min-h-screen theme-bg theme-transition flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Returning to protocols...</p>
+          <p className="text-muted-foreground">Loading breathing session...</p>
+          <button 
+            onClick={() => setLocation('/protocol-selection')}
+            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Return to Protocols
+          </button>
         </div>
       </div>
     );
