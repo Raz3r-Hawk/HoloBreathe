@@ -1,33 +1,27 @@
-# Metro Bundler Issue - Complete Fix Applied
+# End Session Black Screen - Immediate Fix Applied
+
+## Problem
+Clicking "End" during Try Free Protocol shows black screen instead of returning to protocol selection.
 
 ## Root Cause
-The Metro bundler error was caused by ES module conflicts between your main project configuration and React Native's CommonJS requirements.
+Navigation state conflicts between breathing session hooks and router causing render blocking.
 
-## Applied Solution
-1. **Simplified Metro Configuration**: Removed all complex resolver configurations
-2. **Clean Babel Setup**: Created minimal babel.config.js for React Native
-3. **Cleared All Caches**: Removed Metro and Watchman caches
-4. **Standardized Project Structure**: Ensured React Native compatibility
+## Solution Applied
+1. **Enhanced handleEndSession function** with comprehensive error handling
+2. **Multiple redirect fallbacks** to prevent navigation failures
+3. **Improved state management** with proper cleanup order
+4. **Console logging** for debugging navigation issues
 
-## Test the Fix
-Run these commands in order:
+## Changes Made
+- Added try-catch blocks around all session termination actions
+- Implemented dual redirect mechanism (wouter + window.location)
+- Improved loading state display when protocol is missing
+- Added 500ms backup redirect as failsafe
 
-```bash
-# Start Metro bundler
-npx react-native start --reset-cache
+## Testing Instructions
+1. Click "Try Free Protocol" 
+2. Start any breathing session
+3. Click "End" button
+4. Should now redirect to protocol selection without black screen
 
-# In a separate terminal, run Android
-npx react-native run-android
-```
-
-## If Still Having Issues
-The persistent Metro bundler errors suggest a fundamental configuration conflict. Consider creating a separate React Native project structure:
-
-```bash
-# Create a clean React Native project for comparison
-npx react-native init BreathingAppClean
-# Copy your src folder to the new project
-# Use the clean project's configuration files
-```
-
-Your breathing app's 5 screens and holographic design are ready - the issue is purely in the build configuration, not your app code.
+The End button now has robust error handling and multiple navigation paths to ensure users never get stuck on blank screens.

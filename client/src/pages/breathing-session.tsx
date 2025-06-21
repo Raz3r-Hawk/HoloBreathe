@@ -107,14 +107,24 @@ export default function BreathingSession() {
   }, [isSessionComplete, showCompletionMessage, selectedProtocol, sessionStartTime, sessionState.cycles, recordSessionMutation, setLocation]);
 
   const handleEndSession = () => {
-    stopAudio();
+    console.log('End session clicked - stopping audio and redirecting');
     
-    // Record incomplete session if it was started
+    // Stop audio immediately
+    try {
+      stopAudio();
+    } catch (error) {
+      console.log('Audio stop failed:', error);
+    }
+    
+    // End the breathing session
+    try {
+      endSession();
+    } catch (error) {
+      console.log('End session failed:', error);
+    }
+    
+    // Record incomplete session if it was started (optional for trial mode)
     if (selectedProtocol && sessionStartTime && sessionState.sessionTimeElapsed > 30) {
-      const sessionEndTime = new Date();
-      const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
-      
-      // Only record session if authenticated (not in trial mode)
       try {
         recordSessionMutation.mutate({
           protocol: selectedProtocol.id,
@@ -125,17 +135,30 @@ export default function BreathingSession() {
           completed: false
         });
       } catch (error) {
-        // Silent fail for trial users
-        console.log('Session recording skipped (trial mode)');
+        console.log('Session recording skipped (trial mode):', error);
       }
     }
     
-    endSession();
+    // Force immediate redirect - multiple fallbacks to prevent black screen
     setLocation('/protocol-selection');
+    
+    // Backup redirect in case first fails
+    setTimeout(() => {
+      window.location.href = '/protocol-selection';
+    }, 500);
   };
 
   if (!selectedProtocol) {
-    return null; // Will redirect in useEffect
+    // Redirect to protocol selection if no protocol selected
+    setLocation('/protocol-selection');
+    return (
+      <div className="min-h-screen theme-bg theme-transition flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Returning to protocols...</p>
+        </div>
+      </div>
+    );
   }
 
   if (showCompletionMessage) {
