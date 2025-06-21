@@ -165,19 +165,9 @@ export default function BreathingSession() {
     // Force navigation immediately with multiple fallbacks
     console.log('Forcing navigation to protocol selection');
     
-    // Try wouter navigation first
-    try {
-      setLocation('/protocol-selection');
-    } catch (error) {
-      console.log('Wouter navigation failed, using window.location');
-    }
-    
-    // Backup with window.location
-    setTimeout(() => {
-      if (window.location.pathname === '/breathing-session') {
-        window.location.href = '/protocol-selection';
-      }
-    }, 200);
+    // Direct navigation with immediate redirect
+    console.log('Redirecting immediately to protocol selection');
+    window.location.href = '/protocol-selection';
   };
 
   // Handle missing protocol with useEffect to avoid setState during render
@@ -407,7 +397,7 @@ export default function BreathingSession() {
             
             <button
               onClick={handleEndSession}
-              className="border border-gray-600 hover:border-purple-400 flex-1 max-w-32 px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
+              className="border border-gray-600 hover:border-purple-400 flex-1 max-w-32 px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 bg-gray-900 hover:bg-gray-800"
             >
               <svg
                 className="w-4 h-4 text-gray-400"

@@ -4,11 +4,33 @@
 
 /* Force dark theme globally */
 html {
-  color-scheme: dark;
+  color-scheme: dark !important;
 }
 
 body {
   background-color: hsl(224, 71%, 4%) !important;
+  color: hsl(213, 31%, 91%) !important;
+}
+
+/* Force all containers to dark theme - but be selective */
+.theme-bg,
+.min-h-screen,
+div[class*="bg-"],
+main,
+section {
+  background-color: hsl(224, 71%, 4%) !important;
+  color: hsl(213, 31%, 91%) !important;
+}
+
+/* Override any light theme classes */
+.bg-white,
+.bg-gray-50,
+.bg-gray-100 {
+  background-color: hsl(224, 71%, 4%) !important;
+}
+
+.text-black,
+.text-gray-900 {
   color: hsl(213, 31%, 91%) !important;
 }
 
