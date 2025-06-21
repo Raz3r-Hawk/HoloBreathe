@@ -64,6 +64,7 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Enhanced button styling** - added inline styles and global CSS to eliminate webkit tap highlights completely
   - **Re-enabled trial restrictions** - users limited to 2 trial sessions with toast notification when limit exceeded
   - **Configured Supabase for production** - database connection ready for deployment with schema migration support
+  - **Fixed Android Studio JVM arguments error** - resolved "Could not find main class Xmx64m" by simplifying gradle configuration to stable versions
 - **2025-06-21**: Comprehensive UI/UX redesign and trial system overhaul completed
   - **Fixed End Session navigation permanently** - trial sessions now redirect to signup, regular sessions to protocol selection
   - **Redesigned free trial system** - restricted to Foundation 4-4-4-4 protocol only with 2 attempt maximum
