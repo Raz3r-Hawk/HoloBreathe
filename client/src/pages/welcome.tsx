@@ -294,10 +294,17 @@ export default function Welcome() {
         >
           {/* Free Trial Button */}
           <motion.button
-            className="btn-enhanced holographic-border group relative overflow-hidden w-full outline-none focus:outline-none"
+            className="btn-enhanced holographic-border group relative overflow-hidden w-full"
             onClick={handleTryFree}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            style={{ 
+              WebkitAppearance: 'none', 
+              border: 'none', 
+              outline: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              WebkitFocusRingColor: 'transparent'
+            }}
           >
             <div className="bg-gray-900/80 backdrop-blur-sm px-8 py-4 rounded-2xl text-lg font-semibold group-hover:bg-gray-800/90 transition-all duration-300">
               <div className="flex items-center justify-center space-x-2 mb-1">

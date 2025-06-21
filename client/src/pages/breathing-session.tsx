@@ -123,11 +123,16 @@ export default function BreathingSession() {
         setShowCompletionMessage(false);
         sessionStorage.removeItem('selectedProtocol');
         
-        // Redirect based on trial status
+        // Redirect based on trial status and authentication
         if (isTrialMode) {
+          console.log('Trial session completed, redirecting to signup');
           window.location.href = '/auth';
+        } else if (isAuthenticated) {
+          console.log('Authenticated user session completed, redirecting to protocol selection');
+          setLocation('/protocol-selection');
         } else {
-          window.location.href = '/protocol-selection';
+          console.log('Unauthenticated session completed, redirecting to welcome');
+          setLocation('/');
         }
       }, 2000);
 
@@ -169,9 +174,14 @@ export default function BreathingSession() {
       return;
     }
     
-    // For regular users, redirect to protocol selection
-    console.log('Performing immediate redirect to protocol selection');
-    window.location.href = '/protocol-selection';
+    // For authenticated users, redirect to protocol selection
+    if (isAuthenticated) {
+      console.log('Authenticated user ended session manually, redirecting to protocol selection');
+      setLocation('/protocol-selection');
+    } else {
+      console.log('Unauthenticated user ended session, redirecting to welcome');
+      setLocation('/');
+    }
   };
 
   // Handle missing protocol with immediate redirect
@@ -346,8 +356,14 @@ export default function BreathingSession() {
           >
             <button
               onClick={pauseSession}
-              className="holographic-border flex-1 max-w-32"
+              className="holographic-border flex-1 max-w-32 btn-enhanced"
               disabled={!sessionState.isActive}
+              style={{ 
+                WebkitAppearance: 'none', 
+                border: 'none', 
+                outline: 'none',
+                WebkitTapHighlightColor: 'transparent'
+              }}
             >
               <div className="bg-gray-900/80 backdrop-blur-sm px-6 py-3 rounded-xl flex items-center justify-center space-x-2">
                 <AnimatePresence mode="wait">
@@ -399,7 +415,13 @@ export default function BreathingSession() {
             
             <button
               onClick={handleEndSession}
-              className="border border-gray-600 hover:border-purple-400 flex-1 max-w-32 px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 bg-gray-900 hover:bg-gray-800"
+              className="btn-enhanced border border-gray-600 hover:border-purple-400 flex-1 max-w-32 px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 bg-gray-900 hover:bg-gray-800"
+              style={{ 
+                WebkitAppearance: 'none', 
+                border: 'none', 
+                outline: 'none',
+                WebkitTapHighlightColor: 'transparent'
+              }}
             >
               <svg
                 className="w-4 h-4 text-gray-400"
