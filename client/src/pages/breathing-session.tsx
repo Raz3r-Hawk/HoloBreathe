@@ -110,7 +110,8 @@ export default function BreathingSession() {
       const redirectTimer = setTimeout(() => {
         setShowCompletionMessage(false);
         sessionStorage.removeItem('selectedProtocol');
-        window.location.href = '/protocol-selection';
+        // Use replace to avoid back button issues
+        window.location.replace('/protocol-selection');
       }, 2000);
 
       return () => clearTimeout(redirectTimer);
@@ -165,9 +166,28 @@ export default function BreathingSession() {
     // Force navigation immediately with multiple fallbacks
     console.log('Forcing navigation to protocol selection');
     
-    // Direct navigation with immediate redirect
+    // Multiple redirect strategies
     console.log('Redirecting immediately to protocol selection');
-    window.location.href = '/protocol-selection';
+    
+    // Strategy 1: Try wouter first
+    try {
+      setLocation('/protocol-selection');
+      console.log('Wouter navigation attempted');
+    } catch (e) {
+      console.log('Wouter failed:', e);
+    }
+    
+    // Strategy 2: Force window location immediately
+    setTimeout(() => {
+      console.log('Forcing window.location redirect');
+      window.location.replace('/protocol-selection');
+    }, 50);
+    
+    // Strategy 3: Ultimate fallback
+    setTimeout(() => {
+      console.log('Ultimate fallback redirect');
+      window.location.href = '/protocol-selection';
+    }, 200);
   };
 
   // Handle missing protocol with useEffect to avoid setState during render
@@ -185,13 +205,13 @@ export default function BreathingSession() {
 
   if (!selectedProtocol) {
     return (
-      <div className="min-h-screen theme-bg theme-transition flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading breathing session...</p>
+          <div className="animate-spin w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading breathing session...</p>
           <button 
             onClick={() => setLocation('/protocol-selection')}
-            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            className="mt-4 px-4 py-2 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-colors"
           >
             Return to Protocols
           </button>
@@ -202,7 +222,7 @@ export default function BreathingSession() {
 
   if (showCompletionMessage) {
     return (
-      <div className="min-h-screen theme-bg theme-transition flex flex-col justify-center items-center px-6">
+      <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-6">
         <motion.div
           className="text-center"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -210,10 +230,10 @@ export default function BreathingSession() {
           transition={{ duration: 0.8 }}
         >
           <motion.div
-            className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-r from-primary via-blue-400 to-purple-400 flex items-center justify-center"
+            className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 flex items-center justify-center"
             animate={{
               boxShadow: [
-                '0 0 20px rgba(0,102,204,0.5)',
+                '0 0 20px rgba(0,255,255,0.5)',
                 '0 0 40px rgba(59,130,246,0.8)',
                 '0 0 20px rgba(147,51,234,0.5)',
               ],
@@ -225,20 +245,20 @@ export default function BreathingSession() {
             </svg>
           </motion.div>
           
-          <h2 className="text-3xl font-bold mb-4 gradient-text">Session Complete!</h2>
-          <p className="text-muted-foreground mb-4">Great job on completing your breathing session.</p>
-          <p className="text-muted-foreground mb-6">You completed {sessionState.cycles} cycles!</p>
+          <h2 className="text-3xl font-bold mb-4 text-white">Session Complete!</h2>
+          <p className="text-slate-400 mb-4">Great job on completing your breathing session.</p>
+          <p className="text-slate-400 mb-6">You completed {sessionState.cycles} cycles!</p>
           
           <motion.button
             onClick={() => setLocation('/protocol-selection')}
-            className="px-8 py-3 bg-gradient-to-r from-primary to-blue-500 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            className="px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-black rounded-lg font-semibold hover:opacity-90 transition-opacity"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Continue
           </motion.button>
           
-          <p className="text-sm text-muted-foreground mt-4">Or wait for automatic redirect...</p>
+          <p className="text-sm text-slate-500 mt-4">Or wait for automatic redirect...</p>
         </motion.div>
       </div>
     );
@@ -249,7 +269,7 @@ export default function BreathingSession() {
   const phaseDuration = getCurrentPhasePattern();
 
   return (
-    <div className="min-h-screen theme-bg theme-transition flex flex-col px-6 py-6">
+    <div className="min-h-screen bg-slate-950 flex flex-col px-6 py-6">
       <div className="w-full max-w-md mx-auto flex flex-col min-h-screen">
         {/* Protocol Info - top section */}
         <motion.div
@@ -258,7 +278,7 @@ export default function BreathingSession() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="theme-card theme-transition rounded-xl p-4 border border-border">
+          <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
             <h3 className={`text-xl font-bold ${colorClasses.text} mb-1 text-center`}>
               {selectedProtocol.name} Protocol
             </h3>

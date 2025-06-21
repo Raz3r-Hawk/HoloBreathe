@@ -70,37 +70,34 @@ export default function ProtocolSelection() {
   }
 
   return (
-    <div className="min-h-screen theme-bg theme-transition px-6 py-8">
+    <div className="min-h-screen bg-slate-950 px-6 py-8">
       <div className="max-w-4xl mx-auto">
         {/* Navigation Header */}
         <div className="flex justify-between items-center mb-8">
-          <Button
-            variant="outline"
+          <button
             onClick={() => setLocation('/')}
-            className="theme-transition"
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-all duration-200"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back</span>
+          </button>
           
           <div className="flex gap-3">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setLocation('/sessions')}
-              className="theme-transition"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-all duration-200"
             >
-              <Activity className="w-4 h-4 mr-2" />
-              Sessions
-            </Button>
+              <Activity className="w-4 h-4" />
+              <span>Sessions</span>
+            </button>
             
-            <Button
-              variant="outline"
+            <button
               onClick={() => setLocation('/settings')}
-              className="theme-transition"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600 hover:text-white transition-all duration-200"
             >
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
+              <Settings className="w-4 h-4" />
+              <span>Settings</span>
+            </button>
           </div>
         </div>
 
@@ -129,11 +126,11 @@ export default function ProtocolSelection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-3xl font-bold mb-2 text-foreground">
+          <h2 className="text-3xl font-bold mb-2 text-white">
             Choose Your{' '}
-            <span className="gradient-text">Protocol</span>
+            <span className="text-blue-400">Protocol</span>
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-slate-400">
             {isTrialMode && !hasUsedTrial 
               ? "Select one breathing pattern to try" 
               : "Select your breathing pattern"
@@ -161,7 +158,7 @@ export default function ProtocolSelection() {
         {/* Back Button */}
         <motion.button
           onClick={() => setLocation('/')}
-          className="w-full py-3 text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center justify-center space-x-2 theme-transition"
+          className="w-full py-3 bg-slate-900 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors duration-300 flex items-center justify-center space-x-2 rounded-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}
