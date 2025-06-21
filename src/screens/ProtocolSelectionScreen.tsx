@@ -1,146 +1,220 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-  Platform,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import LinearGradient from 'react-native-linear-gradient';
-import {RootStackParamList} from '../App';
-import {breathingProtocols} from '../data/breathingProtocols';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, StatusBar, ScrollView, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/ui/Button';
+import { ProtocolCard } from '../components/breathing/ProtocolCard';
+import { breathingProtocols } from '../data/breathingProtocols';
 
-type ProtocolSelectionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProtocolSelection'>;
+interface ProtocolSelectionScreenProps {
+  navigation: any;
+}
 
-const ProtocolSelectionScreen = () => {
-  const navigation = useNavigation<ProtocolSelectionScreenNavigationProp>();
+export const ProtocolSelectionScreen: React.FC<ProtocolSelectionScreenProps> = ({ navigation }) => {
+  const { theme, isDark } = useTheme();
+  const { user } = useAuth();
+  const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'beginner' | 'intermediate' | 'advanced'>('all');
+
+  const filteredProtocols = selectedDifficulty === 'all' 
+    ? breathingProtocols 
+    : breathingProtocols.filter(protocol => protocol.difficulty === selectedDifficulty);
 
   const handleProtocolSelect = (protocol: any) => {
-    navigation.navigate('BreathingSession', {protocol});
+    navigation.navigate('BreathingSession', { protocol });
   };
 
-  const renderProtocolCard = ({item, index}: {item: any; index: number}) => {
-    const colors = item.color === 'cyan' ? ['#00ffff', '#0080ff'] :
-                  item.color === 'purple' ? ['#8000ff', '#ff00ff'] :
-                  item.color === 'green' ? ['#00ff80', '#00ffff'] :
-                  ['#ff8000', '#ff0080'];
-
-    return (
-      <TouchableOpacity 
-        style={styles.protocolCard} 
-        onPress={() => handleProtocolSelect(item)}>
-        <LinearGradient colors={colors} style={styles.cardGradient}>
-          <Text style={styles.protocolName}>{item.name}</Text>
-          <Text style={styles.protocolPattern}>
-            {item.pattern.join(' - ')} seconds
-          </Text>
-          <Text style={styles.protocolBenefit}>{item.benefit}</Text>
-          <Text style={styles.protocolDuration}>
-            {Math.floor(item.sessionDuration / 60)} minutes
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    );
+  const handleProfile = () => {
+    navigation.navigate('Profile');
   };
+
+  const handleAnalytics = () => {
+    navigation.navigate('Analytics');
+  };
+
+  const difficultyButtons = [
+    { key: 'all', label: 'All' },
+    { key: 'beginner', label: 'Beginner' },
+    { key: 'intermediate', label: 'Intermediate' },
+    { key: 'advanced', label: 'Advanced' },
+  ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#000000', '#1a1a2e', '#16213e']} style={styles.gradient}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+      
+      {/* Background gradient */}
+      <LinearGradient
+        colors={isDark 
+          ? ['#0A0A0F', '#1A1A2E', '#16213E'] 
+          : ['#FFFFFF', '#F8F9FA', '#E3F2FD']
+        }
+        style={StyleSheet.absoluteFill}
+      />
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Choose Your Protocol</Text>
-          <Text style={styles.subtitle}>Select a breathing pattern for your session</Text>
+          <View style={styles.headerTop}>
+            <View>
+              <Text style={[styles.greeting, { color: theme.colors.textSecondary }]}>
+                Welcome back,
+              </Text>
+              <Text style={[styles.userName, { color: theme.colors.text }]}>
+                {user?.firstName || 'Practitioner'}
+              </Text>
+            </View>
+            <View style={styles.headerButtons}>
+              <Button
+                title="Analytics"
+                onPress={handleAnalytics}
+                variant="outline"
+                size="small"
+                style={styles.headerButton}
+              />
+              <Button
+                title="Profile"
+                onPress={handleProfile}
+                variant="outline"
+                size="small"
+                style={styles.headerButton}
+              />
+            </View>
+          </View>
+
+          <Text style={[styles.title, { color: theme.colors.text }]}>
+            Choose Your{' '}
+            <Text style={{ color: theme.colors.primary }}>Protocol</Text>
+          </Text>
+          <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+            Select a breathing pattern that matches your current needs
+          </Text>
         </View>
 
-        <FlatList
-          data={breathingProtocols}
-          renderItem={renderProtocolCard}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.protocolList}
-          showsVerticalScrollIndicator={false}
-        />
-      </LinearGradient>
-    </SafeAreaView>
+        {/* Difficulty Filter */}
+        <View style={styles.filterContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
+            {difficultyButtons.map((button) => (
+              <Button
+                key={button.key}
+                title={button.label}
+                onPress={() => setSelectedDifficulty(button.key as any)}
+                variant={selectedDifficulty === button.key ? 'primary' : 'outline'}
+                size="small"
+                style={[
+                  styles.filterButton,
+                  selectedDifficulty === button.key && { backgroundColor: theme.colors.primary }
+                ]}
+              />
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Protocol Grid */}
+        <View style={styles.protocolsContainer}>
+          {filteredProtocols.map((protocol, index) => (
+            <ProtocolCard
+              key={protocol.id}
+              protocol={protocol}
+              onPress={() => handleProtocolSelect(protocol)}
+              index={index}
+            />
+          ))}
+        </View>
+
+        {/* Quick Start Section */}
+        <View style={styles.quickStartSection}>
+          <Text style={[styles.quickStartTitle, { color: theme.colors.text }]}>
+            Quick Start
+          </Text>
+          <Text style={[styles.quickStartSubtitle, { color: theme.colors.textSecondary }]}>
+            Not sure which protocol to choose? Try our recommended starter
+          </Text>
+          <Button
+            title="Start Foundation Protocol"
+            onPress={() => handleProtocolSelect(breathingProtocols[0])}
+            gradient
+            size="large"
+            style={styles.quickStartButton}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
   },
-  gradient: {
-    flex: 1,
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
   header: {
-    alignItems: 'center',
-    paddingTop: Platform.OS === 'android' ? 40 : 20,
-    paddingBottom: 30,
+    marginBottom: 32,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+  },
+  greeting: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  userName: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  headerButton: {
+    paddingHorizontal: 12,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#00ffff',
+    fontSize: 28,
+    fontWeight: '800',
     marginBottom: 8,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#ffffff80',
-    textAlign: 'center',
+    lineHeight: 24,
   },
-  protocolList: {
-    paddingBottom: 40,
+  filterContainer: {
+    marginBottom: 24,
   },
-  protocolCard: {
-    marginBottom: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-    ...Platform.select({
-      android: {
-        elevation: 8,
-      },
-      ios: {
-        shadowColor: '#00ffff',
-        shadowOffset: {width: 0, height: 4},
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-      },
-    }),
+  filterScroll: {
+    paddingVertical: 4,
   },
-  cardGradient: {
-    padding: 20,
+  filterButton: {
+    marginRight: 12,
+    paddingHorizontal: 16,
+  },
+  protocolsContainer: {
+    marginBottom: 32,
+  },
+  quickStartSection: {
     alignItems: 'center',
+    paddingVertical: 24,
   },
-  protocolName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
+  quickStartTitle: {
+    fontSize: 20,
+    fontWeight: '700',
     marginBottom: 8,
-    textAlign: 'center',
   },
-  protocolPattern: {
-    fontSize: 16,
-    color: '#ffffff90',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  protocolBenefit: {
+  quickStartSubtitle: {
     fontSize: 14,
-    color: '#ffffff70',
-    marginBottom: 8,
     textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 20,
   },
-  protocolDuration: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    textAlign: 'center',
+  quickStartButton: {
+    minWidth: 200,
   },
 });
-
-export default ProtocolSelectionScreen;
