@@ -44,6 +44,8 @@ export default function BreathingSession() {
   useEffect(() => {
     // Retrieve selected protocol from sessionStorage
     const protocolData = sessionStorage.getItem('selectedProtocol');
+    console.log('SessionStorage protocol data:', protocolData);
+    
     if (protocolData) {
       try {
         const protocol = JSON.parse(protocolData);
@@ -51,17 +53,18 @@ export default function BreathingSession() {
         setSelectedProtocol(protocol);
       } catch (error) {
         console.error('Failed to parse protocol data:', error);
-        setLocation('/protocol-selection');
+        setTimeout(() => setLocation('/protocol-selection'), 100);
       }
     } else {
       console.log('No protocol found in sessionStorage, redirecting...');
-      setLocation('/protocol-selection');
+      setTimeout(() => setLocation('/protocol-selection'), 100);
     }
   }, [setLocation]);
 
   useEffect(() => {
     // Auto-start session when protocol is loaded
     if (selectedProtocol && !sessionState.isActive) {
+      console.log('Auto-starting session for protocol:', selectedProtocol.name);
       setSessionStartTime(new Date());
       startSession();
     }
@@ -160,10 +163,15 @@ export default function BreathingSession() {
 
   // Handle missing protocol with useEffect to avoid setState during render
   useEffect(() => {
-    if (!selectedProtocol) {
-      console.log('No protocol available, redirecting to protocol selection');
-      setTimeout(() => setLocation('/protocol-selection'), 100);
-    }
+    // Only redirect if we've had time to load the protocol and it's still missing
+    const timer = setTimeout(() => {
+      if (!selectedProtocol) {
+        console.log('No protocol available after timeout, redirecting to protocol selection');
+        setLocation('/protocol-selection');
+      }
+    }, 500); // Give 500ms for protocol to load
+
+    return () => clearTimeout(timer);
   }, [selectedProtocol, setLocation]);
 
   if (!selectedProtocol) {
