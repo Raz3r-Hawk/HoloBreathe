@@ -92,25 +92,43 @@ export default function BreathingSession() {
       const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
       
       // Only record session if authenticated (not in trial mode)
-      try {
-        recordSessionMutation.mutate({
-          protocol: selectedProtocol.id,
-          protocolName: selectedProtocol.name,
-          duration: selectedProtocol.sessionDuration,
-          completedDuration: sessionState.sessionTimeElapsed,
-          cycles: sessionState.cycles,
-          completed: true
-        });
-      } catch (error) {
-        // Silent fail for trial users - don't block completion flow
-        console.log('Session recording skipped (trial mode)');
+      const isTrialMode = localStorage.getItem('trialMode') === 'true';
+      if (!isTrialMode && isAuthenticated) {
+        try {
+          recordSessionMutation.mutate({
+            protocol: selectedProtocol.id,
+            protocolName: selectedProtocol.name,
+            duration: selectedProtocol.sessionDuration,
+            completedDuration: sessionState.sessionTimeElapsed,
+            cycles: sessionState.cycles,
+            completed: true
+          });
+        } catch (error) {
+          console.log('Session recording failed:', error);
+        }
+      } else {
+        console.log('Session recording skipped (trial mode or not authenticated)');
+      }
+      
+      // Check if this was a trial session and redirect accordingly
+      if (isTrialMode) {
+        const trialCount = parseInt(localStorage.getItem('trialAttempts') || '0') + 1;
+        localStorage.setItem('trialAttempts', trialCount.toString());
+        localStorage.removeItem('trialMode');
+        localStorage.setItem('hasUsedTrial', 'true');
       }
       
       // Immediate redirect after showing completion
       const redirectTimer = setTimeout(() => {
         setShowCompletionMessage(false);
         sessionStorage.removeItem('selectedProtocol');
-        window.location.href = '/protocol-selection';
+        
+        // Redirect based on trial status
+        if (isTrialMode) {
+          window.location.href = '/auth';
+        } else {
+          window.location.href = '/protocol-selection';
+        }
       }, 2000);
 
       return () => clearTimeout(redirectTimer);
@@ -138,7 +156,20 @@ export default function BreathingSession() {
     setSessionStartTime(null);
     sessionStorage.removeItem('selectedProtocol');
     
-    // IMMEDIATE REDIRECT - no delays, no async operations
+    // Check if this was a trial session
+    const isTrialMode = localStorage.getItem('trialMode') === 'true';
+    if (isTrialMode) {
+      const trialCount = parseInt(localStorage.getItem('trialAttempts') || '0') + 1;
+      localStorage.setItem('trialAttempts', trialCount.toString());
+      localStorage.removeItem('trialMode');
+      localStorage.setItem('hasUsedTrial', 'true');
+      
+      console.log('Trial session ended, redirecting to signup');
+      window.location.href = '/auth';
+      return;
+    }
+    
+    // For regular users, redirect to protocol selection
     console.log('Performing immediate redirect to protocol selection');
     window.location.href = '/protocol-selection';
   };

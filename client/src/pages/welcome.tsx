@@ -18,6 +18,39 @@ export default function Welcome() {
     sessionStorage.clear(); // Clear any session redirects
   }, []);
 
+  const handleTryFree = () => {
+    console.log('Try free clicked - checking trial eligibility');
+    
+    // Check trial attempts
+    const trialAttempts = parseInt(localStorage.getItem('trialAttempts') || '0');
+    const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
+    
+    if (trialAttempts >= 2 || hasUsedTrial) {
+      console.log('Trial limit exceeded, redirecting to signup');
+      setLocation('/auth');
+      return;
+    }
+    
+    // Activate trial mode for Foundation protocol only
+    localStorage.setItem('trialMode', 'true');
+    localStorage.setItem('trialProtocol', 'foundation');
+    
+    // Go directly to activation sequence for Foundation protocol
+    const foundationProtocol = {
+      id: 'foundation',
+      name: 'Foundation',
+      pattern: [4, 4, 4, 4],
+      phases: ['Inhale', 'Hold', 'Exhale', 'Hold'],
+      color: 'cyan',
+      benefit: 'Focus',
+      description: 'Build your foundation with balanced breathing cycles',
+      sessionDuration: 300
+    };
+    
+    sessionStorage.setItem('selectedProtocol', JSON.stringify(foundationProtocol));
+    setLocation('/activation-sequence');
+  };
+
   // Auto-redirect effect for authenticated users
   useEffect(() => {
     if (isAuthenticated && !isRedirecting) {
@@ -262,17 +295,13 @@ export default function Welcome() {
           {/* Free Trial Button */}
           <motion.button
             className="holographic-border group relative overflow-hidden w-full"
-            onClick={() => {
-              // Set trial mode in localStorage
-              localStorage.setItem('trialMode', 'true');
-              setLocation('/protocol-selection');
-            }}
+            onClick={handleTryFree}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <div className="bg-gray-900/80 backdrop-blur-sm px-8 py-4 rounded-2xl text-lg font-semibold group-hover:bg-gray-800/90 transition-all duration-300">
               <div className="flex items-center justify-center space-x-2 mb-1">
-                <span className="text-cyan-400">Try Free Protocol</span>
+                <span className="text-cyan-400">Try Foundation Protocol (Free)</span>
                 <motion.svg
                   className="w-5 h-5 text-pink-400"
                   fill="none"

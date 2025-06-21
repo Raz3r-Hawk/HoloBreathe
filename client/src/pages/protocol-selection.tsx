@@ -26,24 +26,35 @@ export default function ProtocolSelection() {
   // Redirect logic for subscription/trial
   useEffect(() => {
     if (!isLoading) {
+      // Check trial attempts
+      const trialAttempts = parseInt(localStorage.getItem('trialAttempts') || '0');
+      
       // If user has subscription, they can access everything
       if (hasSubscription) return;
       
-      // If in trial mode and hasn't used trial, allow access to one protocol
+      // If trial attempts exceeded, redirect to signup
+      if (trialAttempts >= 2) {
+        setLocation('/auth');
+        return;
+      }
+      
+      // If in trial mode and hasn't used trial, only allow Foundation protocol
       if (isTrialMode && !hasUsedTrial) return;
       
-      // Show upgrade prompt instead of forcing subscription
-      // This allows users to try protocols before subscribing
+      // Otherwise require signup
+      if (!hasSubscription) {
+        setLocation('/auth');
+      }
     }
   }, [hasSubscription, isLoading, isTrialMode, hasUsedTrial, setLocation]);
 
   const handleProtocolSelect = (protocol: BreathingProtocol) => {
     setSelectedProtocolId(protocol.id);
     
-    // If in trial mode and hasn't used trial, mark trial as used
-    if (isTrialMode && !hasUsedTrial) {
-      localStorage.setItem('hasUsedTrial', 'true');
-      localStorage.removeItem('trialMode'); // Clear trial mode
+    // In trial mode, only allow Foundation protocol
+    if (isTrialMode && !hasUsedTrial && protocol.id !== 'foundation') {
+      alert('Trial users can only access the Foundation protocol. Please upgrade for full access.');
+      return;
     }
     
     // Store selected protocol in sessionStorage for use in other screens
@@ -107,14 +118,14 @@ export default function ProtocolSelection() {
         {/* Trial Mode Banner */}
         {isTrialMode && !hasUsedTrial && (
           <motion.div
-            className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-500/20 dark:to-orange-500/20 border border-amber-300 dark:border-amber-500/30 rounded-xl theme-transition"
+            className="mb-6 p-4 bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-500/30 rounded-xl backdrop-blur-sm"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <div className="text-center">
-              <p className="text-amber-900 dark:text-amber-200 font-semibold mb-1">Free Trial</p>
-              <p className="text-xs text-amber-800 dark:text-amber-300">Choose one protocol to try for free</p>
+              <p className="text-cyan-200 font-semibold mb-1">Free Trial - Foundation Protocol Only</p>
+              <p className="text-xs text-cyan-300">Experience basic 4-4-4-4 breathing pattern</p>
             </div>
           </motion.div>
         )}

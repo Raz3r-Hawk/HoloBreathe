@@ -1,68 +1,37 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'auto';
+type Theme = 'dark';
 
 interface ThemeContextType {
   theme: Theme;
-  effectiveTheme: 'light' | 'dark';
+  effectiveTheme: 'dark';
   setTheme: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    // Always default to dark theme
-    const saved = localStorage.getItem('theme');
-    const defaultTheme = (saved as Theme) || 'dark';
-    // Force dark theme if no specific preference
-    if (!saved) {
-      localStorage.setItem('theme', 'dark');
-    }
-    return defaultTheme;
-  });
-
-  const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('dark');
+  const [theme] = useState<Theme>('dark');
+  const [effectiveTheme] = useState<'dark'>('dark');
 
   useEffect(() => {
-    let newEffectiveTheme: 'light' | 'dark';
-
-    if (theme === 'auto') {
-      newEffectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } else {
-      newEffectiveTheme = theme;
-    }
-
-    setEffectiveTheme(newEffectiveTheme);
-    
-    // Update document class
+    // Force dark theme always
     document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(newEffectiveTheme);
+    document.documentElement.classList.add('dark');
     
     // Force dark theme application
-    if (newEffectiveTheme === 'dark') {
-      document.body.style.backgroundColor = 'hsl(224, 71%, 4%)';
-      document.body.style.color = 'hsl(213, 31%, 91%)';
-    }
+    document.body.style.backgroundColor = 'hsl(224, 71%, 4%)';
+    document.body.style.color = 'hsl(213, 31%, 91%)';
 
     // Save to localStorage
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    localStorage.setItem('theme', 'dark');
+  }, []);
 
-  // Listen for system theme changes when in auto mode
-  useEffect(() => {
-    if (theme === 'auto') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = () => {
-        setEffectiveTheme(mediaQuery.matches ? 'dark' : 'light');
-        document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(mediaQuery.matches ? 'dark' : 'light');
-      };
+  // No auto mode - always dark
 
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, [theme]);
+  const setTheme = () => {
+    // No-op since we only support dark theme
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, effectiveTheme, setTheme }}>

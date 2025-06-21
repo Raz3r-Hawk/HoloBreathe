@@ -345,34 +345,19 @@ export default function Settings() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-foreground font-medium">Theme Preference</Label>
-                    <div className="grid grid-cols-3 gap-3">
-                      <Button
-                        variant={theme === 'light' ? 'default' : 'outline'}
-                        onClick={() => handleThemeChange('light')}
-                        className="flex items-center justify-center p-3 theme-transition"
-                      >
-                        <Sun className="w-4 h-4 mr-2" />
-                        Light
-                      </Button>
-                      <Button
-                        variant={theme === 'dark' ? 'default' : 'outline'}
-                        onClick={() => handleThemeChange('dark')}
-                        className="flex items-center justify-center p-3 theme-transition"
-                      >
-                        <Moon className="w-4 h-4 mr-2" />
-                        Dark
-                      </Button>
-                      <Button
-                        variant={theme === 'auto' ? 'default' : 'outline'}
-                        onClick={() => handleThemeChange('auto')}
-                        className="flex items-center justify-center p-3 theme-transition"
-                      >
-                        <Monitor className="w-4 h-4 mr-2" />
-                        Auto
-                      </Button>
+                    <Label className="text-white font-medium">Theme</Label>
+                    <div className="p-4 bg-slate-800 rounded-lg border border-slate-600">
+                      <div className="flex items-center space-x-3">
+                        <Moon className="w-5 h-5 text-cyan-400" />
+                        <div>
+                          <p className="text-white font-medium">Dark Mode</p>
+                          <p className="text-slate-400 text-sm">Always enabled for optimal experience</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  
+                  {/* Theme selection removed - always dark */}
                 </CardContent>
               </Card>
             </TabsContent>

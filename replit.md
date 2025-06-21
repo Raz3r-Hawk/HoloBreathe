@@ -50,6 +50,16 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Features**: Complete mobile app with same functionality as web version
 
 ## Recent Changes
+- **2025-06-21**: Comprehensive UI/UX redesign and trial system overhaul completed
+  - **Fixed End Session navigation permanently** - trial sessions now redirect to signup, regular sessions to protocol selection
+  - **Redesigned free trial system** - restricted to Foundation 4-4-4-4 protocol only with 2 attempt maximum
+  - **Removed theme selection entirely** - enforced dark theme only throughout application for consistency
+  - **Enhanced form input visibility** - upgraded all input fields with bright text and proper dark theme styling
+  - **Modernized UI cards** - implemented gradient backgrounds, vibrant cyan accents, enhanced shadows and animations
+  - **Added trial attempt tracking** - comprehensive system blocks users after 2 attempts and redirects to signup
+  - **Updated button text clarity** - changed to "Try Foundation Protocol (Free)" for user understanding
+  - **Improved protocol cards** - modern gradient design with bright cyan text colors and enhanced hover effects
+  - **Enhanced authentication forms** - all input fields now have proper dark theme styling with bright visibility
 - **2025-06-20**: Complete Android Studio deployment configuration resolved
   - Fixed all Gradle sync issues including missing repositories and Java home path errors
   - Resolved React Native Gradle Plugin dependency conflicts by simplifying to standard Android setup
