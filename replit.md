@@ -50,6 +50,14 @@ A comprehensive breathing application with advanced user management, authenticat
 - **Features**: Complete mobile app with same functionality as web version
 
 ## Recent Changes
+- **2025-06-21**: Enhanced UI/UX design based on user feedback:
+  - Improved button spacing between "Start Your Journey" and "Test Free Protocol"
+  - Fixed routing error by correcting path to "/protocol-selection"
+  - Enhanced neon/holographic design with prominent Time and Breaths display in cards
+  - Created 3D floating holographic cube logo with particle effects and energy rings
+  - Added Indian flag 🇮🇳 to "Made in India" text with proper spacing
+  - Enhanced breathing session with neon glow effects, floating particles, and improved visual hierarchy
+  - Added emoji icons to session controls (pause/resume/end) for better UX
 - **2025-06-21**: Fixed web demo 404 error and added missing features:
   - Created holographic logo with animated rings and glow effects for both web and mobile
   - Added "Test Free Protocol" button that launches Foundation breathing session in trial mode

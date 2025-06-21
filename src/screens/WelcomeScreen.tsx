@@ -267,10 +267,10 @@ const styles = StyleSheet.create({
     marginTop: 48,
   },
   primaryButton: {
-    marginBottom: 16,
+    marginBottom: 24,
   },
   trialButton: {
-    marginBottom: 24,
+    marginBottom: 32,
     borderColor: '#00D4FF',
     borderWidth: 2,
   },

@@ -6,30 +6,54 @@ export default function Welcome() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6">
       <div className="max-w-2xl mx-auto text-center">
-        {/* Hologram Logo */}
+        {/* 3D Floating Hologram Logo */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, scale: 0.5, rotateY: -180 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           className="mb-8"
         >
-          <div className="relative w-32 h-32 mx-auto mb-6">
-            {/* Holographic effect with multiple layers */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-full opacity-20 animate-pulse"></div>
-            <div className="absolute inset-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-30 animate-pulse delay-75"></div>
-            <div className="absolute inset-4 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 rounded-full opacity-40 animate-pulse delay-150"></div>
-            
-            {/* Main logo with holographic glow */}
-            <div className="absolute inset-6 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/50">
-              <div className="text-2xl font-bold text-white relative">
-                <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent blur-sm">H</span>
-                <span className="relative bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">H</span>
+          <div className="relative w-40 h-40 mx-auto mb-6" style={{ perspective: '1000px' }}>
+            {/* Floating holographic cube */}
+            <motion.div
+              animate={{
+                rotateX: [0, 5, -5, 0],
+                rotateY: [0, 10, -10, 0],
+                y: [0, -8, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="relative w-full h-full"
+              style={{
+                transformStyle: 'preserve-3d',
+                transform: 'rotateX(15deg) rotateY(15deg)'
+              }}
+            >
+              {/* Main holographic box */}
+              <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/80 via-blue-500/80 to-purple-600/80 rounded-xl shadow-2xl shadow-cyan-500/50 backdrop-blur-md border border-cyan-300/30">
+                <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-white/10 to-transparent rounded-xl"></div>
+                <div className="flex items-center justify-center h-full">
+                  <span className="text-4xl font-black text-white drop-shadow-2xl">H</span>
+                </div>
               </div>
-            </div>
+              
+              {/* Holographic glow layers */}
+              <div className="absolute inset-2 bg-gradient-to-r from-cyan-400/20 via-blue-500/20 to-purple-600/20 rounded-2xl animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 via-blue-500/10 to-purple-600/10 rounded-3xl animate-pulse delay-75"></div>
+              
+              {/* Floating particles */}
+              <div className="absolute top-0 left-1/2 w-2 h-2 bg-cyan-400 rounded-full opacity-60 animate-bounce delay-100"></div>
+              <div className="absolute bottom-0 right-0 w-1 h-1 bg-blue-400 rounded-full opacity-40 animate-bounce delay-300"></div>
+              <div className="absolute top-1/2 left-0 w-1.5 h-1.5 bg-purple-400 rounded-full opacity-50 animate-bounce delay-500"></div>
+            </motion.div>
             
-            {/* Animated rings */}
-            <div className="absolute inset-0 border-2 border-cyan-400/30 rounded-full animate-spin-slow"></div>
-            <div className="absolute inset-2 border border-blue-400/20 rounded-full animate-spin-reverse"></div>
+            {/* Energy rings */}
+            <div className="absolute inset-0 border-2 border-cyan-400/20 rounded-full animate-spin-slow"></div>
+            <div className="absolute inset-4 border border-blue-400/30 rounded-full animate-spin-reverse"></div>
+            <div className="absolute inset-8 border border-purple-400/20 rounded-full animate-spin-slow delay-1000"></div>
           </div>
         </motion.div>
 
@@ -57,9 +81,9 @@ export default function Welcome() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}
-          className="space-y-4"
+          className="space-y-6"
         >
-          <Link to="/protocols">
+          <Link to="/protocol-selection">
             <button className="w-full py-4 px-8 bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
               Start Your Journey
             </button>
@@ -71,8 +95,8 @@ export default function Welcome() {
             </button>
           </Link>
           
-          <p className="text-slate-500 text-sm">
-            Made in India with ♥ by GeeksGrow Technologies
+          <p className="text-slate-500 text-sm flex items-center justify-center gap-2">
+            Made in India 🇮🇳 with ❤️ by GeeksGrow Technologies
           </p>
         </motion.div>
       </div>

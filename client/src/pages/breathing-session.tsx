@@ -134,81 +134,121 @@ export default function BreathingSession() {
             animate={{ opacity: 1 }}
             className="space-y-8"
           >
-            {/* Session Stats */}
-            <div className="flex justify-between text-slate-400 text-sm">
-              <span>Time: {formatTime(sessionTime)}</span>
-              <span>Breaths: {breathCount}</span>
+            {/* Session Stats - Prominent Neon Display */}
+            <div className="flex justify-between items-center mb-8">
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 rounded-lg p-4 backdrop-blur-sm">
+                  <div className="text-2xl font-bold text-cyan-400 mb-1">{formatTime(sessionTime)}</div>
+                  <div className="text-xs text-cyan-300/80 uppercase tracking-wider">Time</div>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-lg p-4 backdrop-blur-sm">
+                  <div className="text-2xl font-bold text-purple-400 mb-1">{breathCount}</div>
+                  <div className="text-xs text-purple-300/80 uppercase tracking-wider">Breaths</div>
+                </div>
+              </div>
             </div>
             
-            {/* Breathing Circle */}
-            <div className="relative">
+            {/* Enhanced Neon Breathing Circle */}
+            <div className="relative mb-8">
+              {/* Outer glow effects */}
+              <div className="absolute inset-0 w-80 h-80 mx-auto">
+                <div className={`absolute inset-0 bg-gradient-to-r ${protocol.color} rounded-full opacity-20 blur-xl animate-pulse`}></div>
+                <div className={`absolute inset-4 bg-gradient-to-r ${protocol.color} rounded-full opacity-30 blur-lg animate-pulse delay-75`}></div>
+              </div>
+              
+              {/* Main breathing circle with neon effect */}
               <motion.div
                 animate={{ scale: circleScale }}
                 transition={{ duration: 0.1, ease: "linear" }}
-                className={`w-64 h-64 mx-auto bg-gradient-to-r ${protocol.color} rounded-full shadow-2xl`}
+                className={`relative w-64 h-64 mx-auto bg-gradient-to-r ${protocol.color} rounded-full shadow-2xl border border-cyan-400/50`}
                 style={{
-                  boxShadow: `0 0 60px ${currentPhase % 2 === 0 ? '#3B82F6' : '#8B5CF6'}40`
+                  boxShadow: `0 0 80px ${currentPhase % 2 === 0 ? '#06B6D4' : '#8B5CF6'}60, inset 0 0 40px rgba(255,255,255,0.1)`
                 }}
-              />
+              >
+                {/* Inner holographic effect */}
+                <div className="absolute inset-4 bg-gradient-to-tl from-transparent via-white/20 to-transparent rounded-full"></div>
+                <div className="absolute inset-8 bg-gradient-to-br from-transparent via-cyan-400/30 to-transparent rounded-full"></div>
+              </motion.div>
               
-              {/* Progress Ring */}
+              {/* Enhanced Progress Ring with Neon Effect */}
               <div className="absolute inset-0 w-64 h-64 mx-auto">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  {/* Background ring */}
                   <circle
                     cx="50"
                     cy="50"
                     r="45"
                     fill="none"
-                    stroke="rgba(255,255,255,0.1)"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    fill="none"
-                    stroke="url(#gradient)"
+                    stroke="rgba(6,182,212,0.2)"
                     strokeWidth="3"
+                  />
+                  {/* Progress ring with glow */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="url(#neonGradient)"
+                    strokeWidth="4"
                     strokeLinecap="round"
                     strokeDasharray="283"
                     strokeDashoffset={283 - (283 * phaseProgress) / 100}
-                    className="transition-all duration-100 ease-linear"
+                    className="transition-all duration-100 ease-linear drop-shadow-lg"
+                    style={{
+                      filter: 'drop-shadow(0 0 8px #06B6D4)'
+                    }}
                   />
                   <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#06B6D4" />
-                      <stop offset="100%" stopColor="#3B82F6" />
+                      <stop offset="50%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
                     </linearGradient>
                   </defs>
                 </svg>
               </div>
+              
+              {/* Floating particles around circle */}
+              <div className="absolute top-0 left-1/2 w-2 h-2 bg-cyan-400 rounded-full opacity-80 animate-bounce"></div>
+              <div className="absolute bottom-0 right-1/3 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-60 animate-bounce delay-200"></div>
+              <div className="absolute top-1/3 left-0 w-1 h-1 bg-purple-400 rounded-full opacity-70 animate-bounce delay-400"></div>
             </div>
             
-            {/* Phase Instruction */}
+            {/* Enhanced Phase Instruction */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPhase}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-center"
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.9 }}
+                className="text-center mb-8"
               >
-                <h2 className="text-3xl font-bold text-white mb-2">
-                  {currentPhaseText || 'Pause'}
-                </h2>
-                <p className="text-slate-400">
-                  {protocol.pattern[currentPhase]} seconds
-                </p>
+                <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-cyan-400/30 rounded-xl p-6 backdrop-blur-sm">
+                  <h2 className="text-4xl font-bold text-white mb-3 drop-shadow-lg">
+                    <span className={`bg-gradient-to-r ${protocol.color} bg-clip-text text-transparent`}>
+                      {currentPhaseText || 'Pause'}
+                    </span>
+                  </h2>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                    <p className="text-slate-300 text-lg font-medium">
+                      {protocol.pattern[currentPhase]} seconds
+                    </p>
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse delay-200"></div>
+                  </div>
+                </div>
               </motion.div>
             </AnimatePresence>
             
-            {/* Controls */}
-            <div className="flex gap-4 justify-center">
+            {/* Enhanced Neon Controls */}
+            <div className="flex gap-6 justify-center">
               <button
                 onClick={() => setIsPaused(!isPaused)}
-                className="px-6 py-3 bg-slate-800 border border-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+                className="px-8 py-4 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border-2 border-cyan-400/50 text-cyan-400 font-semibold rounded-xl hover:bg-cyan-400/20 transition-all backdrop-blur-sm shadow-lg shadow-cyan-500/20"
               >
-                {isPaused ? 'Resume' : 'Pause'}
+                {isPaused ? '▶️ Resume' : '⏸️ Pause'}
               </button>
               <button
                 onClick={() => {
@@ -219,9 +259,9 @@ export default function BreathingSession() {
                   setBreathCount(0);
                   setIsPaused(false);
                 }}
-                className="px-6 py-3 bg-red-900/50 border border-red-700 text-red-400 rounded-lg hover:bg-red-900/70 transition-colors"
+                className="px-8 py-4 bg-gradient-to-r from-red-600/20 to-pink-600/20 border-2 border-red-400/50 text-red-400 font-semibold rounded-xl hover:bg-red-400/20 transition-all backdrop-blur-sm shadow-lg shadow-red-500/20"
               >
-                End Session
+                🛑 End Session
               </button>
             </div>
           </motion.div>
