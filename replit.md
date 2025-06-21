@@ -21,8 +21,9 @@ A comprehensive breathing application with advanced user management, authenticat
 
 ## Database Storage
 - **Development**: Replit built-in PostgreSQL (Neon) - working, session data confirmed stored
-- **Production**: Supabase PostgreSQL - will work when deployed to Vercel/Railway/other cloud platforms
-- **Migration**: Simple environment variable update (DATABASE_URL) switches from Replit to Supabase
+- **Production**: Supabase PostgreSQL - configured and ready for deployment
+- **Connection**: `postgresql://postgres:Qe9DsDBxjPC2JMsO@db.mstkdpoenysyhdxdqzts.supabase.co:5432/postgres`
+- **Migration**: Environment variable switch activates Supabase for production deployment
 
 ## Authentication & User Management
 - **Registration**: Complete user profiles with personal information
@@ -62,6 +63,7 @@ A comprehensive breathing application with advanced user management, authenticat
   - **Session data now persisting** - breathing sessions properly recorded in Replit database, confirmed with 3 sessions in analytics
   - **Enhanced button styling** - added inline styles and global CSS to eliminate webkit tap highlights completely
   - **Re-enabled trial restrictions** - users limited to 2 trial sessions with toast notification when limit exceeded
+  - **Configured Supabase for production** - database connection ready for deployment with schema migration support
 - **2025-06-21**: Comprehensive UI/UX redesign and trial system overhaul completed
   - **Fixed End Session navigation permanently** - trial sessions now redirect to signup, regular sessions to protocol selection
   - **Redesigned free trial system** - restricted to Foundation 4-4-4-4 protocol only with 2 attempt maximum
