@@ -81,19 +81,28 @@ export default function BreathingSession() {
       const sessionEndTime = new Date();
       const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
       
-      recordSessionMutation.mutate({
-        protocol: selectedProtocol.id,
-        protocolName: selectedProtocol.name,
-        duration: selectedProtocol.sessionDuration,
-        completedDuration: sessionState.sessionTimeElapsed,
-        cycles: sessionState.cycles,
-        completed: true
-      });
+      // Only record session if authenticated (not in trial mode)
+      try {
+        recordSessionMutation.mutate({
+          protocol: selectedProtocol.id,
+          protocolName: selectedProtocol.name,
+          duration: selectedProtocol.sessionDuration,
+          completedDuration: sessionState.sessionTimeElapsed,
+          cycles: sessionState.cycles,
+          completed: true
+        });
+      } catch (error) {
+        // Silent fail for trial users - don't block completion flow
+        console.log('Session recording skipped (trial mode)');
+      }
       
-      setTimeout(() => {
-        // Always redirect to protocol selection after session completion
+      // Immediate redirect after showing completion
+      const redirectTimer = setTimeout(() => {
+        setShowCompletionMessage(false);
         setLocation('/protocol-selection');
-      }, 3000);
+      }, 2000);
+
+      return () => clearTimeout(redirectTimer);
     }
   }, [isSessionComplete, showCompletionMessage, selectedProtocol, sessionStartTime, sessionState.cycles, recordSessionMutation, setLocation]);
 
@@ -105,14 +114,20 @@ export default function BreathingSession() {
       const sessionEndTime = new Date();
       const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
       
-      recordSessionMutation.mutate({
-        protocol: selectedProtocol.id,
-        protocolName: selectedProtocol.name,
-        duration: selectedProtocol.sessionDuration,
-        completedDuration: sessionState.sessionTimeElapsed,
-        cycles: sessionState.cycles,
-        completed: false
-      });
+      // Only record session if authenticated (not in trial mode)
+      try {
+        recordSessionMutation.mutate({
+          protocol: selectedProtocol.id,
+          protocolName: selectedProtocol.name,
+          duration: selectedProtocol.sessionDuration,
+          completedDuration: sessionState.sessionTimeElapsed,
+          cycles: sessionState.cycles,
+          completed: false
+        });
+      } catch (error) {
+        // Silent fail for trial users
+        console.log('Session recording skipped (trial mode)');
+      }
     }
     
     endSession();
@@ -149,8 +164,19 @@ export default function BreathingSession() {
           </motion.div>
           
           <h2 className="text-3xl font-bold mb-4 gradient-text">Session Complete!</h2>
-          <p className="text-muted-foreground mb-2">Great job on completing your breathing session.</p>
-          <p className="text-sm text-muted-foreground">Returning to home screen...</p>
+          <p className="text-muted-foreground mb-4">Great job on completing your breathing session.</p>
+          <p className="text-muted-foreground mb-6">You completed {sessionState.cycles} cycles!</p>
+          
+          <motion.button
+            onClick={() => setLocation('/protocol-selection')}
+            className="px-8 py-3 bg-gradient-to-r from-primary to-blue-500 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Continue
+          </motion.button>
+          
+          <p className="text-sm text-muted-foreground mt-4">Or wait for automatic redirect...</p>
         </motion.div>
       </div>
     );
