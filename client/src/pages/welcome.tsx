@@ -19,17 +19,20 @@ export default function Welcome() {
   }, []);
 
   const handleTryFree = () => {
-    console.log('Try free clicked - checking trial eligibility');
+    console.log('Try free clicked - starting trial mode');
     
-    // Check trial attempts
-    const trialAttempts = parseInt(localStorage.getItem('trialAttempts') || '0');
-    const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
+    // Always allow trial access (reset any previous restrictions for testing)
+    // In production, you may want to enable the trial limits below
     
-    if (trialAttempts >= 2 || hasUsedTrial) {
-      console.log('Trial limit exceeded, redirecting to signup');
-      setLocation('/auth');
-      return;
-    }
+    // Optional: Check trial attempts (currently disabled for testing)
+    // const trialAttempts = parseInt(localStorage.getItem('trialAttempts') || '0');
+    // const hasUsedTrial = localStorage.getItem('hasUsedTrial') === 'true';
+    // 
+    // if (trialAttempts >= 2 || hasUsedTrial) {
+    //   console.log('Trial limit exceeded, redirecting to signup');
+    //   setLocation('/auth');
+    //   return;
+    // }
     
     // Activate trial mode for Foundation protocol only
     localStorage.setItem('trialMode', 'true');

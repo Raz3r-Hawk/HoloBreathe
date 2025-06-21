@@ -127,12 +127,17 @@ export default function BreathingSession() {
         if (isTrialMode) {
           console.log('Trial session completed, redirecting to signup');
           window.location.href = '/auth';
-        } else if (isAuthenticated) {
-          console.log('Authenticated user session completed, redirecting to protocol selection');
-          setLocation('/protocol-selection');
         } else {
-          console.log('Unauthenticated session completed, redirecting to welcome');
-          setLocation('/');
+          console.log('Session completed, checking authentication for redirect');
+          console.log('isAuthenticated status:', isAuthenticated);
+          
+          if (isAuthenticated) {
+            console.log('Authenticated user session completed, redirecting to protocol selection');
+            setLocation('/protocol-selection');
+          } else {
+            console.log('Unauthenticated session completed, redirecting to welcome');
+            setLocation('/');
+          }
         }
       }, 2000);
 
@@ -175,6 +180,9 @@ export default function BreathingSession() {
     }
     
     // For authenticated users, redirect to protocol selection
+    console.log('Session ended manually, checking authentication status');
+    console.log('isAuthenticated status:', isAuthenticated);
+    
     if (isAuthenticated) {
       console.log('Authenticated user ended session manually, redirecting to protocol selection');
       setLocation('/protocol-selection');
