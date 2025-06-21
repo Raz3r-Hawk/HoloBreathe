@@ -15,6 +15,7 @@ export default function BreathingSession() {
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   const [isManuallyEnded, setIsManuallyEnded] = useState(false);
   const queryClient = useQueryClient();
+  const { isAuthenticated, isLoading } = useAuth();
 
   const {
     sessionState,
@@ -179,9 +180,25 @@ export default function BreathingSession() {
       return;
     }
     
+    // Record incomplete session if authenticated and session was started  
+    if (!isTrialMode && isAuthenticated && selectedProtocol && sessionStartTime && sessionState.sessionTimeElapsed > 10) {
+      try {
+        recordSessionMutation.mutate({
+          protocol: selectedProtocol.id,
+          protocolName: selectedProtocol.name,
+          duration: selectedProtocol.sessionDuration,
+          completedDuration: sessionState.sessionTimeElapsed,
+          cycles: sessionState.cycles,
+          completed: false
+        });
+        console.log('Incomplete session recorded for authenticated user');
+      } catch (error) {
+        console.log('Session recording failed:', error);
+      }
+    }
+    
     // For authenticated users, redirect to protocol selection
-    console.log('Session ended manually, checking authentication status');
-    console.log('isAuthenticated status:', isAuthenticated);
+    console.log('Session ended manually, authentication status:', isAuthenticated);
     
     if (isAuthenticated) {
       console.log('Authenticated user ended session manually, redirecting to protocol selection');
